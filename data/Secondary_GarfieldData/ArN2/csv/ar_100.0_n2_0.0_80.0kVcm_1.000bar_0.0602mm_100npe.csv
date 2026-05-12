@@ -1,0 +1,53 @@
+level,gas,state_name,type,energy_eV,n_events
+0,Ar, ELASTIC ANISOTROPIC       ARGON                  ,elastic,0.0,192729883.0
+1,Ar, IONISATION CHARGE STATE =1      ELOSS=   15.75961,ionisation,15.7596,953330.0
+2,Ar, ATTACHMENT                                       ,attachment,0.0,18.0
+3,,,,,0.0
+4,,,,,0.0
+5,,,,,0.0
+6,,,,,0.0
+7,,,,,0.0
+8,Ar, EXC 1S5    J=2 METASTABLE         ELEVEL= 11.548 ,excitation,11.548,170835.0
+9,Ar, EXC 1S4    J=1 RESONANT           ELEVEL= 11.624 ,excitation,11.624,195310.0
+10,Ar, EXC 1S3    J=0 METASTABLE         ELEVEL= 11.723 ,excitation,11.723,32317.0
+11,Ar, EXC 1S2    J=1 RESONANT           ELEVEL= 11.828 ,excitation,11.828,355438.0
+12,Ar, EXC 2P10   J=1                    ELEVEL= 12.907 ,excitation,12.907,34916.0
+13,Ar, EXC 2P9    J=3                    ELEVEL= 13.076 ,excitation,13.076,48684.0
+14,Ar, EXC 2P8    J=2                    ELEVEL= 13.095 ,excitation,13.095,35646.0
+15,Ar, EXC 2P7    J=1                    ELEVEL= 13.153 ,excitation,13.153,26864.0
+16,Ar, EXC 2P6    J=2                    ELEVEL= 13.172 ,excitation,13.172,34745.0
+17,Ar, EXC 2P5    J=0                    ELEVEL= 13.273 ,excitation,13.273,16076.0
+18,Ar, EXC 2P4    J=1                    ELEVEL= 13.283 ,excitation,13.283,25776.0
+19,Ar, EXC 2P3    J=2                    ELEVEL= 13.302 ,excitation,13.302,22205.0
+20,Ar, EXC 2P2    J=1                    ELEVEL= 13.328 ,excitation,13.328,14482.0
+21,Ar, EXC 2P1    J=0                    ELEVEL= 13.480 ,excitation,13.48,53086.0
+22,Ar, EXC 3D6    J=0                    ELEVEL= 13.845 ,excitation,13.845,21364.0
+23,Ar, EXC 3D5    J=1 RESONANT           ELEVEL= 13.864 ,excitation,13.864,83501.0
+24,Ar, EXC 3D3    J=2                    ELEVEL= 13.903 ,excitation,13.903,77957.0
+25,Ar, EXC 3D4!   J=4                    ELEVEL= 13.979 ,excitation,13.979,76827.0
+26,Ar, EXC 3D4    J=3                    ELEVEL= 14.013 ,excitation,14.013,29005.0
+27,Ar, EXC 3D1!!  J=2                    ELEVEL= 14.063 ,excitation,14.063,30963.0
+28,Ar, EXC 2S5    J=2                    ELEVEL= 14.068 ,excitation,14.068,31222.0
+29,Ar, EXC 2S4    J=1 RESONANT           ELEVEL= 14.090 ,excitation,14.09,14108.0
+30,Ar, EXC 3D1!   J=3                    ELEVEL= 14.099 ,excitation,14.099,6883.0
+31,Ar, EXC 3D2    J=1 RESONANT           ELEVEL= 14.153 ,excitation,14.153,39050.0
+32,Ar, EXC 3S1!!!!J=2                    ELEVEL= 14.214 ,excitation,14.214,40284.0
+33,Ar, EXC 3S1!!  J=2                    ELEVEL= 14.234 ,excitation,14.234,25039.0
+34,Ar, EXC 3S1!!! J=3                    ELEVEL= 14.236 ,excitation,14.236,10341.0
+35,Ar, EXC 2S3    J=0                    ELEVEL= 14.241 ,excitation,14.241,6132.0
+36,Ar, EXC 2S2    J=1 RESONANT           ELEVEL= 14.255 ,excitation,14.255,5638.0
+37,Ar, EXC 3S1!   J=1 RESONANT           ELEVEL= 14.304 ,excitation,14.304,45872.0
+38,Ar, EXC 4D5    J=1 RESONANT           ELEVEL= 14.711 ,excitation,14.711,829.0
+39,Ar, EXC 3S4    J=1 RESONANT           ELEVEL= 14.848 ,excitation,14.848,5833.0
+40,Ar, EXC 4D2    J=1 RESONANT           ELEVEL= 14.859 ,excitation,14.859,19107.0
+41,Ar, EXC 4S1!   J=1 RESONANT           ELEVEL= 15.004 ,excitation,15.004,7693.0
+42,Ar, EXC 3S2    J=1 RESONANT           ELEVEL= 15.022 ,excitation,15.022,8253.0
+43,Ar, EXC 5D5    J=1 RESONANT           ELEVEL= 15.118 ,excitation,15.118,1423.0
+44,Ar, EXC 4S4    J=1 RESONANT           ELEVEL= 15.186 ,excitation,15.186,14486.0
+45,Ar, EXC 5D2    J=1 RESONANT           ELEVEL= 15.190 ,excitation,15.19,14870.0
+46,Ar, EXC 6D5    J=1 RESONANT           ELEVEL= 15.308 ,excitation,15.308,274.0
+47,Ar, EXC 5S1!   J=1 RESONANT           ELEVEL= 15.351 ,excitation,15.351,155.0
+48,Ar, EXC 4S2    J=1 RESONANT           ELEVEL= 15.360 ,excitation,15.36,213.0
+49,Ar, EXC 5S4    J=1 RESONANT           ELEVEL= 15.366 ,excitation,15.366,4199.0
+50,Ar, EXC 6D2    J=1 RESONANT           ELEVEL= 15.374 ,excitation,15.374,9385.0
+51,Ar, EXC HIGH   J=1 RESONANT           ELEVEL= 15.660 ,excitation,15.66,37613.0

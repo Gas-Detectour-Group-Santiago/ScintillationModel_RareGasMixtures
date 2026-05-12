@@ -1,3 +1,0 @@
-/home/daniel/GitHub/TFM-Simulations/cross_section_in_gas/build/CMakeFiles/cross_section.dir
-/home/daniel/GitHub/TFM-Simulations/cross_section_in_gas/build/CMakeFiles/edit_cache.dir
-/home/daniel/GitHub/TFM-Simulations/cross_section_in_gas/build/CMakeFiles/rebuild_cache.dir

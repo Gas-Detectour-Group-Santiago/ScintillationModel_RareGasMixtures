@@ -1,0 +1,141 @@
+level,gas,state_name,type,energy_eV,n_events
+0,N2, ELASTIC ANISOTROPIC          NITROGEN            ,elastic,0.0,199372787.0
+1,N2, IONISATION N2+ X2SIGMA VIB=0     ELOSS=  15.581  ,ionisation,15.581,270648.0
+2,N2, IONISATION N2+ X2SIGMA VIB>0     ELOSS=  15.855  ,ionisation,15.855,67004.0
+3,N2, IONISATION N2+ A2PI    VIB=0     ELOSS=  16.699  ,ionisation,16.699,79664.0
+4,N2, IONISATION N2+ A2PI    VIB=1     ELOSS=  16.935  ,ionisation,16.935,118346.0
+5,N2, IONISATION N2+ A2PI    VIB>1     ELOSS=  17.171  ,ionisation,17.171,192806.0
+6,N2, IONISATION N2+ B2SIGMA           ELOSS=  18.751  ,ionisation,18.751,92307.0
+7,N2, IONISATION N2+ C2SIGMA           ELOSS=  23.591  ,ionisation,23.591,8934.0
+8,N2," DISSOC ION (N+,N)                ELOSS=  24.294  ",ionisation,24.294,10492.0
+9,N2," DISSOC ION (N+,N*)               ELOSS=  24.4    ",ionisation,24.4,2065.0
+10,N2," DISSOC ION (N+*,N)               ELOSS=  35.7    ",ionisation,35.7,46.0
+11,N2," DISSOC ION (N++,N) AND (N+,N+)   ELOSS=  38.8    ",ionisation,38.8,96.0
+12,N2, ATTACHMENT                                       ,attachment,0.0,0.0
+13,N2, ROTATION  2-0                    ELOSS=  -0.00148,superelastic,-0.00148008,141069.0
+14,N2, ROTATION  3-1                    ELOSS=  -0.00247,superelastic,-0.0024668,119113.0
+15,N2, ROTATION  4-2                    ELOSS=  -0.00345,superelastic,-0.00345352,316524.0
+16,N2, ROTATION  5-3                    ELOSS=  -0.00444,superelastic,-0.00444024,186609.0
+17,N2, ROTATION  6-4                    ELOSS=  -0.00543,superelastic,-0.00542696,407728.0
+18,N2, ROTATION  7-5                    ELOSS=  -0.00641,superelastic,-0.00641368,210614.0
+19,N2, ROTATION  8-6                    ELOSS=  -0.00740,superelastic,-0.0074004,415501.0
+20,N2, ROTATION  9-7                    ELOSS=  -0.00839,superelastic,-0.00838712,197450.0
+21,N2, ROTATION 10-8                    ELOSS=  -0.00937,superelastic,-0.00937384,363915.0
+22,N2, ROTATION 11-9                    ELOSS=  -0.0104 ,superelastic,-0.0103606,162638.0
+23,N2, ROTATION 12-10                   ELOSS=  -0.0113 ,superelastic,-0.0113473,281282.0
+24,N2, ROTATION 13-11                   ELOSS=  -0.0123 ,superelastic,-0.012334,119122.0
+25,N2, ROTATION 14-12                   ELOSS=  -0.0133 ,superelastic,-0.0133207,195710.0
+26,N2, ROTATION 15-13                   ELOSS=  -0.0143 ,superelastic,-0.0143074,78327.0
+27,N2, ROTATION 16-14                   ELOSS=  -0.0153 ,superelastic,-0.0152942,122273.0
+28,N2, ROTATION 17-15                   ELOSS=  -0.0163 ,superelastic,-0.0162809,46510.0
+29,N2, ROTATION 18-16                   ELOSS=  -0.0173 ,superelastic,-0.0172676,70252.0
+30,N2, ROTATION 19-17                   ELOSS=  -0.0183 ,superelastic,-0.0182543,25566.0
+31,N2, ROTATION 20-18                   ELOSS=  -0.0192 ,superelastic,-0.019241,36245.0
+32,N2, ROTATION 21-19                   ELOSS=  -0.0202 ,superelastic,-0.0202278,12635.0
+33,N2, ROTATION 22-20                   ELOSS=  -0.0212 ,superelastic,-0.0212145,17565.0
+34,N2, ROTATION 23-21                   ELOSS=  -0.0222 ,superelastic,-0.0222012,5770.0
+35,N2, ROTATION 24-22                   ELOSS=  -0.0232 ,superelastic,-0.0231879,7685.0
+36,N2, ROTATION 25-23                   ELOSS=  -0.0242 ,superelastic,-0.0241746,2441.0
+37,N2, ROTATION 26-24                   ELOSS=  -0.0252 ,superelastic,-0.0251614,2980.0
+38,N2, ROTATION 27-25                   ELOSS=  -0.0261 ,superelastic,-0.0261481,914.0
+39,N2, ROTATION 28-26                   ELOSS=  -0.0271 ,superelastic,-0.0271348,1151.0
+40,N2, ROTATION 29-27                   ELOSS=  -0.0281 ,superelastic,-0.0281215,328.0
+41,N2, ROTATION 30-28                   ELOSS=  -0.0291 ,superelastic,-0.0291082,375.0
+42,N2, ROTATION 31-29                   ELOSS=  -0.0301 ,superelastic,-0.030095,120.0
+43,N2, ROTATION 32-30                   ELOSS=  -0.0311 ,superelastic,-0.0310817,124.0
+44,N2, ROTATION 33-31                   ELOSS=  -0.0321 ,superelastic,-0.0320684,30.0
+45,N2, ROTATION 34-32                   ELOSS=  -0.0331 ,superelastic,-0.0330551,28.0
+46,N2, ROTATION 35-33                   ELOSS=  -0.0340 ,superelastic,-0.0340418,13.0
+47,N2, ROTATION 36-34                   ELOSS=  -0.0350 ,superelastic,-0.0350286,7.0
+48,N2, ROTATION 37-35                   ELOSS=  -0.0360 ,superelastic,-0.0360153,6.0
+49,N2, ROTATION 38-36                   ELOSS=  -0.0370 ,superelastic,-0.037002,2.0
+50,N2, ROTATION 39-37                   ELOSS=  -0.0380 ,superelastic,-0.0379887,0.0
+51,N2, ROTATION 0-2                     ELOSS=   0.00148,inelastic,0.00148008,150086.0
+52,N2, ROTATION 1-3                     ELOSS=   0.00247,inelastic,0.0024668,132039.0
+53,N2, ROTATION 2-4                     ELOSS=   0.00345,inelastic,0.00345352,361824.0
+54,N2, ROTATION 3-5                     ELOSS=   0.00444,inelastic,0.00444024,220895.0
+55,N2, ROTATION 4-6                     ELOSS=   0.00543,inelastic,0.00542696,501427.0
+56,N2, ROTATION 5-7                     ELOSS=   0.00641,inelastic,0.00641368,269793.0
+57,N2, ROTATION 6-8                     ELOSS=   0.00740,inelastic,0.0074004,555667.0
+58,N2, ROTATION 7-9                     ELOSS=   0.00839,inelastic,0.00838712,274610.0
+59,N2, ROTATION 8-10                    ELOSS=   0.00937,inelastic,0.00937384,525195.0
+60,N2, ROTATION 9-11                    ELOSS=   0.0104 ,inelastic,0.0103606,243823.0
+61,N2, ROTATION 10-12                   ELOSS=   0.0113 ,inelastic,0.0113473,438496.0
+62,N2, ROTATION 11-13                   ELOSS=   0.0123 ,inelastic,0.012334,192723.0
+63,N2, ROTATION 12-14                   ELOSS=   0.0133 ,inelastic,0.0133207,329417.0
+64,N2, ROTATION 13-15                   ELOSS=   0.0143 ,inelastic,0.0143074,137441.0
+65,N2, ROTATION 14-16                   ELOSS=   0.0153 ,inelastic,0.0152942,222075.0
+66,N2, ROTATION 15-17                   ELOSS=   0.0163 ,inelastic,0.0162809,89101.0
+67,N2, ROTATION 16-18                   ELOSS=   0.0173 ,inelastic,0.0172676,136750.0
+68,N2, ROTATION 17-19                   ELOSS=   0.0183 ,inelastic,0.0182543,52134.0
+69,N2, ROTATION 18-20                   ELOSS=   0.0192 ,inelastic,0.019241,76985.0
+70,N2, ROTATION 19-21                   ELOSS=   0.0202 ,inelastic,0.0202278,27910.0
+71,N2, ROTATION 20-22                   ELOSS=   0.0212 ,inelastic,0.0212145,39908.0
+72,N2, ROTATION 21-23                   ELOSS=   0.0222 ,inelastic,0.0222012,13681.0
+73,N2, ROTATION 22-24                   ELOSS=   0.0232 ,inelastic,0.0231879,18725.0
+74,N2, ROTATION 23-25                   ELOSS=   0.0242 ,inelastic,0.0241746,6216.0
+75,N2, ROTATION 24-26                   ELOSS=   0.0252 ,inelastic,0.0251614,8109.0
+76,N2, ROTATION 25-27                   ELOSS=   0.0261 ,inelastic,0.0261481,2623.0
+77,N2, ROTATION 26-28                   ELOSS=   0.0271 ,inelastic,0.0271348,3227.0
+78,N2, ROTATION 27-29                   ELOSS=   0.0281 ,inelastic,0.0281215,1007.0
+79,N2, ROTATION 28-30                   ELOSS=   0.0291 ,inelastic,0.0291082,1215.0
+80,N2, ROTATION 29-31                   ELOSS=   0.0301 ,inelastic,0.030095,322.0
+81,N2, ROTATION 30-32                   ELOSS=   0.0311 ,inelastic,0.0310817,419.0
+82,N2, ROTATION 31-33                   ELOSS=   0.0321 ,inelastic,0.0320684,100.0
+83,N2, ROTATION 32-34                   ELOSS=   0.0331 ,inelastic,0.0330551,125.0
+84,N2, ROTATION 33-35                   ELOSS=   0.0340 ,inelastic,0.0340418,23.0
+85,N2, ROTATION 34-36                   ELOSS=   0.0350 ,inelastic,0.0350286,37.0
+86,N2, ROTATION 35-37                   ELOSS=   0.0360 ,inelastic,0.0360153,10.0
+87,N2, ROTATION 36-38                   ELOSS=   0.0370 ,inelastic,0.037002,11.0
+88,N2, ROTATION 37-39                   ELOSS=   0.0380 ,inelastic,0.0379887,2.0
+89,N2, VIBRATION     V1                 ELOSS=  -0.2889 ,superelastic,-0.2889,55.0
+90,N2, VIBRATION     V1                 ELOSS=   0.2889 ,inelastic,0.2889,4848690.0
+91,N2, VIBRATION    2V1                 ELOSS=   0.5742 ,inelastic,0.5742,1970388.0
+92,N2, VIBRATION    3V1                 ELOSS=   0.8559 ,inelastic,0.8559,1381293.0
+93,N2, VIBRATION    4V1                 ELOSS=   1.1342 ,inelastic,1.1342,805463.0
+94,N2, VIBRATION    5V1                 ELOSS=   1.4088 ,inelastic,1.4088,466735.0
+95,N2, VIBRATION    6V1                 ELOSS=   1.6801 ,inelastic,1.6801,383081.0
+96,N2, VIBRATION    7V1                 ELOSS=   1.9475 ,inelastic,1.9475,126036.0
+97,N2, VIBRATION    8V1                 ELOSS=   2.2115 ,inelastic,2.2115,45140.0
+98,N2, VIBRATION    9V1                 ELOSS=   2.4718 ,inelastic,2.4718,22276.0
+99,N2, VIBRATION   10V1                 ELOSS=   2.7284 ,inelastic,2.7284,9435.0
+100,N2, VIBRATION   11V1                 ELOSS=   2.9815 ,inelastic,2.9815,2198.0
+101,N2, VIBRATION   12V1                 ELOSS=   3.2310 ,inelastic,3.231,632.0
+102,N2, VIBRATION   13V1                 ELOSS=   3.4769 ,inelastic,3.4769,178.0
+103,N2, VIBRATION   14V1                 ELOSS=   3.7191 ,inelastic,3.7191,51.0
+104,N2, VIBRATION   15V1                 ELOSS=   3.9576 ,inelastic,3.9576,22.0
+105,N2, A3SIG     V=0-4                  ELOSS=   6.725  ,excitation,6.725,211078.0
+106,N2, A3SIG     V=5-9                  ELOSS=   7.360  ,excitation,7.36,768116.0
+107,N2, B 3PI     V=0-3                  ELOSS=   7.744  ,excitation,7.744,1312586.0
+108,N2, W3DEL     V=0-5                  ELOSS=   8.050  ,excitation,8.05,293350.0
+109,N2, A3SIG     V=10-21                ELOSS=   8.217  ,excitation,8.217,698853.0
+110,N2, B 3PI     V=4-16                 ELOSS=   8.451  ,excitation,8.451,866099.0
+111,N2, W3DEL     V=6-10                 ELOSS=   8.729  ,excitation,8.729,599767.0
+112,N2, A 1PI     V=0-3                  ELOSS=   8.950  ,excitation,8.95,595442.0
+113,N2, B!3SIG    V=0-6                  ELOSS=   8.974  ,excitation,8.974,118948.0
+114,N2, A!1SIG    V=0-6                  ELOSS=   9.191  ,excitation,9.191,74737.0
+115,N2, W3DEL     V=11-19                ELOSS=   9.562  ,excitation,9.562,347037.0
+116,N2, W 1DEL    V=0-5                  ELOSS=   9.590  ,excitation,9.59,72543.0
+117,N2, A 1PI     V=4-15                 ELOSS=   9.665  ,excitation,9.665,557838.0
+118,N2, B!3SIG    V=7-18                 ELOSS=   9.933  ,excitation,9.933,245770.0
+119,N2, A!1SIG    V=7-19                 ELOSS=  10.174  ,excitation,10.174,132143.0
+120,N2, W 1DEL    V=6-18                 ELOSS=  10.536  ,excitation,10.536,147239.0
+121,N2, C 3PI     V=0-4                  ELOSS=  11.188  ,excitation,11.188,883776.0
+122,N2, E 3SIG                           ELOSS=  11.875  ,excitation,11.875,89898.0
+123,N2, A!!1SIG   V=0-1                  ELOSS=  12.289  ,excitation,12.289,90637.0
+124,N2, B 1PI     V=0-6     F=0.1855     ELOSS=  12.781  ,excitation,12.781,262232.0
+125,N2, C!1SIG    V=0-3     F=0.1500     ELOSS=  13.000  ,excitation,13.0,124521.0
+126,N2, G 3PI     V=0-3                  ELOSS=  13.001  ,excitation,13.001,49952.0
+127,N2, C3 1PI    V=0-3     F=0.1500     ELOSS=  13.076  ,excitation,13.076,183324.0
+128,N2, F 3PI     V=0-3                  ELOSS=  13.174  ,excitation,13.174,26647.0
+129,N2, B 1PI     V=7-14    F=0.0663     ELOSS=  13.338  ,excitation,13.338,69625.0
+130,N2, B!1SIG    V=0-10    F=0.0601     ELOSS=  13.385  ,excitation,13.385,68694.0
+131,N2, O3 1PI    V=0-3     F=0.0828     ELOSS=  13.628  ,excitation,13.628,72368.0
+132,N2, C!1SIG    V=4-6     F=0.1390     ELOSS=  14.090  ,excitation,14.09,121852.0
+133,N2, B!1SIG    V=11-24   F=0.2650     ELOSS=  14.232  ,excitation,14.232,224169.0
+134,N2, E!1SIG              F=0.0108     ELOSS=  14.36   ,excitation,14.36,8918.0
+135,N2, E 1PI               F=0.0237     ELOSS=  14.45   ,excitation,14.45,18849.0
+136,N2, SINGLET LEVEL       F=0.0117     ELOSS=  14.839  ,excitation,14.839,8164.0
+137,N2, SUM HIGH SINGLETS   F=0.1152     ELOSS=  15.2    ,excitation,15.2,69692.0
+138,N2, NEUTRAL DISS ABOVE IONIS. ENERGY ELOSS=  15.6    ,excitation,15.6,487403.0
+139,N2, NEUTRAL DISS ABOVE IONIS. ENERGY ELOSS=  16.6    ,excitation,16.6,191869.0

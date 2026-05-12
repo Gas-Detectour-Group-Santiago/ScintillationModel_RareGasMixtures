@@ -1,0 +1,7 @@
+# Ignorar carpetas de compilación en cualquier subdirectorio
+**/build/
+**/__pycache__/
+
+# Ignorar todos los archivos .root
+*.root
+
