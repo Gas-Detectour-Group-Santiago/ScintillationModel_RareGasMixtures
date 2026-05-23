@@ -83,7 +83,7 @@ def _apply_he_gap_to_mapping(df):
     df = df.sort_values("level").reset_index(drop=True)
 
     return df
-def _build_mapping_table_for_file(table_df, active_gases, argon_update, helium_update=True):
+def _build_mapping_table_for_file(table_df, active_gases, argon_update, helium_update=False):
     """
     Construye la tabla de mapeo que se usará para un archivo concreto.
 

@@ -124,8 +124,6 @@ parameter_data[1] = 0.39
 parameter_data[2] = 0.39
 parameter_data[5] *= 1 # 50 #
 parameter_data[6] *= 1 # 600 # 500 # 50 #
-parameter_data[7] *= 0.2
-parameter_data[-1] = 0 # 0.2 # 1 #
 
 print("parameter_data modificado:")
 print(parameter_data)
@@ -307,7 +305,7 @@ for i, gap in enumerate(gaps):
     )
     
 
-    yield_teo = 0.8*(yield_teo_uv + 0.25 * yield_teo_vis)
+    yield_teo = yield_teo_uv/7 + yield_teo_vis * 0.25
 
     plt.plot(
         fN2 * 100,

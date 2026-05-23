@@ -466,6 +466,67 @@ norm = par_natural[0]
 
 fCF4 = np.logspace(-5, 0, 100)
 
+cf4_pct = np.array([
+    0.15,
+    0.35,
+    0.50,
+    1.00,
+    2.00,
+    6.00,
+    11.00,
+])
+
+# Open blue triangles: E ~ 100 V/cm
+uv_E100 = np.array([
+    358.9,
+    350.8,
+    292.2,
+    209.4,
+    227.8,
+    245.5,
+    263.4,
+])
+
+uv_E100_err = np.array([
+    3.0,
+    3.9,
+    0.2,
+    2.0,
+    10.9,
+    2.4,
+    4.3,
+])
+
+# Filled blue triangles: E = 0 V/cm
+uv_E0 = np.array([
+    217.9,
+    204.1,
+    167.5,
+    132.9,
+    174.4,
+    193.2,
+    211.5,
+])
+
+uv_E0_err = np.array([
+    1.3,
+    1.9,
+    3.8,
+    1.4,
+    2.0,
+    0.8,
+    0.6,
+])
+
+
+Ar_third_continuum_ph_MeV = np.array([
+    2.7e3
+])
+
+Ar_third_continuum_err_ph_MeV = np.array([
+    0.14e3
+])
+
 factor  = 1000 / norm 
 factor2 = 1000 / norm 
 
@@ -516,7 +577,7 @@ plt.errorbar(
     yerr=yield_uv["Err 1.0bar"]*factor2,
     marker="o",
     linestyle="none",
-    label="X-ray",
+    label="X-ray (220-400 nm)",
     ms=4,
     color=colors[2],
     ecolor=colors[2],
@@ -537,8 +598,34 @@ plt.errorbar(con_uv_cf4_morozov,
             capsize=2,
             label="$\\alpha$'s Morozov")
 
+
+plt.errorbar(0.001,
+             Ar_third_continuum_ph_MeV,
+             yerr=Ar_third_continuum_err_ph_MeV,
+            marker="v",
+            linestyle="none",
+            ms=5,
+            color=colors[7],
+            ecolor=colors[7], 
+            elinewidth=1,
+            capsize=2,
+            label="$\\alpha$'s Santorelli (160-325 nm)")
+
+plt.errorbar(cf4_pct,
+            uv_E100,
+            yerr=uv_E100_err,
+            ms=4,
+            marker="o",
+            linestyle="none",
+            color=colors[5],
+            ecolor=colors[5],
+            elinewidth=1,
+            capsize=2,
+            label="$\\alpha$'s P. Amedo (250-400 nm)")
+
+
 plt.xscale("log")
-# plt.yscale("log")
+plt.yscale("log")
 plt.grid(False)
 plt.xlabel("CF$_4$ concentration $\%$")
 plt.title("Ar-CF$_4$ UV (220-400 nm)")

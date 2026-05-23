@@ -457,13 +457,20 @@ def plot_fit_vs_experiment_by_pressure(
     annotate_fontsize=10,
     annotate_fontweight="normal",
     annotate_bbox=False,
+    show_secondary_yaxis=False,
+    secondary_yaxis_label="ph / MeV",
+    secondary_yaxis_factor=1000.0,
 ):
     """
     label_mode:
         - "legend"   -> usa leyenda normal
         - "annotate" -> escribe etiquetas cerca de la curva y no usa leyenda
+
+    show_secondary_yaxis:
+        - False -> no muestra el eje secundario derecho.
+        - True  -> muestra un eje secundario con la conversión
+                   y_sec = y * secondary_yaxis_factor / fit_params[0].
     """
-    norm = fit_params[0]
     if err_patterns is None:
         err_patterns = [
             "Err {col}",
@@ -647,14 +654,23 @@ def plot_fit_vs_experiment_by_pressure(
         )
 
 
-    secax = ax.secondary_yaxis(
-        'right',
-        functions=(lambda y: y*1000/norm, lambda y: y*1000/norm)
-    )
-    secax.set_ylabel("ph / MeV")
+    if show_secondary_yaxis:
+        norm = float(fit_params[0])
 
-    ax.tick_params(axis='y', which='both', right=False, labelright=False)
-    secax.tick_params(axis='y', which='both', left=False, labelleft=False)
+        if not np.isfinite(norm) or norm == 0:
+            raise ValueError(f"norm inválido para eje secundario: {norm}")
+
+        secax = ax.secondary_yaxis(
+            "right",
+            functions=(
+                lambda y: y * secondary_yaxis_factor / norm,
+                lambda y: y * norm / secondary_yaxis_factor,
+            ),
+        )
+        secax.set_ylabel(secondary_yaxis_label)
+        secax.tick_params(axis="y", which="both", right=True, labelright=True)
+    else:
+        ax.tick_params(axis="y", which="both", right=False, labelright=False)
 
     if title is not None:
         ax.set_title(title)

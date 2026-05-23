@@ -126,7 +126,7 @@ DATA_DIR_DEGRAD = "../data/Primary_DegradData"
 
 degrad_data = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArCF4.csv"))
 
-parameter_data_og = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary.csv"))["parameter"].to_numpy()
+parameter_data_og = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_1_0.csv"))["parameter"].to_numpy()
 parameter_data_og[0] = 1
 parameter_data = parameter_data_og.copy()
 
@@ -155,7 +155,7 @@ DegradGarfieldFracAr = Ar_energy.copy()
 
 fN2 = np.logspace(-3, 0, 1000)
 
-probabilities = np.linspace(max(parameter_data_og[1],parameter_data_og[2]),0.8,22)
+probabilities = np.linspace(max(parameter_data_og[1],parameter_data_og[2]),0.5,22)
 #probabilities = np.linspace(0.25,0.4,50)
 
 chi2 = np.zeros_like(probabilities)
@@ -295,8 +295,8 @@ for i, gap in enumerate(gaps):
     plt.figure(figsize=(6,4))
     plt.style.use(['science','grid'])
 
-    cmap_obj = plt.get_cmap("viridis")
-    colors = cmap_obj(np.linspace(0.15, 0.85, len(probabilities))) # 5))#
+    cmap_obj = plt.get_cmap("hsv")
+    colors = cmap_obj(np.linspace(0.01, 0.99, len(probabilities))) # 5))#
     for j,prob in enumerate(probabilities): 
             
             

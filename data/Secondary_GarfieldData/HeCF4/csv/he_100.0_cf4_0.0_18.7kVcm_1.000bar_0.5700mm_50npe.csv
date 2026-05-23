@@ -1,7 +1,7 @@
 level,gas,state_name,type,energy_eV,n_events,n_collisions
 0,He, ELASTIC  ANISOTROPIC            HELIUM 4         ,elastic,0.0,247730890.0,0
 1,He, IONISATION CHARGE STATE=1         ELOSS= 24.58739,ionisation,24.5874,386190.0,0
-2,,,,,0.0,
+2,He, IONISATION CHARGE STATE=2         ELOSS= 79.00515,ionisation,79.0051,0.0,0
 3,He, ATTACHMENT                                       ,attachment,0.0,0.0,0
 4,He, EXC  23S J=1    METASTABLE        ELOSS= 19.81961,excitation,19.8196,301568.0,0
 5,He, EXC  21S J=0    METASTABLE        ELOSS= 20.61577,excitation,20.6158,246220.0,0

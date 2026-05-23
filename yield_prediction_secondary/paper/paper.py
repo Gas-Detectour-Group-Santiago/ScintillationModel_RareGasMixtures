@@ -279,7 +279,26 @@ plt.show()
 
 # ============================================================
 # 1.1) MALLA DE CONCENTRACIONES Y CAMPOS
-# ============================================================
+# ===========================================================
+
+
+cf4_ArCF4_pct = np.array([
+    5.0,
+    10.0,
+    67.0,
+])
+
+nph_per_e_ArCF4_gain100 = np.array([
+    0.56,   # Ar + 5% CF4, extrapolado
+    0.52,   # Ar + 10% CF4, extrapolado suave
+    0.30,   # Ar + 67% CF4, prácticamente plateau
+])
+
+nph_per_e_ArCF4_gain100_err = np.array([
+    0.03,
+    0.02,
+    0.01,
+])
 
 fN2 = np.logspace(-3, 0, 1000)
 gaps = [0.05] * 3
@@ -337,8 +356,16 @@ for i, gap in enumerate(gaps):
         linestyle="--",
         label=f"400-720 nm {pressure[i]} bar"
     )
-    
-    
+
+plt.errorbar(
+        cf4_ArCF4_pct,
+        nph_per_e_ArCF4_gain100,
+        yerr=nph_per_e_ArCF4_gain100_err,
+        color=colors[1],
+        linestyle=None,
+        label=f"LIP"
+    )
+
 plt.title("Secondary Yield Prediction for Ar/CF mixture GEM 100 gain")
 plt.xscale("log")
 plt.ylabel("ph/e$^-$")

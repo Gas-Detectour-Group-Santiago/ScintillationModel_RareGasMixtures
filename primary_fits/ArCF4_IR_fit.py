@@ -25,23 +25,28 @@ from ploting import plot_fit_vs_experiment_by_pressure
 
 
 def apply_global_threshold(df, conc_col="fCF4",is_727=False):
-    bar_cols = ["1.0bar", "2.0bar", "3.0bar", "4.0bar", "5.0bar"]
+    bar_cols = ["1.0bar", "2.0bar", "3.0bar"] # , "4.0bar", "5.0bar"]
     err_cols = [f"Err {c}" for c in bar_cols]
 
     # 1) Región de referencia: 50% a 100%
     df_ref     = df[df[conc_col] >= 50].copy()
+    df_ref_2  = df[df[conc_col] == 2].copy()
+    df_ref_5  = df[df[conc_col] == 5].copy()
     df_ref_10  = df[df[conc_col] == 10].copy()
     df_ref_20  = df[df[conc_col] == 20].copy()
     df_ref_50  = df[df[conc_col] == 50].copy()
     df_ref_100 = df[df[conc_col] == 100].copy()
 
     # 2) Threshold global del dataframe = máximo entre todas las columnas de presión
+    threshold_2 = df_ref_2[bar_cols].max().max()
+    threshold_5 = df_ref_5[bar_cols].max().max()
     threshold_10 = df_ref_10[bar_cols].max().max()
     threshold_20 = df_ref_20[bar_cols].max().max()
     threshold_50 = df_ref_50[bar_cols].max().max()
     threshold_100 = df_ref_100[bar_cols].max().max()
 
-    threshold = 0 # min(threshold_20,threshold_50,threshold_100) # 
+    threshold =  min(threshold_2,threshold_5,
+                     threshold_10,threshold_20,threshold_50,threshold_100) # 
 
     # 3) Nos quedamos con la región < 50% para ajustar
     df_low = df[df[conc_col] < 11].copy()
@@ -56,10 +61,11 @@ def apply_global_threshold(df, conc_col="fCF4",is_727=False):
 
     # 6) Aplicar la misma máscara a los errores correspondientes
     for bar, err in zip(bar_cols, err_cols):
-        df_low[err] = 0.0009
+        # df_low[err] = 0.0009
         df_low[err] = df_low[err].where(mask[bar])
 
     df_low["fCF4"] *= 1
+
     return df_low, threshold
 
 
@@ -194,17 +200,43 @@ yield_772_ir  = pd.read_csv(os.path.join(DATA_DIR, "772.csv"))
 yield_794_ir  = pd.read_csv(os.path.join(DATA_DIR, "794.csv"))
 
 
+# Versión antigua 1,2,3,4 y 5 bares
+
+# w_cf4 =  W_CF4(yield_696_ir["fCF4"].to_numpy()/100) 
+# y_cols = ["1.0bar", "2.0bar", "3.0bar", "4.0bar", "5.0bar", 'Err 1.0bar','Err 2.0bar','Err 3.0bar','Err 4.0bar','Err 5.0bar']
+
+# factor = (1 / w_cf4)[:, None]
+
+# yield_696_ir[y_cols]  = yield_696_ir[y_cols].to_numpy() * factor
+# yield_727_ir[y_cols]  = yield_727_ir[y_cols].to_numpy() * factor
+# yield_750_ir[y_cols]  = yield_750_ir[y_cols].to_numpy() * factor
+# yield_763_ir[y_cols]  = yield_763_ir[y_cols].to_numpy() * factor
+# yield_772_ir[y_cols]  = yield_772_ir[y_cols].to_numpy() * factor
+# yield_794_ir[y_cols]  = yield_794_ir[y_cols].to_numpy() * factor
+
+
+# yield_696_ir_n, thr_696 = apply_global_threshold(yield_696_ir)
+# yield_727_ir_n, thr_727 = apply_global_threshold(yield_727_ir)
+# yield_750_ir_n, thr_750 = apply_global_threshold(yield_750_ir)
+# yield_763_ir_n, thr_763 = apply_global_threshold(yield_763_ir)
+# yield_772_ir_n, thr_772 = apply_global_threshold(yield_772_ir)
+# yield_794_ir_n, thr_794 = apply_global_threshold(yield_794_ir)
+
 w_cf4 =  W_CF4(yield_696_ir["fCF4"].to_numpy()/100) 
-y_cols = ["1.0bar", "2.0bar", "3.0bar", "4.0bar", "5.0bar", 'Err 1.0bar','Err 2.0bar','Err 3.0bar','Err 4.0bar','Err 5.0bar']
+
+y_cols = [
+    "1.0bar", "2.0bar", "3.0bar",
+    "Err 1.0bar", "Err 2.0bar", "Err 3.0bar"
+]
+
 factor = (1 / w_cf4)[:, None]
 
-yield_696_ir[y_cols]  = yield_696_ir[y_cols].to_numpy() * factor
-yield_727_ir[y_cols]  = yield_727_ir[y_cols].to_numpy() * factor
-yield_750_ir[y_cols]  = yield_750_ir[y_cols].to_numpy() * factor
-yield_763_ir[y_cols]  = yield_763_ir[y_cols].to_numpy() * factor
-yield_772_ir[y_cols]  = yield_772_ir[y_cols].to_numpy() * factor
-yield_794_ir[y_cols]  = yield_794_ir[y_cols].to_numpy() * factor
-
+yield_696_ir[y_cols] = yield_696_ir[y_cols].to_numpy() * factor
+yield_727_ir[y_cols] = yield_727_ir[y_cols].to_numpy() * factor
+yield_750_ir[y_cols] = yield_750_ir[y_cols].to_numpy() * factor
+yield_763_ir[y_cols] = yield_763_ir[y_cols].to_numpy() * factor
+yield_772_ir[y_cols] = yield_772_ir[y_cols].to_numpy() * factor
+yield_794_ir[y_cols] = yield_794_ir[y_cols].to_numpy() * factor
 
 yield_696_ir_n, thr_696 = apply_global_threshold(yield_696_ir)
 yield_727_ir_n, thr_727 = apply_global_threshold(yield_727_ir)
@@ -249,8 +281,8 @@ lower_semifixed = x0_semifixed*0.999999999999999
 upper_semifixed = x0_semifixed*1.000000000000001
 
 lower       = np.array([
-               0.0, 0.0, 0.0, 0.0, 
-               0.0, 0.0, 0.0, 0.0, 
+               0.0, 0.0, 0.01, 0.0, 
+               0.0, 0.0, 0.00, 0.0, 
                0.0, 0.0, 0.0, 0.0, 
                0.0, 0.0, 0.0, 0.0, 
                0.0, 0.0, 0.0, 0.0,
@@ -334,7 +366,7 @@ experimental_data = {
     "794": yield_794_ir_n,
 }
 
-pressure = [1,2,3,4,5]
+pressure = [1,2,3]
 
 for name in equations:
 
