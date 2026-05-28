@@ -5,7 +5,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scienceplots
 
-plt.style.use("default")
+plt.style.use("grid")
+
 
 models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models"))
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
@@ -136,7 +137,7 @@ garfield_data["concentration"] = garfield_data["concentration"] / 100.0
 
 parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_IR_primary.csv"))["parameter"].to_numpy()
 
-parameter_data_ArCF4 = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary.csv"))["parameter"].to_numpy()
+parameter_data_ArCF4 = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_2_0.csv"))["parameter"].to_numpy()
 
 norm1 = parameter_data_ArCF4[0]
 
@@ -148,12 +149,12 @@ norm2 = parameter_data_ArCF4[0]
 # 7) MALLA DE CONCENTRACIONES Y CAMPOS
 # ============================================================
 fN2 = np.logspace(-3, 0, 1000)
-gaps = [0.05]*2
-npe = [1000]*2
-electricField = [60]*2
-pressure = [1]*2
+gaps = [0.05, 0.57, 0.57]
+npe = [1000, 50, 50]
+electricField = [60, 5, 5]
+pressure = [1, 1, 0.025]
 
-norm = [norm1,norm2]
+norm = [norm1, norm1, norm1]
 
 
 # ============================================================
@@ -238,6 +239,122 @@ ar_cf4_794_err_ir_LIP = np.array([
     2.1924549841632906e-05
 ])
 
+concentration_cf4_Florian = np.array([20])
+
+# ============================================================
+# Florian th-GEM, Ar/CF4 80/20, 1 bar
+# ============================================================
+
+ar_cf4_696_ir_Florian_1bar = np.array([
+    0.0012121110778869518
+])
+
+ar_cf4_696_err_ir_Florian_1bar = np.array([
+    0.00026032890460820274
+])
+
+
+ar_cf4_727_ir_Florian_1bar = np.array([
+    0.0009963113528044523
+])
+
+ar_cf4_727_err_ir_Florian_1bar = np.array([
+    0.0002139809196170797
+])
+
+
+ar_cf4_750_ir_Florian_1bar = np.array([
+    0.010641617291858389
+])
+
+ar_cf4_750_err_ir_Florian_1bar = np.array([
+    0.0022855335813600896
+])
+
+
+ar_cf4_763_ir_Florian_1bar = np.array([
+    0.005277639438703508
+])
+
+ar_cf4_763_err_ir_Florian_1bar = np.array([
+    0.0011334952044080517
+])
+
+
+ar_cf4_772_ir_Florian_1bar = np.array([
+    0.0018895075477094276
+])
+
+ar_cf4_772_err_ir_Florian_1bar = np.array([
+    0.0004058154727878853
+])
+
+
+ar_cf4_794_ir_Florian_1bar = np.array([
+    0.0
+])
+
+ar_cf4_794_err_ir_Florian_1bar = np.array([
+    0.0
+])
+
+
+# ============================================================
+# Florian th-GEM, Ar/CF4 80/20, 50 mbar
+# ============================================================
+
+ar_cf4_696_ir_Florian_50mbar = np.array([
+    0.002246119186430594
+])
+
+ar_cf4_696_err_ir_Florian_50mbar = np.array([
+    0.00048240607489727035
+])
+
+
+ar_cf4_727_ir_Florian_50mbar = np.array([
+    0.0005887938444242574
+])
+
+ar_cf4_727_err_ir_Florian_50mbar = np.array([
+    0.0001264571039365711
+])
+
+
+ar_cf4_750_ir_Florian_50mbar = np.array([
+    0.057088337541668865
+])
+
+ar_cf4_750_err_ir_Florian_50mbar = np.array([
+    0.012261041623375114
+])
+
+
+ar_cf4_763_ir_Florian_50mbar = np.array([
+    0.02364076551779444
+])
+
+ar_cf4_763_err_ir_Florian_50mbar = np.array([
+    0.005077401488711407
+])
+
+
+ar_cf4_772_ir_Florian_50mbar = np.array([
+    0.00668799699933377
+])
+
+ar_cf4_772_err_ir_Florian_50mbar = np.array([
+    0.0014364021289985191
+])
+
+
+ar_cf4_794_ir_Florian_50mbar = np.array([
+    0.004140203178868282
+])
+
+ar_cf4_794_err_ir_Florian_50mbar = np.array([
+    0.0008892044450984726
+])
 ar_cf4_sum_ir_LIP = (
     ar_cf4_696_ir_LIP
     + ar_cf4_727_ir_LIP
@@ -256,27 +373,64 @@ ar_cf4_sum_err_ir_LIP = np.sqrt(
     + ar_cf4_794_err_ir_LIP**2
 )
 
+ar_cf4_sum_ir_Florian_1bar = (
+    ar_cf4_696_ir_Florian_1bar
+    + ar_cf4_727_ir_Florian_1bar
+    + ar_cf4_750_ir_Florian_1bar
+    + ar_cf4_763_ir_Florian_1bar
+    + ar_cf4_772_ir_Florian_1bar
+    + ar_cf4_794_ir_Florian_1bar
+)* 25e-1
+
+ar_cf4_sum_err_ir_Florian_1bar = np.sqrt(
+    ar_cf4_696_err_ir_Florian_1bar**2
+    + ar_cf4_727_err_ir_Florian_1bar**2
+    + ar_cf4_750_err_ir_Florian_1bar**2
+    + ar_cf4_763_err_ir_Florian_1bar**2
+    + ar_cf4_772_err_ir_Florian_1bar**2
+    + ar_cf4_794_err_ir_Florian_1bar**2
+)* 25e-1
+
+
+ar_cf4_sum_ir_Florian_50mbar = (
+    ar_cf4_696_ir_Florian_50mbar
+    + ar_cf4_727_ir_Florian_50mbar
+    + ar_cf4_750_ir_Florian_50mbar
+    + ar_cf4_763_ir_Florian_50mbar
+    + ar_cf4_772_ir_Florian_50mbar
+    + ar_cf4_794_ir_Florian_50mbar
+) * 25e-1
+
+ar_cf4_sum_err_ir_Florian_50mbar = np.sqrt(
+    ar_cf4_696_err_ir_Florian_50mbar**2
+    + ar_cf4_727_err_ir_Florian_50mbar**2
+    + ar_cf4_750_err_ir_Florian_50mbar**2
+    + ar_cf4_763_err_ir_Florian_50mbar**2
+    + ar_cf4_772_err_ir_Florian_50mbar**2
+    + ar_cf4_794_err_ir_Florian_50mbar**2
+) * 25e-1
 # ============================================================
 # 5) PREDICCIÓN IR
 # ============================================================
 plt.figure(figsize=(6, 4))
-plt.style.use("science")
 
 cmap = "viridis"
 cmap_obj = plt.get_cmap(cmap)
 colors = cmap_obj(np.linspace(0.15, 0.85, len(gaps)))
 
-plt.grid(True, which='major', alpha=0.3)
-plt.grid(True, which='minor', alpha=0.08)
+plt.grid(False)
+# plt.grid(True, which='major', alpha=0.3)
+# plt.grid(True, which='minor', alpha=0.08)
 
 cmap = "viridis"
 cmap_obj = plt.get_cmap(cmap)
-colors = cmap_obj(np.linspace(0.15, 0.85, len(gaps)))
+colors = cmap_obj(np.linspace(0.15, 0.85, 3))
 
 for i, gap in enumerate(gaps):
     mask1 = garfield_data["gap_mm"] == gap
     mask2 = garfield_data["electric_field"] > electricField[i]
-    subset = garfield_data[(mask1 & mask2)].copy()
+    mask3 =  np.isclose(garfield_data["pressure"],pressure[i],atol=0.05)
+    subset = garfield_data[(mask1 & mask2 & mask3)].copy()
   
     yield_teo = theory_yield_ArCF4_Ir_696(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
     yield_teo += theory_yield_ArCF4_Ir_727(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
@@ -290,7 +444,7 @@ for i, gap in enumerate(gaps):
         fN2 * 100,
         yield_teo,
         color=colors[i],
-        label=f"{gap} mm prediction {pressure[i]:.3f} bar"
+        label=f"{gap} mm {pressure[i]:.3f} bar"
     )
     
 plt.errorbar(
@@ -303,11 +457,42 @@ plt.errorbar(
         color=colors[0],
         elinewidth=1,
         capsize=2,
-        label = "LIP"
+        label = "1 bar GEM LIP"
+)
+label=f"{gap} mm prediction {pressure[i]:.3f} bar"
+
+plt.errorbar(
+        [20],
+        ar_cf4_sum_ir_Florian_1bar,
+        yerr= ar_cf4_sum_err_ir_Florian_1bar,
+        marker="o",
+        linestyle="none",
+        ms=5,
+        color=colors[1],
+        elinewidth=1,
+        capsize=2,
+        label = "1 bar th-GEM Florian"
+)
+
+
+plt.errorbar(
+        [20],
+        ar_cf4_sum_ir_Florian_50mbar,
+        yerr= ar_cf4_sum_err_ir_Florian_50mbar,
+        marker="o",
+        linestyle="none",
+        ms=5,
+        color=colors[2],
+        elinewidth=1,
+        capsize=2,
+        label = "50 mbar th-GEM Florian"
 )
 
 plt.title("NIR (680-800nm) Yield Prediction for Ar/CF mixture")
 plt.xscale("log")
+plt.yscale("log")
+plt.xlim(1e0,8e1)
+plt.ylim(1e-4,2e0)
 plt.ylabel("ph/e$^-$")
 plt.xlabel("CF$_4$ concentration [\%]")
 plt.legend()

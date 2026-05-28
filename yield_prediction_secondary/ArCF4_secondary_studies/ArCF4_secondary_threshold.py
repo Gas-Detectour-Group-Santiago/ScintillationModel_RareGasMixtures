@@ -49,6 +49,7 @@ summary = read_data_per_primary_electron(
     gas_concentration="cf4"
 )
 
+thresholds = pd.read_csv("../../data/Thresholds/ArCF4.csv")
 
 # ============================================================
 # 3) CONFIGURACIÓN DE POBLACIONES
@@ -65,7 +66,7 @@ config = pd.DataFrame({
     "Ar**": {
         "name principal": "EXC",
         "gas": "Ar",
-        "energy low": 11.80,
+        "energy low": float(thresholds["E_th_Ar**"]),
         "energy up": 100,
         "name output": "Ar_dbleStar",
         "type": "excitation"
@@ -73,7 +74,7 @@ config = pd.DataFrame({
     "CF3": {
         "name principal": "NEUTRAL DISS",
         "gas": "CF4",
-        "energy low": 15.62,
+        "energy low": float(thresholds["E_th_CF3"]),
         "energy up": 100,
         "name output": "CF3",
         "type": "inelastic"
@@ -99,7 +100,7 @@ garfield_norm_ne = read_garfield_csv_folder(
     output_general_name=os.path.join(populations_dir, "ArCF4_secondary"),
     gas_concentration="cf4",
     gain_summary=summary,
-    normalized="ni"
+    normalized="ne"
 )
 
 # ============================================================
@@ -114,18 +115,15 @@ garfield_data["concentration"] = garfield_data["concentration"] / 100.0
 
 
 
-parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary.csv"))["parameter"].to_numpy()
+parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_1_3.csv"))["parameter"].to_numpy()
 
 print("parameter_data original:")
 print(parameter_data)
 
 parameter_data[0] = 1
-parameter_data[1] = 0.39
-parameter_data[2] = 0.39
-parameter_data[5] *= 1 # 50 #
-parameter_data[6] *= 1 # 600 # 500 # 50 #
+parameter_data[3] *= 1
+parameter_data[4] *= 1
 parameter_data[7] *= 0.01
-parameter_data[-1] = 0.2 # 1 #
 
 print("parameter_data modificado:")
 print(parameter_data)
@@ -178,6 +176,8 @@ for i, gap in enumerate(gaps):
         label=f"{gap} mm prediction {pressure[i]:.3f} bar"
     )
  
+rate = 2.43
+
 plt.errorbar(
     [100, 67, 10, 5],
     [0.09335376, 0.2802068, 0.38966203, 0.38287151],
@@ -187,7 +187,7 @@ plt.errorbar(
 )
 plt.errorbar(
     [20],
-    [0.12],
+    [0.1057123306627957 * rate],
     yerr=np.array([0.12]) * 0.25,
     fmt=".",
     color = colors[1]
@@ -196,19 +196,17 @@ plt.errorbar(
 
 plt.errorbar(
     [100],
-    [0.1],
+    [0.04953590534192422 * rate],
     yerr=np.array([0.1]) * 0.25,
     fmt=".",
     color = colors[2]
 
 )
 
-ratio_Florian_LIP_100 = 1.2452054647547297
-ratio_Florian_LIP_20 = 2.743834648382555
 plt.errorbar(
     [20,100],
-    [0.35420354205818549814758185498147, 0.09335376],
-    yerr=np.array([0.35420354205818549814758185498147, 0.09335376]) * 0.25,
+    [0.3542 * rate, 0.0934 * rate],
+    yerr=np.array([0.3542 * rate, 0.0934 * rate]) * 0.25,
     fmt=".",
     color = colors[3]
 
@@ -285,8 +283,8 @@ plt.errorbar(
 
 plt.errorbar(
     [20],
-    [0.028],
-    yerr=np.array([0.028]) * 0.25,
+    [0.028 * rate],
+    yerr=np.array([0.028 * rate]) * 0.25,
     fmt=".",
     color = colors[1]
 
@@ -294,8 +292,8 @@ plt.errorbar(
 
 plt.errorbar(
     [100],
-    [0.14],
-    yerr=np.array([0.17]) * 0.25,
+    [0.14 * rate],
+    yerr=np.array([0.17 * rate]) * 0.25,
     fmt=".",
     color = colors[2]
 
@@ -303,8 +301,8 @@ plt.errorbar(
 
 plt.errorbar(
     [20,100],
-    [0.04599727051007351*ratio_Florian_LIP_20, 0.03942121448304051*ratio_Florian_LIP_100],
-    yerr=np.array([0.04599727051007351*ratio_Florian_LIP_20, 0.03942121448304051*ratio_Florian_LIP_100]) * 0.25,
+    [0.04560 * rate, 0.03942 * rate],
+    yerr=np.array([0.04560 * rate, 0.03942 * rate]) * 0.25,
     fmt=".",
     color = colors[3]
 
@@ -314,7 +312,7 @@ plt.errorbar(
 plt.xscale("log")
 plt.ylabel("ph/e$^-$")
 plt.xlim(1, 110)
-plt.ylim(0.01, 0.25)
+plt.ylim(0.01, 0.4)
 plt.xlabel("CF$_4$ concentration [\%]")
 plt.legend(loc="upper left")
 plt.tight_layout()

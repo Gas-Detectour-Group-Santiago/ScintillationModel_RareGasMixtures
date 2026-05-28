@@ -74,6 +74,9 @@ def theory_yield_vis(x, degrad_data, fCF4, n, activate_components=False):
     total =  N * (
         p_CF3 * P_CF3 + frac * p_DbleStar * P_Ar_dbleStar
     )
+    total =  N * (
+        p_CF3 * P_CF3 + frac * p_DbleStar * P_Ar_dbleStar
+    )
     
 
     if activate_components:
@@ -93,35 +96,46 @@ def theory_yield_uv(x, degrad_data, fCF4, n, activate_components=False):
     P_CF3, P_Ar_dbleStar, P_CF4, P_Ar_3rd = Y_interp.T
 
     N = x[0]
+    p_CF3 = x[1]
+    p_DbleStar = x[2]
+    K = x[3]
+    K2 = x[4]
     K1 = x[5]
-    K2 = x[6]
+    K3 = x[6]
     p_CF3 = x[7]
-    K3 = x[8]
+    K4 = x[8]
     PAr_3rd = x[9]
     p_CF3_uv = x[10]
+
+
+    denom = n * f_cf4 * K2 + n * (1.0 - f_cf4) * K + 1 / 30
+    frac = np.where(denom == 0, 0.0, K2 * n * f_cf4 / denom)
 
     numer = f_cf4 * n
     denom = f_cf4 * n + K1
     frac1 = np.where(denom == 0, 0.0, numer / denom)
 
     numer = 1.0
-    denom = 1.0 + K2 * n * f_cf4
+    denom = 1.0 + K3 * n * f_cf4
     frac2 = np.where(denom == 0, 0.0, numer / denom)
 
-    denom = (1.0 / tau_3rd) + f_cf4 * n * K3
-    numer = f_cf4 * n * K3
+    denom = (1.0 / tau_3rd) + f_cf4 * n * K4
+    numer = f_cf4 * n * K4
     frac3 = np.where(denom == 0, 0.0, numer / denom)
 
-    denom = (1.0 / tau_3rd) + f_cf4 * n * K3
+    denom = (1.0 / tau_3rd) + f_cf4 * n * K4
     numer = 1.0 / tau_3rd
     frac4 = np.where(denom == 0, 0.0, numer / denom)
 
-    total = ((p_CF3_uv * theory_yield_vis(x, degrad_data, fCF4, n, activate_components=False))
-        + N * (
+    total = p_CF3_uv *  N * (
+        p_CF3 * P_CF3 + frac * p_DbleStar * P_Ar_dbleStar
+    )
+
+    total += N * (
         + (frac1 * frac2) * (p_CF3 * P_CF4 + frac3 * P_Ar_3rd * PAr_3rd)
         + tercer_continuo * frac4 * P_Ar_3rd
     )
-    )
+    
 
     if activate_components:
         comp_cf4= N * (frac1 * frac2) * (p_CF3 * P_CF4 + frac3 * P_Ar_3rd * PAr_3rd) / energy_X_ray_CF4

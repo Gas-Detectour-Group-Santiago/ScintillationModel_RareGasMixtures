@@ -31,16 +31,18 @@ archivo_entrada=np.array(["/output_Argon_0.1_N2_E_0.0_Vcmbar_P_1_bar_12_keV.txt"
                           "/output_Argon_10.0_N2_E_0.0_Vcmbar_P_1_bar_12_keV.txt",
                           "/output_Argon_20.0_N2_E_0.0_Vcmbar_P_1_bar_12_keV.txt",
                           "/output_Argon_50.0_N2_E_0.0_Vcmbar_P_1_bar_12_keV.txt",
-                          "/output_100.0N2_E_0.0Vcmbar_P_1bar_12keV.txt"])
+                          "/output_100.0N2_E_0.0Vcmbar_P_1bar_12keV.txt"
+                          ])
 
 archivo_salida_1=np.array(["/ar_degrad_output_99.9Ar_0.1N2.csv",
                    "/ar_degrad_output_99.5Ar_0.5N2.csv",
                    "/ar_degrad_output_99Ar_1N2.csv",
-                   "/ar_degrad_output_95Ar_5N2.csv",
+                   "/ar_degrad_o1.5utput_95Ar_5N2.csv",
                    "/ar_degrad_output_90Ar_1N2.csv",
                    "/ar_degrad_output_80Ar_20N2.csv",
                    "/ar_degrad_output_50Ar_50N2.csv",
-                   "/ar_degrad_output_PureN2.csv"])
+                   "/ar_degrad_output_PureN2.csv"
+                   ])
 
 archivo_salida_2=np.array(["/n2_degrad_output_99.9Ar_0.1N2.csv",
                    "/n2_degrad_output_99.5Ar_0.5N2.csv",
@@ -49,7 +51,8 @@ archivo_salida_2=np.array(["/n2_degrad_output_99.9Ar_0.1N2.csv",
                    "/n2_degrad_output_90Ar_10N2.csv",
                    "/n2_degrad_output_80Ar_20N2.csv",
                    "/n2_degrad_output_50Ar_50N2.csv",
-                   "/n2_degrad_output_PureN2.csv"])
+                   "/n2_degrad_output_PureN2.csv"
+                   ])
 
 
 prefijo = "../data/Primary_DegradData/ArN2/txt"
@@ -61,14 +64,16 @@ archivo_salida_2 = np.char.add(prefijo, archivo_salida_2)
 
 gas1 = "ARGON"
 gas2 = "NITROGEN"
-concentration = np.array([0.001,0.005,0.01,0.05,0.1,0.2,0.5,1])   
+concentration = np.array([0.001, 0.005, 0.01, 0.05,
+                           0.1, 0.2, 0.5, 1
+                          ])   
 
 dataframe = pd.DataFrame(
     {    
         "Ar Meta":   [["EXC"],     "ARGON",     0, 11.6, "Ar_meta"],
         "Ar Res":   [["EXC"],     "ARGON",      11.6, 11.7, "Ar_res"],
         "Ar**":   [["EXC"],     "ARGON",     11.7, 100, "Ar_dbleStar"],
-        "N2*":    [[""], "NITROGEN",  11, 15.5, "N2_star"] #C 3PI
+        "N2*":    [["C 3PI"], "NITROGEN",  11, 15.5, "N2_star"] #C 3PI
     }, 
     index=["name principal", "gas", "energy low", "energy up", "name output"]
 )
@@ -97,6 +102,11 @@ read_experimental(archivo_entrada, yields, presiones, output_dir, concentracione
 DATA_DIR = "../data/Experimental/ArN2/"
 yield_N2_uv  = pd.read_csv(os.path.join(DATA_DIR, "yield_N2.csv"))
 
+mask = yield_N2_uv["N2 concentration (%)"] != 100
+mask2 = yield_N2_uv["N2 concentration (%)"] != 150
+yield_N2_uv = yield_N2_uv[mask & mask2]
+
+
 """
 columns = yield_N2_uv.columns
 concentrations = yield_N2_uv["N2 concentration (%)"].to_numpy()
@@ -104,6 +114,7 @@ for i, column in enumerate(columns):
     if "Err" in column:
         yield_N2_uv[column] = yield_N2_uv[columns[i-1]]/10 * np.log10(concentrations*1000)
 """
+
 DATA_DIR = "../data/Primary_DegradData"
 
 degrad_data        = pd.read_csv(os.path.join(DATA_DIR, "ArN2.csv"))
@@ -119,6 +130,9 @@ to_cm3 = 2.69 * 10**(19) * 10**(-9) * 273.15 / 300
 tau_N2          = 1e2/np.mean(np.array([2.6,2.07,3.3,2.5,2.74,2.66])) 
 K_N2_Q_N2       = to_m3*1e-17*np.mean(np.array([0.71,1.12,1,1.4]))
 K_N2_Q_Ar       = to_m3*1e-19*np.mean(np.array([5.6,8.6]))
+
+# tau_N2    = 38.53757225433526
+# K_N2_Q_N2 = 0.26444464914836885
 
 K_ArMeta_Q_N2c  = to_m3*1e-17*np.mean(np.array([3.2,3.0,1.1]))
 K_ArMeta_Q_N2b  = to_m3*1e-17*np.mean(np.array([0.16]))
@@ -138,8 +152,8 @@ x0_semifixed = np.array([
                0.0, 0.0
                ])
 
-lower_semifixed = x0_semifixed/1.5
-upper_semifixed = x0_semifixed*1.5
+lower_semifixed = x0_semifixed/2e0
+upper_semifixed = x0_semifixed*2e0
 
 lower_og       = np.array([
                0.0, 
@@ -151,8 +165,8 @@ lower_og       = np.array([
                ]) # + lower_semifixed
 
 x0_og         = np.array([
-               0.0, 
-               1.0,
+               0.0044564, 
+               0.0,
                0.0, 0.0, 0.0, 
                0.0, 0.0, 0.0,
                0.0, 0.0, 0.0,
@@ -161,7 +175,7 @@ x0_og         = np.array([
 
 upper_og          = np.array([
                1.0, 
-               1.0,
+               0.7,
                0.0, 0.0, 0.0, 
                0.0, 0.0, 0.0,
                0.0, 0.0, 0.0,
@@ -188,7 +202,7 @@ experimental_data = {
     "vis": yield_N2_uv,
 }
 
-popt = fitParameters(equations, experimental_data, degrad_data, x0=x0_og+x0_semifixed, bounds=bounds,  is_infrared = True, fixed_idx = [2], fixed_error= 0.376)
+popt = fitParameters(equations, experimental_data, degrad_data, x0=x0_og+x0_semifixed, bounds=bounds,  is_infrared = True, fixed_idx = [0,2], fixed_error= 0.376)
 
 
 N_res = popt.fun.size
@@ -222,11 +236,10 @@ names_csv = [
     "K_ArRes_Q_N2b"   ,   
     "K_ArRes_Q_2Ar"    ,  
 
-    "P_N2"    ,   
-    "P_N2"    ,   
+    "P_Ar_dbleStar"    ,   
+    "frac_Ar_dbleStar"    ,   
     
 ]
-
 export_to_csv("../data/Parameters/ArN2_primary.csv", popt, names_csv)
 
 # J = popt.jac
@@ -270,7 +283,7 @@ fig, ax, pressure_cols = plot_fit_vs_experiment_by_pressure(
     legend_kwargs={"ncol": 2, "fontsize": 9},
     output="plots/ArN2_global.pdf",
     show=False,
-    activate_components = False
+    show_secondary_yaxis = False
 )
 
 
@@ -290,7 +303,7 @@ fig, ax, pressure_cols = plot_fit_vs_experiment_by_pressure(
     xlabel="Concentration of N$_2$ [$\\%$]",
     ylabel="Normalized Yield",
     xlim=(0.1 * 0.9, 100 * 1.1),
-    ylim=(0.001, 0.1),
+    # ylim=(0.001, 0.1),
     xscale="log",
     yscale="log",
     cmap="viridis",
@@ -323,7 +336,7 @@ fig, ax, pressure_cols = plot_fit_vs_experiment_by_pressure(
     xlabel="Concentration of N$_2$ [$\\%$]",
     ylabel="Normalized Yield",
     xlim=(0.1 * 0.9, 100 * 1.1),
-    ylim=(0.001, 0.1),
+    # ylim=(0.001, 0.1),
     xscale="log",
     yscale="log",
     cmap="viridis",
@@ -362,9 +375,8 @@ names_tex = [
     "$K_{\\text{Ar}_{1s4} Q (\\text{N}_2(\\text{B}))}$ [ns$^{-1}$]" ,  
     "$K_{\\text{Ar}_{1s4} Q (\\text{2Ar})}$ [ns$^{-1}$]" ,  
 
-    "$P_{\\text{N}_2}$"    ,            
-    "$P_{\\text{N}_2}$"    ,            
-
+    "$P_{\\text{Ar}^{**}}$"    ,            
+    "$f_{\\text{Ar}^{**}}$"    ,              
 
  ]
 
@@ -374,8 +386,8 @@ latex_table, _ = export_fit_table_latex(
     results=popt,
     names=names_tex,
     filename="tex_param/ArN2_param.tex",
-    caption="Parámetros obtenidos del ajuparamste global.",
-    label="tab:fit_params",
+    caption="Parámetros obtenidos del ajuste global Ar-N$_2$.",
+    label="tab:ArN2_fit_params",
     err_sigfigs=2,
 )
 
@@ -416,47 +428,48 @@ latex_table, _ = export_fit_table_latex(
 # =================== Parameters ========================
 #######################################################################
 
+
 x0 = x0_og + x0_semifixed
 
-lower_semifixed = x0_semifixed*0.8
-upper_semifixed = x0_semifixed*1.2
-bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
-popt1 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
-x1 = popt1.x
+# lower_semifixed = x0_semifixed*0.8
+# upper_semifixed = x0_semifixed*1.2
+# bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
+# popt1 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
+# x1 = popt1.x
 
 
-lower_semifixed = x0_semifixed*0.66
-upper_semifixed = x0_semifixed*1.5
-bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
-popt2 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
-x2 = popt2.x
+# lower_semifixed = x0_semifixed*0.66
+# upper_semifixed = x0_semifixed*1.5
+# bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
+# popt2 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
+# x2 = popt2.x
 
-lower_semifixed = x0_semifixed*0.5
-upper_semifixed = x0_semifixed*2
-bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
-popt3 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
-x3 = popt3.x
+# lower_semifixed = x0_semifixed*0.5
+# upper_semifixed = x0_semifixed*2
+# bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
+# popt3 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
+# x3 = popt3.x
 
-lower_semifixed = x0_semifixed*0.33
-upper_semifixed = x0_semifixed*3
-bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
-popt4 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
-x4 = popt4.x
+# lower_semifixed = x0_semifixed*0.33
+# upper_semifixed = x0_semifixed*3
+# bounds=(list(lower_og+lower_semifixed), list(upper_og+upper_semifixed))
+# popt4 = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds, fixed_idx = [2])
+# x4 = popt4.x
 
 
-popt_secondary = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds)
+# popt_secondary = fitParameters(equations, experimental_data, degrad_data, x0=x0, bounds=bounds)
 
 
 latex_table, payload = export_fit_table_latex(
-    results=[x0, popt2, popt3, popt4],
+    results=[x0, popt],
     names=names_tex,
     filename="tex_param/ArN2_free_factor.tex",
-    caption="Parameters known ($x_0$) and the obtained in the fit with a parameter factor freedom",
+    caption="Parámetros conocidos ($x_0$) y el resultado del ajuste",
     label="tab:ArN2_free_factor",
-    column_names=["x0","x1.5","x2","x3"],
+    column_names=["x0","Ajuste Global"],
     units=None,
     err_sigfigs=2,
     show_relative_error=False,
-    relative_incertainty=[0.0, 0.2, 0.2, 0.2],
+    relative_incertainty=[0.0, 0.2],
 
 )

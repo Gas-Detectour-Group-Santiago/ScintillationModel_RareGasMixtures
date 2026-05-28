@@ -69,13 +69,16 @@ gas1 = "ARGON"
 gas2 = "CF4"
 concentration = np.array([0.001,0.002,0.005,0.01,0.02,0.05,0.1,0.2,0.5,1])   
 
+E_th_Ar  = 12.9
+E_th_CF3 = 12.9
+
 dataframe = pd.DataFrame(
     {
-        "CF4":    [["ION CF3 +"],                            "CF4",      0, 100, "CF4"],
+        "CF4":    [["ION CF3 +"],                            "CF4",       15, 100, "CF4"],
 
-        "Ar**":   [["EXC"],                                  "ARGON",   0, 100, "Ar_dbleStar"],
+        "Ar**":   [["EXC"],                                  "ARGON",   E_th_Ar, 100, "Ar_dbleStar"],
 
-        "CF3":    [["NEUTRAL DISS"],                         "CF4",  0, 100, "CF3"],
+        "CF3":    [["NEUTRAL DISS"],                         "CF4",  E_th_CF3, 100, "CF3"],
 
         "Ar3rd":  [["CHARGE STATE ="],      "ARGON",    40, 100, "Ar_3rd"]
         
@@ -98,6 +101,12 @@ presiones = [1,2,2.5,3,4,5]
 output_dir = "../data/Experimental/ArCF4/"
 
 read_experimental(archivo_entrada, yields, presiones, output_dir, uncertainty_mode="all")
+
+dic = {"E_th_Ar**": [E_th_Ar], "E_th_CF3": [E_th_CF3]}
+
+df = pd.DataFrame(data=dic)
+
+df.to_csv("../data/Thresholds/ArCF4.csv", index=False)
 
 #####################################################
 ###### Traemos los datos anteriormente generados 
@@ -172,6 +181,12 @@ x0 = np.array([0.14,
                0.10, 0.99, 3, 0.037*3,
                1.0 ,0.065, 0.48, 50.10, 0.37,
                0.00001])
+
+
+x0 = np.array([4.45646783e-03, 6.97523694e-02, 1.50511150e-01, 3.89959971e-01,
+ 1.14938357e+01 ,5.67737517e-03 ,6.50000000e-02, 2.36307283e-01,
+ 5.00500000e+01, 5.18971635e-01 ,1.00000000e-04])
+
 lower = [0.0,
          0.0, 0.0, 0.0, 0.0,
          0.00, 0.065, 0.0, 50, 0.0,
@@ -202,11 +217,17 @@ experimental_data = {
 
 popt_primary = fitParameters(equations, experimental_data, 
                      degrad_data, x0=x0, bounds=bounds,
-                     fixed_idx=[6,8,10],
-                     fixed_values = [0.065, 50.05, 0.0001],
                      #fixed_error=[0.01],
                      #is_infrared=True
                      )
+
+par_primary = popt_primary.x.copy()
+print("Parámetros globales primario:", popt_primary.x)
+
+par_primary[1] *= 0.9    # 0.9
+par_primary[2] *= 1.3    # 1.3
+par_primary[10] = 0.25   # 1.3
+
 
 #######################################################################
 # =================== SECUNDARIO ========================
@@ -239,11 +260,10 @@ popt_secondary = fitParameters(equations,
                                degrad_data, 
                                x0=x0,
                                bounds=bounds,
-                               fixed_idx=[0,1,2,6,8,10],
-                               fixed_values = [0.0032,0.109,0.271,.065, 50.05, 0.2],
-                               fixed_error=0.01)
+                               fixed_idx=[0,1,2,3,4,5,6,7,8,9,10],
+                               fixed_values = par_primary[:])
 
-export_to_csv("../data/Parameters/ArCF4_secondary.csv",popt_secondary,names_csv)
+export_to_csv("../data/Parameters/ArCF4_secondary_1_3.csv",popt_secondary,names_csv)
 
 
 latex_table, payload = export_fit_table_latex(
@@ -265,7 +285,7 @@ dof   = N_res - N_par
 chi2_red = chi2 / dof
 
 print("="*60)
-print("Parámetros globales:", popt_secondary.x)
+print("Parámetros globales secundario:", popt_secondary.x)
 print(f"Chi2 (real): {chi2}")
 print(f"Grados de libertad: {dof}")
 print(f"Chi2 reducido: {chi2_red}")
@@ -295,7 +315,7 @@ fig, ax, pressure_cols = plot_fit_vs_experiment_by_pressure(
     xlabel="Concentration of CF$_4$ [$\%$]",
     ylabel="Normalized Yield",
     xlim=(0.1 * 0.9, 100 * 1.1),
-    ylim=(0.0002, 0.01),
+    ylim=(0.0002, 0.02),
     xscale="log",
     yscale="log",
     cmap="viridis",

@@ -65,7 +65,7 @@ config = pd.DataFrame({
     "Ar**": {
         "name principal": "EXC",
         "gas": "Ar",
-        "energy low": 11.80,
+        "energy low": 12.9,
         "energy up": 100,
         "name output": "Ar_dbleStar",
         "type": "excitation"
@@ -73,7 +73,7 @@ config = pd.DataFrame({
     "CF3": {
         "name principal": "NEUTRAL DISS",
         "gas": "CF4",
-        "energy low": 15.62,
+        "energy low": 12.9,
         "energy up": 100,
         "name output": "CF3",
         "type": "inelastic"
@@ -99,7 +99,7 @@ garfield_norm_ne = read_garfield_csv_folder(
     output_general_name=os.path.join(populations_dir, "HeCF4_secondary"),
     gas_concentration="cf4",
     gain_summary=summary,
-    normalized="ni"
+    normalized="ne"
 )
 
 # ============================================================
@@ -114,20 +114,12 @@ garfield_data["concentration"] = garfield_data["concentration"] / 100.0
 
 
 
-parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary.csv"))["parameter"].to_numpy()
+parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_1_3.csv"))["parameter"].to_numpy()
 
 print("parameter_data original:")
 print(parameter_data)
 
 parameter_data[0] = 1
-parameter_data[1] = 0.39
-parameter_data[2] = 0.39
-parameter_data[5] *= 1 # 50 #
-parameter_data[6] *= 1 # 600 # 500 # 50 #
-
-print("parameter_data modificado:")
-print(parameter_data)
-
 
 # ============================================================
 # 7) MALLA DE CONCENTRACIONES Y CAMPOS
@@ -142,6 +134,7 @@ pressure = [1, 0.300]
 # He-CF4 LIP
 # =========================
 
+rate = 2.43
 concentration_cf4_LIP = np.array([20, 40, 100])
 
 he_cf4_conditions_LIP = np.array([
@@ -187,24 +180,24 @@ pressure_cf4_Florian = np.array([0.3])
 
 he_cf4_conditions_Florian = np.array([
     12.105
-])
+]) * rate
 
 he_cf4_vis_Florian = np.array([
     0.03459508998978698
-])
-
+]) * rate
+ 
 he_cf4_vis_err_Florian = np.array([
     0.007479843426044407
-])
+]) * rate
 
 
 he_cf4_UV_Florian = np.array([
     0.0709633243946791
-])
+]) * rate
 
 he_cf4_UV_err_Florian = np.array([
     0.015463319066967298
-])
+]) * rate
 
 
 

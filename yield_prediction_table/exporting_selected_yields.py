@@ -128,7 +128,6 @@ names_tex = np.array([
 ############
 
 x0 = calcula_yields(1,normCF4)
-x1 = calcula_yields(1,normN2)
 
 # x2 = calcula_yields(1,0.1467)
 # x3 = calcula_yields(1,0.18201)
@@ -139,9 +138,8 @@ print(f"Norm N2 = {normN2:.6f}")
 print("=="*30)
 
 
-df = pd.DataFrame({"Parameter"  :names_tex,
-                   "Norm ArCF4" :x0,
-                   "Norm ArN2"  :x1,
+df = pd.DataFrame({"Predicción"  :names_tex,
+                   "Y [ph/MeV]" :x0,
                 #    "140 ph/MeV" :x2,
                 #    "110 ph/MeV" :x3,
                 #    "90 ph/MeV"  :x4
