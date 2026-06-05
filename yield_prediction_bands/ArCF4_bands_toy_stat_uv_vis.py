@@ -1,70 +1,79 @@
 import os
 import sys
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import scienceplots
+plt.style.use("grid")
 
-plt.style.use(["grid"])
+from band_utils import (
+    configure_matplotlib,
+    ensure_dir,
+    infer_pressure_cols,
+    read_primary_parameters,
+    build_statistical_toy_dict,
+    build_correlated_systematic_toy_dict,
+    fit_toy_parameters,
+    curves_from_parameters,
+    percentile_curve_band,
+    save_band_csv,
+    export_parameter_products,
+)
+
+configure_matplotlib(plt, no_grid=True)
 
 # =========================================================
 # PATHS
 # =========================================================
-BASE_DIR = os.path.dirname(__file__)
-models_dir = os.path.abspath(os.path.join(BASE_DIR, "../models"))
-data_dir = os.path.abspath(os.path.join(BASE_DIR, "../data"))
-fit_dir = os.path.abspath(os.path.join(BASE_DIR, "../primary_fits"))
+BASE_DIR = Path(__file__).resolve().parent
+ROOT_DIR = BASE_DIR.parent
+MODELS_DIR = ROOT_DIR / "models"
+DATA_DIR = ROOT_DIR / "data"
+FIT_DIR = ROOT_DIR / "primary_fits"
 
-sys.path.append(models_dir)
-sys.path.append(data_dir)
-sys.path.append(fit_dir)
+sys.path.extend([str(MODELS_DIR), str(DATA_DIR), str(FIT_DIR)])
 
-from ArCF4 import *
-from read_experimental import read_experimental
-from fiting import fitParameters
+from ArCF4 import theory_yield_vis, theory_yield_uv  # noqa: E402
+from read_experimental import read_experimental  # noqa: E402
+from fiting import fitParameters  # noqa: E402
 
 # =========================================================
 # CONFIG
 # =========================================================
-DATA_DIR_EXP = "../data/Experimental/ArCF4/"
-DATA_DIR_DEGRAD = "../data/Primary_DegradData"
-DATA_DIR_PAR = "../data/Parameters"
+DATA_DIR_EXP = DATA_DIR / "Experimental" / "ArCF4"
+DATA_DIR_DEGRAD = DATA_DIR / "Primary_DegradData"
+DATA_DIR_PAR = DATA_DIR / "Parameters"
+DATA_DIR_BANDS = DATA_DIR / "sistematic_stadistic_data"
 
-archivo_entrada = "../data/Experimental/ArCF4/CF4_primary_data_final.pkl"
+PLOTS_DIR = ensure_dir(BASE_DIR / "plots")
+TEX_DIR = ensure_dir(BASE_DIR / "tex_param")
+
+archivo_entrada = DATA_DIR_EXP / "CF4_primary_data_final.pkl"
 yields = ["vis", "UV"]
 presiones = [1, 2, 2.5, 3, 4, 5]
-output_dir = "../data/Experimental/ArCF4/"
+output_dir = DATA_DIR_EXP
 
-N_STAT_TOYS = 120
-STAT_PERCENTILES = [16, 84]
-RNG_SEED = 12345
-
-os.makedirs("plots", exist_ok=True)
+N_STAT_TOYS = int(os.environ.get("N_STAT_TOYS", "150"))
+N_SYST_TOYS = int(os.environ.get("N_SYST_TOYS", "150"))
+STAT_SEED = 12345
+SYST_SEED = 54321
 
 # =========================================================
 # DATA / MODEL
 # =========================================================
-degrad_data = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArCF4.csv"))
+degrad_data = pd.read_csv(DATA_DIR_DEGRAD / "ArCF4.csv")
 
-cmap = plt.get_cmap("viridis")
-colors = cmap(np.linspace(0, 1, 10))
-
-# % de CF4 en Ar
 cf4_pct_w = np.array([0, 1.0, 2.0, 5.0, 10, 20, 30, 50, 75, 100]) / 100
 ion_pot = np.array([26.4, 26.7, 26.9, 27.4, 28.1, 29.4, 30.2, 31.7, 33.0, 34.3])
 
 
 def W_CF4(f):
-    f_cf4 = np.asarray(f, dtype=float)
-    return np.interp(f_cf4, cf4_pct_w, ion_pot)
+    return np.interp(np.asarray(f, dtype=float), cf4_pct_w, ion_pot)
 
 
-# =========================================================
-# FIT CONFIGURATION
-# Same physics/bounds as the uploaded ArCF4_bands(1).py,
-# but the statistical band is now obtained with toys.
-# =========================================================
-x0 = np.array([
+x0_default = np.array([
     0.14,
     0.10, 0.99, 3, 0.037 * 3,
     1.0, 0.065, 0.48, 50.10, 0.37,
@@ -86,8 +95,8 @@ upper = [
 ]
 
 bounds = (lower, upper)
-fixed_idx = [6, 8, 10]
-fixed_values = [0.065, 50.05, 0.0001]
+fixed_idx = [6, 8]
+fixed_values = [0.065, 50.05]
 fixed_error = 0.01
 
 equations = {
@@ -95,25 +104,38 @@ equations = {
     "uv": theory_yield_uv,
 }
 
+names_tex = [
+    r"$N_{\mathrm{norm}}$",
+    r"$P_{\mathrm{CF}_3}^{\mathrm{vis}}$",
+    r"$P_{\mathrm{Ar}^{**}}$",
+    r"$K_{\mathrm{Ar}^{**},Q(\mathrm{Ar})}$",
+    r"$K_{\mathrm{Ar}^{**},Q(\mathrm{CF}_4)}$",
+    r"$1/(\tau_{\mathrm{disc}}K_{\mathrm{relax}})$",
+    r"$\tau_{\mathrm{UV}}K_{\mathrm{CF}_4,Q(\mathrm{CF}_4)}$",
+    r"$P_{\mathrm{CF}_4}^{\mathrm{dir}}$",
+    r"$K_{\mathrm{Ar}^{++},Q(\mathrm{CF}_4)}$",
+    r"$P_{\mathrm{Ar}^{++}}$",
+    r"$P_{\mathrm{CF}_3}^{\mathrm{UV}}$",
+]
+
+names_csv = [
+    "Nnorm",
+    "PCF3dir_vis",
+    "PAr_dblestar",
+    "KAr_dblestar_QAr",
+    "KAr_dblestar_QCF4",
+    "inv_tauDisc_Krelax",
+    "tauUv_KCF4_QCF4",
+    "PCF4dir",
+    "KArpp_QCF4",
+    "PArpp",
+    "PCF3dir_uv",
+]
 
 # =========================================================
 # HELPERS
 # =========================================================
-def pressure_columns(df):
-    y_cols = []
-    err_cols = []
-    for col in df.columns:
-        if col.endswith("bar") and not col.startswith("Err "):
-            err = f"Err {col}"
-            if err in df.columns:
-                y_cols.append(col)
-                err_cols.append(err)
-    return y_cols, err_cols
-
-
 def call_read_experimental(uncertainty_mode):
-    """Keep compatibility with both project spellings."""
-    modes_to_try = [uncertainty_mode]
     aliases = {
         "systematic": ["sistematic"],
         "sistematic": ["systematic"],
@@ -121,16 +143,14 @@ def call_read_experimental(uncertainty_mode):
         "stadistic": ["statistic", "statistical"],
         "statistical": ["stadistic", "statistic"],
     }
-    modes_to_try.extend(aliases.get(uncertainty_mode, []))
-
     last_error = None
-    for mode in modes_to_try:
+    for mode in [uncertainty_mode] + aliases.get(uncertainty_mode, []):
         try:
             read_experimental(
-                archivo_entrada,
+                str(archivo_entrada),
                 yields,
                 presiones,
-                output_dir,
+                str(output_dir),
                 uncertainty_mode=mode,
             )
             return
@@ -141,17 +161,15 @@ def call_read_experimental(uncertainty_mode):
 
 def load_experimental(uncertainty_mode="all", w_scaled=True):
     call_read_experimental(uncertainty_mode)
+    df_uv = pd.read_csv(DATA_DIR_EXP / "UV.csv")
+    df_vis = pd.read_csv(DATA_DIR_EXP / "vis.csv")
 
-    df_uv = pd.read_csv(os.path.join(DATA_DIR_EXP, "UV.csv"))
-    df_vis = pd.read_csv(os.path.join(DATA_DIR_EXP, "vis.csv"))
-
-    # Keep the same low-concentration UV convention as your original script.
     df_uv.loc[0, "fCF4"] = 0.001
     df_vis = df_vis.fillna(0)
 
     if w_scaled:
         for df in (df_uv, df_vis):
-            y_cols, err_cols = pressure_columns(df)
+            y_cols, err_cols = infer_pressure_cols(df)
             w = W_CF4(df["fCF4"].to_numpy(dtype=float) / 100.0)
             factor = (1.0 / w)[:, None]
             df.loc[:, y_cols + err_cols] = df[y_cols + err_cols].to_numpy(dtype=float) * factor
@@ -160,10 +178,7 @@ def load_experimental(uncertainty_mode="all", w_scaled=True):
 
 
 def make_experimental_data(exp_dict):
-    return {
-        "vis": exp_dict["vis"].fillna(0),
-        "uv": exp_dict["uv"].fillna(0),
-    }
+    return {"vis": exp_dict["vis"].fillna(0), "uv": exp_dict["uv"].fillna(0)}
 
 
 def run_fit(exp_dict, x_start):
@@ -176,298 +191,235 @@ def run_fit(exp_dict, x_start):
         fixed_idx=fixed_idx,
         fixed_values=fixed_values,
         fixed_error=fixed_error,
+        verbose=0,
     )
 
 
-def build_shifted_dict(exp_dict, sign=+1):
-    """Coherent up/down shifts. Used for the systematic envelope."""
-    out = {}
-    for key, df in exp_dict.items():
-        shifted = df.copy(deep=True)
-        y_cols, err_cols = pressure_columns(shifted)
-        y = shifted[y_cols].to_numpy(dtype=float)
-        e = shifted[err_cols].to_numpy(dtype=float)
-        mask = ~np.isnan(y)
-        shifted.loc[:, y_cols] = np.where(mask, y + sign * e, np.nan)
-        out[key] = shifted.fillna(0)
-    return out
+def fit_runner(toy_data, x_start):
+    return run_fit(toy_data, x_start)
 
 
-def build_statistical_toy_dict(exp_stat, rng):
-    """Independent point-by-point statistical fluctuations."""
-    out = {}
-    for key, df in exp_stat.items():
-        toy = df.copy(deep=True)
-        y_cols, err_cols = pressure_columns(toy)
-        y = toy[y_cols].to_numpy(dtype=float)
-        e = toy[err_cols].to_numpy(dtype=float)
-        mask = ~np.isnan(y)
-        fluct = rng.normal(loc=0.0, scale=np.nan_to_num(e, nan=0.0))
-        y_toy = np.where(mask, y + fluct, np.nan)
-        # Photon yields should not become negative in the refit dataset.
-        y_toy = np.where(mask, np.maximum(y_toy, 0.0), np.nan)
-        toy.loc[:, y_cols] = y_toy
-        out[key] = toy.fillna(0)
-    return out
+def toy_builder_stat(exp_stat, bar_cols, err_cols):
+    return lambda rng: build_statistical_toy_dict(exp_stat, bar_cols, err_cols, rng)
 
 
-def fit_statistical_toys(exp_stat, nominal_parameters):
-    rng = np.random.default_rng(RNG_SEED)
-    toy_parameters = []
-    n_failed = 0
-
-    for itoy in range(N_STAT_TOYS):
-        toy_data = build_statistical_toy_dict(exp_stat, rng)
-        try:
-            toy_fit = run_fit(toy_data, nominal_parameters)
-            if np.all(np.isfinite(toy_fit.x)):
-                toy_parameters.append(toy_fit.x.copy())
-            else:
-                n_failed += 1
-        except Exception:
-            n_failed += 1
-
-    if len(toy_parameters) == 0:
-        raise RuntimeError("All statistical toys failed; no statistical band can be built.")
-
-    return np.asarray(toy_parameters, dtype=float), n_failed
-
-
-def percentile_band_from_toys(toy_parameters, model_func):
-    curves = np.asarray([model_func(par) for par in toy_parameters], dtype=float)
-    y_low, y_up = np.nanpercentile(curves, STAT_PERCENTILES, axis=0)
-    return y_low, y_up
-
-
-def envelope_from_nominal_up_down(y0, y_low, y_up):
-    ymin = np.minimum.reduce([y0, y_low, y_up])
-    ymax = np.maximum.reduce([y0, y_low, y_up])
-    return ymin, ymax
-
-
-def print_band_width(label, y_low_stat, y_up_stat, y_sys_min, y_sys_max, scale=1.0):
-    stat_width = (np.asarray(y_up_stat) - np.asarray(y_low_stat)) * scale
-    sys_width = (np.asarray(y_sys_max) - np.asarray(y_sys_min)) * scale
-    print(
-        f"{label} | STAT width min/max = "
-        f"{np.nanmin(stat_width):.6g} / {np.nanmax(stat_width):.6g}; "
-        f"SYS width min/max = {np.nanmin(sys_width):.6g} / {np.nanmax(sys_width):.6g}"
+def toy_builder_syst(exp_stat, exp_sys, bar_cols, err_cols):
+    # One nuisance for UV and one for VIS.
+    return lambda rng: build_correlated_systematic_toy_dict(
+        exp_stat,
+        exp_sys,
+        bar_cols,
+        err_cols,
+        rng,
+        group_map={"uv": "uv", "vis": "vis"},
     )
 
 
-# =========================================================
-# NOMINAL FIT
-# =========================================================
-exp_nominal = load_experimental("all", w_scaled=True)
-popt = run_fit(exp_nominal, x0)
-par_natural = popt.x.copy()
+def envelope_from_toys(params, model, nominal_curve):
+    curves = curves_from_parameters(params, model)
+    return percentile_curve_band(curves, nominal_curve)
 
-chi2 = 2.0 * popt.cost if hasattr(popt, "cost") else getattr(popt, "chi2", np.nan)
-dof = len(popt.fun) - len(par_natural) if hasattr(popt, "fun") else getattr(popt, "dof", np.nan)
-chi2_red = chi2 / dof if np.isfinite(chi2) and np.isfinite(dof) and dof != 0 else np.nan
+
+def plot_band(ax, x_percent, y0, stat_low, stat_high, syst_low, syst_high, *, color, label):
+    ax.fill_between(x_percent, syst_low, syst_high, alpha=0.24, color=color, label="Sistemático" if label else None)
+    ax.fill_between(x_percent, stat_low, stat_high, alpha=0.22, color=color, label="Estadístico" if label else None)
+    ax.plot(x_percent, y0, lw=2.0, color=color, label=label)
+
+
+# =========================================================
+# CENTRAL PARAMETERS FROM PRIMARY FIT
+# =========================================================
+primary_parameter_path = DATA_DIR_PAR / "ArCF4_primary.csv"
+par_primary = read_primary_parameters(primary_parameter_path)
+if len(par_primary) != len(x0_default):
+    raise ValueError("ArCF4_primary.csv no tiene la longitud esperada para el modelo UV/VIS.")
 
 print("=" * 60)
-print("Parámetros globales:", par_natural)
-print(f"Chi2 (real): {chi2}")
-print(f"Grados de libertad: {dof}")
-print(f"Chi2 reducido: {chi2_red}")
+print("Optimal fit line loaded from:", primary_parameter_path)
+print(par_primary)
 print("=" * 60)
 
 # =========================================================
-# SYSTEMATIC REFITS: coherent +/- systematic shifts
-# =========================================================
-exp_sys = load_experimental("systematic", w_scaled=True)
-popt_low = run_fit(build_shifted_dict(exp_sys, sign=-1), par_natural)
-popt_up = run_fit(build_shifted_dict(exp_sys, sign=+1), par_natural)
-par_low = popt_low.x.copy()
-par_up = popt_up.x.copy()
-
-# =========================================================
-# STATISTICAL TOYS: independent point-by-point fluctuations
+# TOY FITS
 # =========================================================
 exp_stat = load_experimental("stadistic", w_scaled=True)
-par_stat_toys, n_failed = fit_statistical_toys(exp_stat, par_natural)
-print(f"Statistical toys accepted: {len(par_stat_toys)} / {N_STAT_TOYS}; failed: {n_failed}")
+exp_sys = load_experimental("sistematic", w_scaled=True)
+exp_plot = load_experimental("all", w_scaled=True)
+bar_cols, err_cols = infer_pressure_cols(exp_stat["uv"])
+
+stat_params, stat_failures = fit_toy_parameters(
+    N_STAT_TOYS,
+    toy_builder_stat(exp_stat, bar_cols, err_cols),
+    fit_runner,
+    par_primary,
+    seed=STAT_SEED,
+)
+syst_params, syst_failures = fit_toy_parameters(
+    N_SYST_TOYS,
+    toy_builder_syst(exp_stat, exp_sys, bar_cols, err_cols),
+    fit_runner,
+    par_primary,
+    seed=SYST_SEED,
+)
+
+print(f"Statistical toys accepted: {len(stat_params)} / {N_STAT_TOYS}; failed: {stat_failures}")
+print(f"Systematic toys accepted:   {len(syst_params)} / {N_SYST_TOYS}; failed: {syst_failures}")
+
+export_parameter_products(
+    DATA_DIR_BANDS,
+    TEX_DIR,
+    "ArCF4_primary_UV_VIS",
+    names_csv,
+    names_tex,
+    par_primary,
+    stat_params,
+    syst_params,
+    caption=(
+        r"Parámetros del ajuste primario Ar--CF$_4$ UV/VIS. "
+        r"La columna central procede de data/Parameters/ArCF4_primary.csv; "
+        r"las incertidumbres estadística y sistemática proceden de pseudoexperimentos."
+    ),
+    label="tab:ArCF4_UV_VIS_toy_uncertainties",
+)
 
 # =========================================================
-# DATA FOR PLOTS
+# PLOTS
 # =========================================================
-exp_plot = load_experimental("all", w_scaled=True)
 yield_uv = exp_plot["uv"]
 yield_vis = exp_plot["vis"]
-
-norm = par_natural[0]
+norm = par_primary[0]
 scale_to_ph_mev = 1000.0 / norm
+colors = plt.get_cmap("viridis")(np.linspace(0.18, 0.82, 4))
 
-# =========================================================
-# PLOTS: NORMALIZED UV/VIS BANDS
-# =========================================================
-# UV normalized
-fCF4_uv_norm = np.logspace(-5, 0, 100)
-
-def model_uv_norm(par):
-    return theory_yield_uv(par, degrad_data, fCF4_uv_norm, 1)
-
-y0_uv = model_uv_norm(par_natural)
-y_low_sys_uv = model_uv_norm(par_low)
-y_up_sys_uv = model_uv_norm(par_up)
-y_sys_min_uv, y_sys_max_uv = envelope_from_nominal_up_down(y0_uv, y_low_sys_uv, y_up_sys_uv)
-y_low_stat_uv, y_up_stat_uv = percentile_band_from_toys(par_stat_toys, model_uv_norm)
-print_band_width("UV normalized", y_low_stat_uv, y_up_stat_uv, y_sys_min_uv, y_sys_max_uv)
-
-plt.figure(figsize=(6, 4))
-plt.fill_between(fCF4_uv_norm * 100, y_sys_min_uv, y_sys_max_uv, alpha=0.30, label="Sistemático")
-plt.fill_between(fCF4_uv_norm * 100, y_low_stat_uv, y_up_stat_uv, alpha=0.30, label="Estadístico")
-plt.plot(fCF4_uv_norm * 100, y0_uv, lw=2, label="Ajuste nominal")
-plt.errorbar(yield_uv["fCF4"], yield_uv["1.0bar"], yerr=yield_uv["Err 1.0bar"], label="Data", fmt=".r")
-plt.xscale("log")
-plt.yscale("log")
-plt.xlabel("CF$_4$ concentration $\\%$")
-plt.ylabel("Arb.")
-plt.legend()
-plt.tight_layout()
-# plt.savefig("plots/ArCF4_bands_uv_normalized_toy_stat.pdf", dpi=300, bbox_inches="tight")
-plt.show()
-
-# VIS normalized
-fCF4_vis_norm = np.logspace(-3, 0, 100)
-
-def model_vis_norm(par):
-    return theory_yield_vis(par, degrad_data, fCF4_vis_norm, 1)
-
-y0_vis = model_vis_norm(par_natural)
-y_low_sys_vis = model_vis_norm(par_low)
-y_up_sys_vis = model_vis_norm(par_up)
-y_sys_min_vis, y_sys_max_vis = envelope_from_nominal_up_down(y0_vis, y_low_sys_vis, y_up_sys_vis)
-y_low_stat_vis, y_up_stat_vis = percentile_band_from_toys(par_stat_toys, model_vis_norm)
-print_band_width("VIS normalized", y_low_stat_vis, y_up_stat_vis, y_sys_min_vis, y_sys_max_vis)
-
-plt.figure(figsize=(6, 4))
-plt.fill_between(fCF4_vis_norm * 100, y_sys_min_vis, y_sys_max_vis, alpha=0.30, label="Sistemático")
-plt.fill_between(fCF4_vis_norm * 100, y_low_stat_vis, y_up_stat_vis, alpha=0.30, label="Estadístico")
-plt.plot(fCF4_vis_norm * 100, y0_vis, lw=2, label="Ajuste nominal")
-plt.errorbar(yield_vis["fCF4"], yield_vis["1.0bar"], yerr=yield_vis["Err 1.0bar"], label="Data", fmt=".r")
-plt.xscale("log")
-plt.yscale("log")
-plt.xlabel("CF$_4$ concentration $\\%$")
-plt.ylabel("Arb.")
-plt.legend()
-plt.tight_layout()
-# plt.savefig("plots/ArCF4_bands_vis_normalized_toy_stat.pdf", dpi=300, bbox_inches="tight")
-plt.show()
-
-# =========================================================
-# EXTERNAL DATA FOR PH/MEV PLOTS
-# =========================================================
-con_uv_cf4_morozov = [100.0]
-y_uv_cf4_morozov = [2175]
-y_err_uv_cf4_morozov = [2600 - 2175]
-
-cf4_pct_lit = np.array([0.15, 0.35, 0.50, 1.00, 2.00, 6.00, 11.00])
-uv_E100 = np.array([358.9, 350.8, 292.2, 209.4, 227.8, 245.5, 263.4])
-uv_E100_err = np.array([3.0, 3.9, 0.2, 2.0, 10.9, 2.4, 4.3])
-
-Ar_third_continuum_ph_MeV = np.array([2.7e3])
-Ar_third_continuum_err_ph_MeV = np.array([0.14e3])
-
-cf4_red_E100 = [0.2, 0.4, 0.7, 1.0, 2.0, 7.0, 10.0]
-y_red_E100 = [450, 500, 600, 1150, 1300, 1850, 1900]
-yerr_red_E100 = [60, 60, 60, 90, 100, 120, 120]
-
-vis_cf4_red_E100 = [100.0]
-vis_y_red_E100 = [1184.7]
-vis_yerr_red_E100 = [47]
-
-vis2_cf4_red_E100 = [100.0]
-vis2_y_red_E100 = [695]
-vis2_yerr_red_E100 = [827 - 695]
-
-# =========================================================
-# PH/MEV UV BAND
-# =========================================================
-fCF4_uv = np.logspace(-5, 0, 100)
+# UV, ph/MeV
+fCF4_uv = np.logspace(-5, 0, 600)
 
 def model_uv(par):
     return theory_yield_uv(par, degrad_data, fCF4_uv, 1)
 
-y0_uv = model_uv(par_natural)
-y_low_sys_uv = model_uv(par_low)
-y_up_sys_uv = model_uv(par_up)
-y_sys_min_uv, y_sys_max_uv = envelope_from_nominal_up_down(y0_uv, y_low_sys_uv, y_up_sys_uv)
-y_low_stat_uv, y_up_stat_uv = percentile_band_from_toys(par_stat_toys, model_uv)
-print_band_width("UV ph/MeV", y_low_stat_uv, y_up_stat_uv, y_sys_min_uv, y_sys_max_uv, scale_to_ph_mev)
+y0_uv = model_uv(par_primary)
+y_low_stat_uv, y_up_stat_uv = envelope_from_toys(stat_params, model_uv, y0_uv)
+y_low_syst_uv, y_up_syst_uv = envelope_from_toys(syst_params, model_uv, y0_uv)
 
-plt.figure(figsize=(6, 4))
-plt.fill_between(fCF4_uv * 100, y_sys_min_uv * scale_to_ph_mev, y_sys_max_uv * scale_to_ph_mev,
-                 alpha=0.30, label="Sistemático", color=colors[2])
-plt.fill_between(fCF4_uv * 100, y_low_stat_uv * scale_to_ph_mev, y_up_stat_uv * scale_to_ph_mev,
-                 alpha=0.30, label="Estadístico", color=colors[0])
-plt.plot(fCF4_uv * 100, y0_uv * scale_to_ph_mev, lw=2, label="Ajuste nominal", color=colors[2])
-plt.errorbar(yield_uv["fCF4"], yield_uv["1.0bar"] * scale_to_ph_mev,
-             yerr=yield_uv["Err 1.0bar"] * scale_to_ph_mev,
-             marker="o", linestyle="none", label="X-ray (220-400 nm)", ms=4,
-             color=colors[2], ecolor=colors[2], elinewidth=1, capsize=2)
-plt.errorbar(con_uv_cf4_morozov, y_uv_cf4_morozov, yerr=y_err_uv_cf4_morozov,
-             marker="x", linestyle="none", ms=5, color=colors[6], ecolor=colors[6],
-             elinewidth=1, capsize=2, label="$\\alpha$'s Morozov")
-plt.errorbar(0.001, Ar_third_continuum_ph_MeV, yerr=Ar_third_continuum_err_ph_MeV,
-             marker="v", linestyle="none", ms=5, color=colors[7], ecolor=colors[7],
-             elinewidth=1, capsize=2, label="$\\alpha$'s Santorelli (160-325 nm)")
-plt.errorbar(cf4_pct_lit, uv_E100, yerr=uv_E100_err, ms=4, marker="o",
-             linestyle="none", color=colors[5], ecolor=colors[5], elinewidth=1,
-             capsize=2, label="$\\alpha$'s P. Amedo (250-400 nm)")
-plt.xscale("log")
-plt.yscale("log")
-plt.grid(False)
-plt.xlabel("CF$_4$ concentration $\\%$")
-plt.title("Ar-CF$_4$ UV (220-400 nm)")
-plt.ylabel("ph/MeV")
-plt.legend()
-plt.tight_layout()
-plt.savefig("plots/ArCF4_bands_uv_toy_stat.pdf", dpi=300, bbox_inches="tight")
-plt.show()
+save_band_csv(
+    DATA_DIR_BANDS / "ArCF4_UV_primary_band_1bar.csv",
+    fCF4_uv * 100,
+    y0_uv * scale_to_ph_mev,
+    y_low_stat_uv * scale_to_ph_mev,
+    y_up_stat_uv * scale_to_ph_mev,
+    y_low_syst_uv * scale_to_ph_mev,
+    y_up_syst_uv * scale_to_ph_mev,
+    metadata={"gas": "ArCF4", "channel": "UV", "pressure_bar": 1.0, "scale": "ph_per_MeV"},
+)
 
-# =========================================================
-# PH/MEV VISIBLE BAND
-# =========================================================
-fCF4_vis = np.logspace(-3, 0, 100)
+con_uv_cf4_morozov = [100.0]
+y_uv_cf4_morozov = [2175]
+y_err_uv_cf4_morozov = [2600 - 2175]
+cf4_pct_lit = np.array([0.15, 0.35, 0.50, 1.00, 2.00, 6.00, 11.00])
+uv_E100 = np.array([358.9, 350.8, 292.2, 209.4, 227.8, 245.5, 263.4])
+uv_E100_err = np.array([3.0, 3.9, 0.2, 2.0, 10.9, 2.4, 4.3])
+Ar_third_continuum_ph_MeV = np.array([2.7e3])
+Ar_third_continuum_err_ph_MeV = np.array([0.14e3])
+
+fig, ax = plt.subplots(figsize=(6.4, 4.3))
+plot_band(
+    ax,
+    fCF4_uv * 100,
+    y0_uv * scale_to_ph_mev,
+    y_low_stat_uv * scale_to_ph_mev,
+    y_up_stat_uv * scale_to_ph_mev,
+    y_low_syst_uv * scale_to_ph_mev,
+    y_up_syst_uv * scale_to_ph_mev,
+    color=colors[0],
+    label="Primary fit",
+)
+ax.errorbar(yield_uv["fCF4"], yield_uv["1.0bar"] * scale_to_ph_mev,
+            yerr=yield_uv["Err 1.0bar"] * scale_to_ph_mev,
+            marker="o", linestyle="none", ms=4, color=colors[0], ecolor=colors[0], capsize=2,
+            label="X-ray (220--400 nm)")
+
+ax.errorbar(con_uv_cf4_morozov, y_uv_cf4_morozov, yerr=y_err_uv_cf4_morozov,
+            marker="x", linestyle="none", ms=5, color=colors[2], ecolor=colors[2], capsize=2,
+            label=r"$\alpha$ Morozov")
+ax.errorbar(0.001, Ar_third_continuum_ph_MeV, yerr=Ar_third_continuum_err_ph_MeV,
+            marker="v", linestyle="none", ms=5, color=colors[3], ecolor=colors[3], capsize=2,
+            label=r"$\alpha$ Santorelli")
+ax.errorbar(cf4_pct_lit, uv_E100, yerr=uv_E100_err, marker="o", linestyle="none", ms=4,
+            color=colors[1], ecolor=colors[1], capsize=2, label=r"$\alpha$ P. Amedo")
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.grid(False)
+ax.set_xlabel(r"CF$_4$ concentration [\%]")
+ax.set_ylabel("ph/MeV")
+ax.set_title(r"Ar--CF$_4$ UV yield (220--400 nm)")
+ax.legend(ncol=1)
+fig.tight_layout()
+fig.savefig(PLOTS_DIR / "ArCF4_bands_uv_toy_stat_syst.pdf", bbox_inches="tight")
+plt.close(fig)
+
+# Visible, ph/MeV
+fCF4_vis = np.logspace(-3, 0, 600)
 
 def model_vis(par):
     return theory_yield_vis(par, degrad_data, fCF4_vis, 1)
 
-y0_vis = model_vis(par_natural)
-y_low_sys_vis = model_vis(par_low)
-y_up_sys_vis = model_vis(par_up)
-y_sys_min_vis, y_sys_max_vis = envelope_from_nominal_up_down(y0_vis, y_low_sys_vis, y_up_sys_vis)
-y_low_stat_vis, y_up_stat_vis = percentile_band_from_toys(par_stat_toys, model_vis)
-print_band_width("VIS ph/MeV", y_low_stat_vis, y_up_stat_vis, y_sys_min_vis, y_sys_max_vis, scale_to_ph_mev)
+y0_vis = model_vis(par_primary)
+y_low_stat_vis, y_up_stat_vis = envelope_from_toys(stat_params, model_vis, y0_vis)
+y_low_syst_vis, y_up_syst_vis = envelope_from_toys(syst_params, model_vis, y0_vis)
 
-plt.figure(figsize=(6, 4))
-plt.fill_between(fCF4_vis * 100, y_sys_min_vis * scale_to_ph_mev, y_sys_max_vis * scale_to_ph_mev,
-                 alpha=0.30, label="Sistemático", color=colors[2])
-plt.fill_between(fCF4_vis * 100, y_low_stat_vis * scale_to_ph_mev, y_up_stat_vis * scale_to_ph_mev,
-                 alpha=0.30, label="Estadístico", color=colors[0])
-plt.plot(fCF4_vis * 100, y0_vis * scale_to_ph_mev, lw=2, label="Ajuste nominal", color=colors[2])
-plt.errorbar(yield_vis["fCF4"], yield_vis["1.0bar"] * scale_to_ph_mev,
-             yerr=yield_vis["Err 1.0bar"] * scale_to_ph_mev,
-             marker="o", linestyle="none", label="X-ray", ms=4,
-             color=colors[2], ecolor=colors[2], elinewidth=1, capsize=2)
-plt.errorbar(cf4_red_E100, y_red_E100, yerr=yerr_red_E100, ms=4, marker="o",
-             linestyle="none", color=colors[5], ecolor=colors[5], elinewidth=1,
-             capsize=2, label="$\\alpha$'s P. Amedo")
-plt.errorbar(vis2_cf4_red_E100, vis2_y_red_E100, yerr=vis2_yerr_red_E100,
-             marker="x", linestyle="none", ms=5, color=colors[6], ecolor=colors[6],
-             elinewidth=1, capsize=2, label="$\\alpha$'s Morozov")
-plt.errorbar(vis_cf4_red_E100, vis_y_red_E100, yerr=vis_yerr_red_E100,
-             marker="v", linestyle="none", ms=5, color=colors[7], ecolor=colors[7],
-             elinewidth=1, capsize=2, label="$\\alpha$'s Lehaut")
-plt.xscale("log")
-# plt.yscale("log")
-plt.grid(False)
-plt.title("Ar-CF$_4$ Visible (400-700 nm)")
-plt.xlabel("CF$_4$ concentration $\\%$")
-plt.ylabel("ph/MeV")
-plt.legend()
-plt.tight_layout()
-plt.savefig("plots/ArCF4_bands_vis_toy_stat.pdf", dpi=300, bbox_inches="tight")
-plt.show()
+save_band_csv(
+    DATA_DIR_BANDS / "ArCF4_VIS_primary_band_1bar.csv",
+    fCF4_vis * 100,
+    y0_vis * scale_to_ph_mev,
+    y_low_stat_vis * scale_to_ph_mev,
+    y_up_stat_vis * scale_to_ph_mev,
+    y_low_syst_vis * scale_to_ph_mev,
+    y_up_syst_vis * scale_to_ph_mev,
+    metadata={"gas": "ArCF4", "channel": "VIS", "pressure_bar": 1.0, "scale": "ph_per_MeV"},
+)
+
+cf4_red_E100 = [0.2, 0.4, 0.7, 1.0, 2.0, 7.0, 10.0]
+y_red_E100 = [450, 500, 600, 1150, 1300, 1850, 1900]
+yerr_red_E100 = [60, 60, 60, 90, 100, 120, 120]
+vis_cf4_red_E100 = [100.0]
+vis_y_red_E100 = [1184.7]
+vis_yerr_red_E100 = [47]
+vis2_cf4_red_E100 = [100.0]
+vis2_y_red_E100 = [695]
+vis2_yerr_red_E100 = [827 - 695]
+
+fig, ax = plt.subplots(figsize=(6.4, 4.3))
+plot_band(
+    ax,
+    fCF4_vis * 100,
+    y0_vis * scale_to_ph_mev,
+    y_low_stat_vis * scale_to_ph_mev,
+    y_up_stat_vis * scale_to_ph_mev,
+    y_low_syst_vis * scale_to_ph_mev,
+    y_up_syst_vis * scale_to_ph_mev,
+    color=colors[0],
+    label="Primary fit",
+)
+ax.errorbar(yield_vis["fCF4"], yield_vis["1.0bar"] * scale_to_ph_mev,
+            yerr=yield_vis["Err 1.0bar"] * scale_to_ph_mev,
+            marker="o", linestyle="none", ms=4, color=colors[0], ecolor=colors[0], capsize=2,
+            label="X-ray")
+ax.errorbar(cf4_red_E100, y_red_E100, yerr=yerr_red_E100, marker="o", linestyle="none", ms=4,
+            color=colors[1], ecolor=colors[1], capsize=2, label=r"$\alpha$ P. Amedo")
+ax.errorbar(vis2_cf4_red_E100, vis2_y_red_E100, yerr=vis2_yerr_red_E100,
+            marker="x", linestyle="none", ms=5, color=colors[2], ecolor=colors[2], capsize=2,
+            label=r"$\alpha$ Morozov")
+ax.errorbar(vis_cf4_red_E100, vis_y_red_E100, yerr=vis_yerr_red_E100,
+            marker="v", linestyle="none", ms=5, color=colors[3], ecolor=colors[3], capsize=2,
+            label=r"$\alpha$ Lehaut")
+ax.set_xscale("log")
+ax.grid(False)
+ax.set_xlabel(r"CF$_4$ concentration [\%]")
+ax.set_ylabel("ph/MeV")
+ax.set_title(r"Ar--CF$_4$ visible yield (400--700 nm)")
+ax.legend(ncol=1)
+fig.tight_layout()
+fig.savefig(PLOTS_DIR / "ArCF4_bands_vis_toy_stat_syst.pdf", bbox_inches="tight")
+plt.close(fig)
+
+print("Saved UV/VIS bands in:", DATA_DIR_BANDS)

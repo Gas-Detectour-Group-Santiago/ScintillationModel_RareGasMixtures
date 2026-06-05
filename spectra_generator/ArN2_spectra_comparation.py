@@ -1,152 +1,126 @@
-import os
+from __future__ import annotations
+
+import sys
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import sys
-import seaborn as sns
-import dill 
 import scienceplots
+plt.style.use("grid")
 
-plt.style.use(['science', 'grid'])
-models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
-data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
+from spectra_units import (
+    get_n2_total_yield_ph_per_electron,
+    get_spectrum_arrays,
+    repo_root_from_script,
+    safe_dill_load,
+    setup_science_style,
+    spectrum_shape_to_ph_per_MeV_nm,
+)
+from ArN2_spectra import arn2_primary_spectrum_ph_per_MeV_nm, WAVELENGTH_NM
 
-sys.path.append(models_dir)
-sys.path.append(data_dir)
+ROOT_DIR = repo_root_from_script(__file__)
+MODELS_DIR = ROOT_DIR / "models"
+DATA_DIR = ROOT_DIR / "data"
+OUT_DIR = ROOT_DIR / "spectra_generator" / "plots_ArN2"
+CSV_DIR = ROOT_DIR / "spectra_generator" / "spectra_csv" / "ArN2"
 
-from ArN2 import *
-from ArN2_infrarred import *
+sys.path.insert(0, str(MODELS_DIR))
 
+from ArN2 import W_ArN2  # noqa: E402
 
-######################################33
+setup_science_style(use_grid=False)
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+CSV_DIR.mkdir(parents=True, exist_ok=True)
 
-DATA_DIR_DEGRAD = "../data/Primary_DegradData"
-DATA_DIR_PAR = "../data/Parameters"
-
-degrad_data = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArN2.csv"))
-degrad_data_IR = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArN2_IR.csv"))
-
-
-parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArN2_primary.csv"))["parameter"].to_numpy()
-parameter_data_IR = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArN2_IR_primary.csv"))["parameter"].to_numpy()
-
-print(parameter_data)
-print(parameter_data_IR)
-
-norm = parameter_data[0].copy()
-parameter_data[0] = 1
-
-######################################
-
-def gaussiana(x,mu,sigma):
-    return (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma)**2)
-
-######################################33
-
-with open("../data/Experimental/ArN2/N2_primary_data_final.pkl", "rb") as f:
-        df = dill.load(f)
+PRESSURES_BAR = [1]
+CONCENTRATIONS_PERCENT = [0.1, 1, 10, 100]
+SPECTRUM_COLUMNS = ("mean_spectrum", "spectrum_new_cal", "spectrum_old_cal")
 
 
-spectrum = df.loc[0,"mean_spectrum"]
+def main() -> None:
+    df_exp = safe_dill_load(DATA_DIR / "Experimental" / "ArN2" / "N2_primary_data_final.pkl")
 
-print(parameter_data)
-print(norm)
+    all_rows = []
+    global_ymax = 0.0
 
+    fig, axs = plt.subplots(2, 2, figsize=(9.2, 6.4), sharex=True, sharey=True)
+    axs = axs.ravel()
 
-cmap = "viridis"
-cmap_obj = plt.get_cmap(cmap)
-pressure = [1]
-colors = cmap_obj(np.linspace(0.15, 0.85, len(pressure)))
-concentrations = [0.1,1,10,100]
+    for ax, con in zip(axs, CONCENTRATIONS_PERCENT):
+        for pres in PRESSURES_BAR:
+            y_theory = arn2_primary_spectrum_ph_per_MeV_nm(con, pres)
+            global_ymax = max(global_ymax, float(np.nanmax(y_theory)))
 
-wavelength = np.linspace(300,800,2000)
-
-equations = {
-    "696": theory_yield_ArN2_Ir_696,
-    "727": theory_yield_ArN2_Ir_727,
-    "750": theory_yield_ArN2_Ir_750,
-    "763": theory_yield_ArN2_Ir_763,
-    "772": theory_yield_ArN2_Ir_772,
-}
-
-
-# =========================================================
-# PRIMERA PASADA: calcular todos los espectros y el ymax global
-# =========================================================
-all_spectra = []
-global_ymax = 0
-
-for con in concentrations:
-    spectra_con = []
-    factor = (1/0.012) * W_ArN2(con/100)
-
-
-    for pres in pressure:
-        yield_N2 = theory_yield_N2_uv(
-            parameter_data, degrad_data, np.array([con/100]), pres
-        )
-   
-        yield_total = 0.13 * factor * yield_N2[0] * gaussiana(wavelength, 310, 3)
-        yield_total += 0.42 * factor * yield_N2[0] * gaussiana(wavelength, 335, 2.5)
-        yield_total += 0.3 * factor * yield_N2[0] * gaussiana(wavelength, 355, 2.5)
-        yield_total += 0.1 * factor * yield_N2[0] * gaussiana(wavelength, 378, 2.5)
-        yield_total += 0.05* factor * yield_N2[0] * gaussiana(wavelength, 403, 2.5)
-
-        for name, yield_IR in equations.items():
-            yield_ir = yield_IR(
-                parameter_data_IR, degrad_data_IR, np.array([con/100]), pres
+            ax.plot(
+                WAVELENGTH_NM,
+                y_theory,
+                color="tab:blue",
+                lw=2.2,
+                label=rf"Model {pres:g} bar",
             )
-            yield_total += (factor/norm) * yield_ir[0] * gaussiana(wavelength, float(name), 2.8)
 
-        spectra_con.append((pres, yield_total))
-        global_ymax = max(global_ymax, np.max(yield_total))
+            mask = np.isclose(df_exp["N2 concentration (%)"].astype(float), con) & np.isclose(
+                df_exp["P (bar)"].astype(float), pres
+            )
+            if not np.any(mask):
+                continue
 
-    all_spectra.append((con, spectra_con))
+            row = df_exp.loc[mask].iloc[0]
+            wave_exp, intensity_raw = get_spectrum_arrays(row, SPECTRUM_COLUMNS)
+            total_yield_ph_e = get_n2_total_yield_ph_per_electron(row, include_ir=True)
 
-# =========================================================
-# SEGUNDA PASADA: dibujar una única figura con 4 paneles
-# =========================================================
-fig, axs = plt.subplots(2, 2, figsize=(9, 6), sharex=True, sharey=True)
-axs = axs.ravel()
+            y_exp = spectrum_shape_to_ph_per_MeV_nm(
+                wave_exp,
+                intensity_raw,
+                total_yield_ph_e,
+                additive_fraction=con / 100.0,
+                w_func=W_ArN2,
+            )
+            global_ymax = max(global_ymax, float(np.nanmax(y_exp)))
 
-for ax, (con, spectra_con) in zip(axs, all_spectra):
+            ax.plot(
+                wave_exp,
+                y_exp,
+                color="tab:red",
+                lw=1.8,
+                alpha=0.9,
+                label=rf"Exp. {pres:g} bar",
+            )
 
-    mask1 = df["N2 concentration (%)"] == con 
+            tmp = pd.DataFrame({
+                "mixture": "ArN2",
+                "concentration_percent": con,
+                "pressure_bar": pres,
+                "wavelength_nm": wave_exp,
+                "experimental_ph_MeV_nm": y_exp,
+            })
+            all_rows.append(tmp)
 
-    for k, (pres, yield_total) in enumerate(spectra_con):
-        ax.plot(
-            wavelength,
-            yield_total,
-            color="blue",
-            label=f"Pred. {pres:.1f} bar"
+        ax.set_title(rf"{con:g}\% N$_2$")
+        ax.set_xlabel(r"$\lambda$ [nm]")
+        ax.set_ylabel(r"ph MeV$^{-1}$ nm$^{-1}$")
+        ax.set_xlim(300, 800)
+        ax.legend(fontsize=8, loc="upper right")
+        ax.grid(False)
+
+    for ax in axs:
+        ax.set_ylim(0, 1.05 * global_ymax)
+
+    
+    fig.suptitle(r"Primary Ar--N$_2$ spectra: model vs. experiment", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(OUT_DIR / "ArN2_concentration_comparation_ph_MeV_nm.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+    if all_rows:
+        pd.concat(all_rows, ignore_index=True).to_csv(
+            CSV_DIR / "ArN2_experimental_spectra_ph_MeV_nm.csv",
+            index=False,
         )
 
-        mask2 = df["P (bar)"] == pres   
-        dic = df[(mask1 & mask2)].iloc[0]["mean_spectrum"]
-
-        wavelen   = np.array(dic["wavelength"])
-        intensity = np.array(dic["intensity"])
-
-        if k==0:
-            factor = (np.max(yield_total))/(np.max(intensity))
-
-        ax.plot(
-            wavelen,
-            factor*intensity,
-            color="red",
-            label=f"Exp. {pres:.1f} bar"
-        )
+    print(f"Saved Ar-N2 comparison in {OUT_DIR}")
+    print("Experimental spectra: raw shape -> integrated ph/e- -> ph/MeV/nm using 1e6/W_ArN2(f).")
 
 
-    ax.set_title(f"{con:.1f} $\%$ N$_2$")
-    ax.set_xlabel(r"$\lambda$ [nm]")
-    ax.set_ylabel("ph/MeV/nm")
-    ax.grid(True, which='major', alpha=0.3)
-    ax.grid(True, which='minor', alpha=0.08)
-    ax.set_ylim(0, 1.5 * global_ymax)
-    ax.legend(ncol=2,loc="upper right")
-
-fig.suptitle(r"Primary Ar-N$_2$ Spectra Prediction", fontsize=14)
-fig.tight_layout()
-fig.savefig("plots_ArN2/ArN2_concentration_comparation.pdf", dpi=300, bbox_inches="tight")
-plt.show()
+if __name__ == "__main__":
+    main()

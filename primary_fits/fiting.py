@@ -1,6 +1,9 @@
 import numpy as np
 import scipy.optimize as opt
-import scienceplots
+try:
+    import scienceplots  # optional style package
+except ModuleNotFoundError:
+    scienceplots = None
 
 def fitParameters(
     equations,
@@ -12,6 +15,7 @@ def fitParameters(
     fixed_idx=None,
     fixed_values=None,
     fixed_error=np.nan,   # usa 0.0 si prefieres que los fijados salgan con error 0
+    verbose=0,
 ):
     """
     Ajusta parámetros con posibilidad de fijar algunos índices.
@@ -193,7 +197,7 @@ def fitParameters(
         x0_free,
         bounds=(lb_free, ub_free),
         method="trf",
-        verbose=2
+        verbose=verbose
     )
 
     # =========================================================
@@ -308,7 +312,10 @@ def fitParameters(
 
 
 import numpy as np
-import lmfit
+try:
+    import lmfit
+except ModuleNotFoundError:
+    lmfit = None
 from types import SimpleNamespace
 
 
@@ -359,6 +366,9 @@ def fitParameters_lmfit(
     **fit_kws :
         Argumentos extra para lmfit/scipy.
     """
+
+    if lmfit is None:
+        raise ModuleNotFoundError("lmfit is required for fitParameters_lmfit(). Use fitParameters() or install lmfit.")
 
     concentration = degrad_data["concentration"]
 
@@ -663,7 +673,10 @@ def fitParameters_lmfit(
 
 import numpy as np
 import scipy.optimize as opt
-import scienceplots
+try:
+    import scienceplots  # optional style package
+except ModuleNotFoundError:
+    scienceplots = None
 
 
 def fitParameters_minimize(

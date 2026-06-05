@@ -1,224 +1,185 @@
-import os
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import sys
-import seaborn as sns
 import scienceplots
-plt.style.use(['science', 'grid'])
-models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../models'))
-data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data'))
+plt.style.use("grid")
 
-sys.path.append(models_dir)
-sys.path.append(data_dir)
+from spectra_units import (
+    gaussian_pdf,
+    model_fit_unit_to_ph_per_MeV,
+    repo_root_from_script,
+    setup_science_style,
+    weighted_gaussian_sum,
+)
 
-from ArCF4 import *
-from ArCF4_infrarred import *
+ROOT_DIR = repo_root_from_script(__file__)
+MODELS_DIR = ROOT_DIR / "models"
+DATA_DIR = ROOT_DIR / "data"
+OUT_DIR = ROOT_DIR / "spectra_generator" / "plots_ArCF4"
+CSV_DIR = ROOT_DIR / "spectra_generator" / "spectra_csv" / "ArCF4"
 
-######################################33
+sys.path.insert(0, str(MODELS_DIR))
 
-DATA_DIR_EXP = "../data/Experimental/ArCF4/"
-DATA_DIR_DEGRAD = "../data/Primary_DegradData"
-DATA_DIR_PAR = "../data/Parameters"
+from ArCF4 import ion_potential, theory_yield_uv, theory_yield_vis  # noqa: E402
+from ArCF4_infrarred import (  # noqa: E402
+    theory_yield_ArCF4_Ir_696,
+    theory_yield_ArCF4_Ir_727,
+    theory_yield_ArCF4_Ir_750,
+    theory_yield_ArCF4_Ir_763,
+    theory_yield_ArCF4_Ir_772,
+    theory_yield_ArCF4_Ir_794,
+)
 
-yield_N2_uv  = pd.read_csv(os.path.join(DATA_DIR_EXP, "vis.csv"))
+setup_science_style(use_grid=False)
+OUT_DIR.mkdir(parents=True, exist_ok=True)
+CSV_DIR.mkdir(parents=True, exist_ok=True)
 
-degrad_data = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArCF4.csv"))
-degrad_data_IR = pd.read_csv(os.path.join(DATA_DIR_DEGRAD, "ArCF4_IR.csv"))
+# -----------------------------------------------------------------------------
+# Configuration
+# -----------------------------------------------------------------------------
+PRESSURES_BAR = [1, 2, 3, 4, 5, 10]
+CONCENTRATIONS_PERCENT = [0.1, 1, 10, 100]
+WAVELENGTH_NM = np.linspace(200.0, 800.0, 2000)
 
-parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_primary.csv"))["parameter"].to_numpy()
-parameter_data_IR = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_IR_primary.csv"))["parameter"].to_numpy()
+# Empirical spectral decomposition. The weights are relative and are normalised
+# internally, so the integral of each component equals the model yield.
+CF4_UV_PEAKS = [
+    (230.0, 20.0, 0.75),
+    (290.0, 20.0, 1.00),
+    (364.0, 40.0, 0.10),
+]
 
-norm = parameter_data[0].copy()
-print(parameter_data)
-parameter_data[0] = 1
-
-
-
-######################################33
-
-
-cf4_red_E0 = [0.2, 0.4, 0.7, 1.0, 2.0, 7.0, 10.0]
-y_red_E0   = [500, 700, 1050, 1450, 1950, 2400, 2550]
-yerr_red_E0= [70, 70, 80, 100, 120, 160, 170]
-
-# [400–750] nm, E = 100 V/cm (rojo abierto)
-cf4_red_E100 = [0.2, 0.4, 0.7, 1.0, 2.0, 7.0, 10.0]
-y_red_E100   = [450, 500, 600, 1150, 1300, 1850, 1900]
-yerr_red_E100= [60, 60, 60, 90, 100, 120, 120]
-
-
-
-cf4_pct = np.array([0, 1.0, 2.0, 5.0, 10, 20, 30, 50, 75, 100])/100
-
-# Potencial de ionización (según la columna Ar/CF4)
-ion_pot = np.array([26.4, 26.7, 26.9, 27.4, 28.1, 29.4, 30.2, 31.7, 33.0, 34.3])
-
-def ion_potential(f):
-    f_cf4 = np.asarray(f, dtype=float)
-    W=np.interp(f_cf4,cf4_pct,ion_pot)
-    return W
-
-def gaussiana(x,mu,sigma):
-    return (1 / (sigma * np.sqrt(2 * np.pi))) * np.exp(-0.5 * ((x - mu) / sigma)**2)
-
-######################################33
-
-fCF4 = np.logspace(-3,0,1000)
-
-
-equations = {
-    "696": theory_yield_ArCF4_Ir_696,
-    "727": theory_yield_ArCF4_Ir_727,
-    "750": theory_yield_ArCF4_Ir_750,
-    "763": theory_yield_ArCF4_Ir_763,
-    "772": theory_yield_ArCF4_Ir_772,
-    "794": theory_yield_ArCF4_Ir_794,
+IR_LINES = {
+    696.0: theory_yield_ArCF4_Ir_696,
+    727.0: theory_yield_ArCF4_Ir_727,
+    750.0: theory_yield_ArCF4_Ir_750,
+    763.0: theory_yield_ArCF4_Ir_763,
+    772.0: theory_yield_ArCF4_Ir_772,
+    794.0: theory_yield_ArCF4_Ir_794,
 }
 
+# -----------------------------------------------------------------------------
+# Data
+# -----------------------------------------------------------------------------
+degrad_data = pd.read_csv(DATA_DIR / "Primary_DegradData" / "ArCF4.csv")
+degrad_data_ir = pd.read_csv(DATA_DIR / "Primary_DegradData" / "ArCF4_IR.csv")
 
-print(parameter_data)
-
-
-cmap = "viridis"
-cmap_obj = plt.get_cmap(cmap)
-pressure = [1,2,3,4,5,10]#,2,3,4,5]
-colors = cmap_obj(np.linspace(0.15, 0.85, len(pressure)))
-concentrations = [0.1,1,10,100]
-
-wavelength = np.linspace(200,800,2000)
-
-for i,pres in enumerate(pressure):
-    plt.figure(figsize=(6,4))
-    for j,con in enumerate(concentrations):
-
-        yield_vis = (theory_yield_vis(parameter_data,degrad_data,np.array([con/100]),pres)) * (1/0.015) * ion_potential(con/100)
-
-        yield_uv, yield_cf4, yield_ArDbleStar, yield_cf3_uv = theory_yield_uv(
-            parameter_data, degrad_data, np.array([con/100]), pres, activate_components=True
-        )
-
-        factor = (1/0.015) * ion_potential(con/100)
-
-        yield_uv *= factor
-        yield_cf4 *= factor
-        yield_ArDbleStar *= factor
-        yield_cf3_uv *= factor
-                
-        print(yield_vis)
-        print(yield_uv)
-
-        plt.style.use(['science','grid'])
-        plt.grid(True, which='major', alpha=0.3)
-        plt.grid(True, which='minor', alpha=0.08)
-
-        yield_vis = yield_vis[0]*gaussiana(wavelength,630,40) 
-        yield_cf4_230 = (0.75/1.85) *  yield_cf4[0]*gaussiana(wavelength,230,20)
-        yield_cf4_290 = (1.0/1.85) * yield_cf4[0]*gaussiana(wavelength,290,20)
-        yield_cf4_364 = (0.1/1.85) *  yield_cf4[0]*gaussiana(wavelength,364,40)
-        yield_cf4 = yield_cf4_230 + yield_cf4_290 + yield_cf4_364
-        yield_arDbleStar = yield_ArDbleStar[0]*gaussiana(wavelength,220,60)
-        yield_CF3 = yield_cf3_uv[0]*gaussiana(wavelength,245,60)
-        
-        yield_total = yield_vis + yield_cf4 + yield_arDbleStar + yield_CF3
-
-        for name, yield_IR in equations.items():
-            yield_ir = yield_IR(
-                parameter_data_IR, degrad_data_IR, np.array([con/100]), pres
-            )
-            yield_total += (factor/norm) * yield_ir[0] * gaussiana(wavelength, float(name), 2.5)
+params_uv_vis = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_primary.csv")["parameter"].to_numpy(dtype=float)
+params_ir = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_IR_primary.csv")["parameter"].to_numpy(dtype=float)
 
 
-        plt.plot(wavelength,yield_total,label=f"{con:.1f} $\%$ CF$_4$")
+def arcf4_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_bar: float) -> np.ndarray:
+    """
+    Build the primary Ar-CF4 spectrum in ph/MeV/nm.
 
-        plt.ylabel("ph/MeV/nm")
-        plt.xlabel("$\lambda$ [nm]")
-        plt.title(f"Primary Ar-CF4 Spectra Prediction {pres:.1f} bar")
-        plt.legend()
-        plt.legend()
-        plt.savefig(f"plots_ArCF4/ArCF4_{pres:.1f}bar.pdf")
+    The fitted primary model functions were adjusted to experimental yields after
+    division by W(f), i.e. in ph/eV. Therefore the final conversion to ph/MeV is
+    simply a factor 1e6. The fitted normalisation is kept; we do not set
+    N_norm=1 and we do not use the old W/0.015 conversion.
+    """
+    f_cf4 = concentration_percent / 100.0
+    f_arr = np.array([f_cf4], dtype=float)
 
-#####
+    y_vis = model_fit_unit_to_ph_per_MeV(
+        theory_yield_vis(params_uv_vis, degrad_data, f_arr, pressure_bar)
+    )[0]
 
+    _, y_cf4, y_ar_dblestar, y_cf3_uv = theory_yield_uv(
+        params_uv_vis,
+        degrad_data,
+        f_arr,
+        pressure_bar,
+        activate_components=True,
+    )
+    y_cf4 = model_fit_unit_to_ph_per_MeV(y_cf4)[0]
+    y_ar_dblestar = model_fit_unit_to_ph_per_MeV(y_ar_dblestar)[0]
+    y_cf3_uv = model_fit_unit_to_ph_per_MeV(y_cf3_uv)[0]
 
+    spectrum = np.zeros_like(WAVELENGTH_NM, dtype=float)
+    spectrum += y_vis * gaussian_pdf(WAVELENGTH_NM, 630.0, 40.0)
+    spectrum += weighted_gaussian_sum(WAVELENGTH_NM, y_cf4, CF4_UV_PEAKS)
+    spectrum += y_ar_dblestar * gaussian_pdf(WAVELENGTH_NM, 220.0, 60.0)
+    spectrum += y_cf3_uv * gaussian_pdf(WAVELENGTH_NM, 245.0, 60.0)
 
-# Guardamos todo primero
-all_spectra = []
-global_ymax = 0
+    for line_nm, func in IR_LINES.items():
+        y_ir = model_fit_unit_to_ph_per_MeV(
+            func(params_ir, degrad_data_ir, f_arr, pressure_bar)
+        )[0]
+        spectrum += y_ir * gaussian_pdf(WAVELENGTH_NM, line_nm, 2.5)
 
-for con in concentrations:
-    spectra_con = []
-
-    for pres in pressure:
-        yield_vis = theory_yield_vis(
-            parameter_data, degrad_data, np.array([con/100]), pres
-        ) * (1/0.015) * ion_potential(con/100)
-
-        yield_uv, yield_cf4, yield_ArDbleStar, yield_cf3_uv = theory_yield_uv(
-            parameter_data, degrad_data, np.array([con/100]), pres, activate_components=True
-        )
-
-        factor = (1/0.015) * ion_potential(con/100)
-
-        yield_uv *= factor
-        yield_cf4 *= factor
-        yield_ArDbleStar *= factor
-        yield_cf3_uv *= factor
-
-        yield_vis_spec = yield_vis[0] * gaussiana(wavelength, 630, 40)
-
-        yield_cf4_230 = (0.8/1.85) * yield_cf4[0] * gaussiana(wavelength, 230, 20)
-        yield_cf4_290 = (0.95/1.85) * yield_cf4[0] * gaussiana(wavelength, 290, 20)
-        yield_cf4_364 = (0.10/1.85) * yield_cf4[0] * gaussiana(wavelength, 364, 40)
-        yield_cf4_spec = yield_cf4_230 + yield_cf4_290 + yield_cf4_364
-
-        yield_arDbleStar_spec = yield_ArDbleStar[0] * gaussiana(wavelength, 220, 60)
-        yield_CF3_spec = yield_cf3_uv[0] * gaussiana(wavelength, 245, 60)
+    return spectrum
 
 
-        yield_total = (
-            yield_vis_spec
-            + yield_cf4_spec
-            + yield_arDbleStar_spec
-            + yield_CF3_spec
-        )
+def save_pressure_csv(pressure_bar: float, spectra: dict[float, np.ndarray]) -> None:
+    df = pd.DataFrame({"wavelength_nm": WAVELENGTH_NM})
+    for con, y in spectra.items():
+        df[f"{con:g}_percent_CF4_ph_MeV_nm"] = y
+    df.to_csv(CSV_DIR / f"ArCF4_{pressure_bar:g}bar_spectra_ph_MeV_nm.csv", index=False)
 
 
-        for name, yield_IR in equations.items():
-            yield_ir = yield_IR(
-                parameter_data_IR, degrad_data_IR, np.array([con/100]), pres
-            )
-            yield_total += (factor/norm) * yield_ir[0] * gaussiana(wavelength, float(name), 2.5)
+def main() -> None:
+    cmap = plt.get_cmap("viridis")
+    colors_con = cmap(np.linspace(0.15, 0.85, len(CONCENTRATIONS_PERCENT)))
+    colors_pres = cmap(np.linspace(0.15, 0.85, len(PRESSURES_BAR)))
+
+    all_spectra: dict[float, dict[float, np.ndarray]] = {}
+    global_ymax = 0.0
+
+    # One figure per pressure, curves for concentrations.
+    for pressure_bar in PRESSURES_BAR:
+        spectra_at_pressure = {}
+        fig, ax = plt.subplots(figsize=(6.2, 4.2))
+
+        for color, con in zip(colors_con, CONCENTRATIONS_PERCENT):
+            y = arcf4_primary_spectrum_ph_per_MeV_nm(con, pressure_bar)
+            spectra_at_pressure[con] = y
+            global_ymax = max(global_ymax, float(np.nanmax(y)))
+            ax.plot(WAVELENGTH_NM, y, color=color, lw=2, label=rf"{con:g}\% CF$_4$")
+
+        save_pressure_csv(pressure_bar, spectra_at_pressure)
+        all_spectra[pressure_bar] = spectra_at_pressure
+
+        ax.set_xlabel(r"$\lambda$ [nm]")
+        ax.set_ylabel(r"ph MeV$^{-1}$ nm$^{-1}$")
+        ax.set_title(rf"Primary Ar--CF$_4$ spectrum, {pressure_bar:g} bar")
+        ax.set_xlim(200, 800)
+        ax.set_ylim(bottom=0)
+        ax.legend(ncols=2, fontsize=9)
+        fig.tight_layout()
+        fig.savefig(OUT_DIR / f"ArCF4_{pressure_bar:g}bar_ph_MeV_nm.pdf", bbox_inches="tight")
+        plt.close(fig)
+
+    # Four-panel figure: one panel per concentration, pressure scan.
+    fig, axs = plt.subplots(2, 2, figsize=(9.2, 6.4), sharex=True, sharey=True)
+    axs = axs.ravel()
+
+    for ax, con in zip(axs, CONCENTRATIONS_PERCENT):
+        for color, pressure_bar in zip(colors_pres, PRESSURES_BAR):
+            y = all_spectra[pressure_bar][con]
+            ax.plot(WAVELENGTH_NM, y, color=color, lw=2, label=rf"{pressure_bar:g} bar")
+
+        ax.set_title(rf"Ar--CF$_4$, {con:g}\% CF$_4$")
+        ax.set_xlabel(r"$\lambda$ [nm]")
+        ax.set_ylabel(r"ph MeV$^{-1}$ nm$^{-1}$")
+        ax.set_xlim(200, 800)
+        ax.set_ylim(0, 1.05 * global_ymax)
+        ax.legend(ncols=2, fontsize=8, loc="upper right")
+
+    fig.suptitle(r"Primary Ar--CF$_4$ spectra", fontsize=14)
+    fig.tight_layout()
+    fig.savefig(OUT_DIR / "ArCF4_concentration_ph_MeV_nm.pdf", bbox_inches="tight")
+    plt.close(fig)
+
+    print(f"Saved Ar-CF4 spectra in {OUT_DIR}")
+    print(f"Saved Ar-CF4 CSV spectra in {CSV_DIR}")
+    print("Unit conversion: model ph/eV -> ph/MeV with factor 1e6.")
+    print("W_ArCF4(f) is used only for experimental ph/e- spectra in comparison scripts.")
 
 
-        spectra_con.append((pres, yield_total))
-        global_ymax = max(global_ymax, np.max(yield_total))
-
-    all_spectra.append((con, spectra_con))
-
-
-# Figura con 4 subplots
-fig, axs = plt.subplots(2, 2, figsize=(9, 6), sharex=True, sharey=True)
-axs = axs.ravel()
-
-for ax, (con, spectra_con) in zip(axs, all_spectra):
-    for k, (pres, yield_total) in enumerate(spectra_con):
-        ax.plot(
-            wavelength,
-            yield_total,
-            color=colors[k],
-            label=f"{pres:.1f} bar"
-        )
-
-    ax.set_title(f"Ar {100-con:.1f} $\%$ CF$_4$ {con:.1f} $\%$ ")
-    ax.set_xlabel(r"$\lambda$ [nm]")
-    ax.set_ylabel("ph/MeV/nm")
-    ax.grid(True, which='major', alpha=0.3)
-    ax.grid(True, which='minor', alpha=0.08)
-    ax.set_ylim(0, global_ymax * 1.05)
-    ax.legend(ncols=2,loc="upper right")
-
-fig.suptitle("Primary Ar-CF$_4$ Spectra Prediction", fontsize=14)
-fig.tight_layout()
-fig.savefig("plots_ArCF4/ArCF4_concentration.pdf", dpi=300, bbox_inches="tight")
-plt.show()
+if __name__ == "__main__":
+    main()

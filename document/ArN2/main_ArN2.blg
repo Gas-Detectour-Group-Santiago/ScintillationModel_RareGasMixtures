@@ -1,0 +1,18 @@
+[0] Config.pm:307> INFO - This is Biber 2.19
+[0] Config.pm:310> INFO - Logfile is 'main_ArN2.blg'
+[63] biber:340> INFO - === jue jun  4, 2026, 09:48:52
+[76] Biber.pm:419> INFO - Reading 'main_ArN2.bcf'
+[130] Biber.pm:979> INFO - Found 37 citekeys in bib section 0
+[141] Biber.pm:4419> INFO - Processing section 0
+[149] Biber.pm:4610> INFO - Looking for bibtex file 'sample.bib' for section 0
+[153] bibtex.pm:1713> INFO - LaTeX decoding ...
+[214] bibtex.pm:1519> INFO - Found BibTeX data source 'sample.bib'
+[605] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[605] UCollate.pm:68> INFO - Overriding locale 'es-ES' defaults 'variable = shifted' with 'variable = non-ignorable'
+[605] Biber.pm:4239> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'es-ES'
+[628] bbl.pm:660> INFO - Writing 'main_ArN2.bbl' with encoding 'UTF-8'
+[647] bbl.pm:763> INFO - Output to main_ArN2.bbl
+[647] Biber.pm:131> WARN - Duplicate entry key: 'washida1983emission' in file 'sample.bib', skipping ...
+[647] Biber.pm:131> WARN - Duplicate entry key: 'Virtanen2020SciPy' in file 'sample.bib', skipping ...
+[647] Biber.pm:131> WARN - BibTeX subsystem: /tmp/biber_tmp_N6Vu/4f254e11deca8776044b2c0962cb1230_216487.utf8, line 840, warning: 3 characters of junk seen at toplevel
+[647] Biber.pm:133> INFO - WARNINGS: 3

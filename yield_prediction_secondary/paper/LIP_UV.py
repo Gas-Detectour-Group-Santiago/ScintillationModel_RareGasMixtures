@@ -567,7 +567,7 @@ ax.set_title(r"LIP GEM 0.050 mm: Ar-CF$_4$ and He-CF$_4$ UV")
 
 ax.set_xlim(4, 120)
 ax.set_ylim(5e-3, 0.6)
-
+"0.55",
 ax.legend(loc="lower left", fontsize=7.2, frameon=True, ncol=2)
 
 plt.tight_layout()

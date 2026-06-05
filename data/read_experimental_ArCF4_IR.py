@@ -2,7 +2,10 @@ import os
 import re
 import numpy as np
 import pandas as pd
-import dill
+try:
+    import dill
+except ModuleNotFoundError:  # fallback for environments without dill
+    import pickle as dill
 import scipy.special
 import importlib
 import matplotlib.pyplot as plt

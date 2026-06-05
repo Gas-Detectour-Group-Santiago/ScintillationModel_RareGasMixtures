@@ -179,8 +179,8 @@ experimental_data = {
 
 popt = fitParameters(equations, experimental_data, 
                      degrad_data, x0=x0, bounds=bounds,
-                     fixed_idx=[6,8,10],
-                     fixed_values = [0.065, 50.05, 0.0001],
+                     fixed_idx=[6,8],
+                     fixed_values = [0.065, 50.05],
                      #fixed_error=[0.01],
                      #is_infrared=True
                      )

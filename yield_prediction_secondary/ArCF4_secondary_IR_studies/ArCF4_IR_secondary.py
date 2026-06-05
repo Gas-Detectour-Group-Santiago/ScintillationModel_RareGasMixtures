@@ -5,8 +5,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import scienceplots
 
-plt.style.use("grid")
-
 
 models_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../models"))
 data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../data"))
@@ -410,96 +408,189 @@ ar_cf4_sum_err_ir_Florian_50mbar = np.sqrt(
     + ar_cf4_794_err_ir_Florian_50mbar**2
 ) * 25e-1
 # ============================================================
-# 5) PREDICCIÓN IR
+# 5) PREDICCIÓN IR CON BANDAS PRIMARIAS
 # ============================================================
-plt.figure(figsize=(6, 4))
+# Las bandas se leen de los pseudoexperimentos generados por
+# yield_prediction_bands/ArCF4_IR_bands_toy_stat.py.
+# Importante: aquí NO se propaga ninguna incertidumbre de normalización.  Se usa
+# solo norm[i] central, y las curvas de banda varían únicamente los parámetros
+# IR primarios guardados en el .npz.
 
-cmap = "viridis"
-cmap_obj = plt.get_cmap(cmap)
+bands_payload = os.path.abspath(
+    os.path.join(
+        os.path.dirname(__file__),
+        "../../data/sistematic_stadistic_data/ArCF4_IR_primary_toy_parameters.npz",
+    )
+)
+bands_output_dir = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../data/sistematic_stadistic_data")
+)
+os.makedirs(bands_output_dir, exist_ok=True)
+
+if os.path.exists(bands_payload):
+    toy_payload = np.load(bands_payload, allow_pickle=True)
+    parameter_data_nominal = toy_payload["nominal"].astype(float)
+    parameter_data_stat = toy_payload["stat"].astype(float)
+    parameter_data_syst = toy_payload["syst"].astype(float)
+    print("Band payload loaded:", bands_payload)
+else:
+    parameter_data_nominal = parameter_data.copy()
+    parameter_data_stat = np.empty((0, len(parameter_data_nominal)))
+    parameter_data_syst = np.empty((0, len(parameter_data_nominal)))
+    print("WARNING: no band payload found. Run yield_prediction_bands/ArCF4_IR_bands_toy_stat.py first.")
+
+# La línea central del secundario usa la línea óptima primaria guardada en el payload.
+parameter_data = parameter_data_nominal.copy()
+
+
+def total_ir_secondary_model(par, subset, f_grid, pressure_value, npe_value, norm_value):
+    total = theory_yield_ArCF4_Ir_696(par, subset, f_grid, pressure_value)
+    total += theory_yield_ArCF4_Ir_727(par, subset, f_grid, pressure_value)
+    total += theory_yield_ArCF4_Ir_750(par, subset, f_grid, pressure_value)
+    total += theory_yield_ArCF4_Ir_763(par, subset, f_grid, pressure_value)
+    total += theory_yield_ArCF4_Ir_772(par, subset, f_grid, pressure_value)
+    total += theory_yield_ArCF4_Ir_794(par, subset, f_grid, pressure_value)
+    return total * 15.0 / npe_value / norm_value
+
+
+def percentile_band_from_params(params, model_func, y0):
+    if params.ndim != 2 or len(params) == 0:
+        return y0.copy(), y0.copy()
+    curves = []
+    for par in params:
+        try:
+            curves.append(np.asarray(model_func(par), dtype=float))
+        except Exception:
+            pass
+    if len(curves) == 0:
+        return y0.copy(), y0.copy()
+    return np.nanpercentile(np.asarray(curves), [16, 84], axis=0)
+
+
+plt.figure(figsize=(6.4, 4.3))
+
+plt.style.use("grid")
+
+cmap_obj = plt.get_cmap("viridis")
 colors = cmap_obj(np.linspace(0.15, 0.85, len(gaps)))
-
-plt.grid(False)
-# plt.grid(True, which='major', alpha=0.3)
-# plt.grid(True, which='minor', alpha=0.08)
-
-cmap = "viridis"
-cmap_obj = plt.get_cmap(cmap)
-colors = cmap_obj(np.linspace(0.15, 0.85, 3))
 
 for i, gap in enumerate(gaps):
     mask1 = garfield_data["gap_mm"] == gap
     mask2 = garfield_data["electric_field"] > electricField[i]
-    mask3 =  np.isclose(garfield_data["pressure"],pressure[i],atol=0.05)
+    mask3 = np.isclose(garfield_data["pressure"], pressure[i], atol=0.05)
     subset = garfield_data[(mask1 & mask2 & mask3)].copy()
-  
-    yield_teo = theory_yield_ArCF4_Ir_696(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
-    yield_teo += theory_yield_ArCF4_Ir_727(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
-    yield_teo += theory_yield_ArCF4_Ir_750(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
-    yield_teo += theory_yield_ArCF4_Ir_763(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
-    yield_teo += theory_yield_ArCF4_Ir_772(parameter_data, subset, fN2, pressure[i]) * 15 / npe[i] / norm[i]
 
+    if subset.empty:
+        print(f"WARNING: empty Garfield subset for gap={gap}, pressure={pressure[i]}")
+        continue
 
+    def _model(par, subset=subset, pressure_value=pressure[i], npe_value=npe[i], norm_value=norm[i]):
+        return total_ir_secondary_model(par, subset, fN2, pressure_value, npe_value, norm_value)
 
+    yield_teo = _model(parameter_data)
+    y_stat_low, y_stat_high = percentile_band_from_params(parameter_data_stat, _model, yield_teo)
+    y_syst_low, y_syst_high = percentile_band_from_params(parameter_data_syst, _model, yield_teo)
+
+    curve_df = pd.DataFrame({
+        "x_percent": fN2 * 100,
+        "y_nominal_ph_per_e": yield_teo,
+        "stat_low_ph_per_e": y_stat_low,
+        "stat_high_ph_per_e": y_stat_high,
+        "syst_low_ph_per_e": y_syst_low,
+        "syst_high_ph_per_e": y_syst_high,
+        "gap_mm": gap,
+        "pressure_bar": pressure[i],
+        "npe": npe[i],
+        "norm_central": norm[i],
+    })
+    curve_df.to_csv(
+        os.path.join(
+            bands_output_dir,
+            f"ArCF4_IR_secondary_band_gap{gap:g}_p{pressure[i]:g}bar.csv".replace(".", "p"),
+        ),
+        index=False,
+    )
+
+    plt.fill_between(
+        fN2 * 100,
+        y_syst_low,
+        y_syst_high,
+        color=colors[i],
+        alpha=0.24,
+        label="Sistemático" if i == 0 else None,
+    )
+    plt.fill_between(
+        fN2 * 100,
+        y_stat_low,
+        y_stat_high,
+        color=colors[i],
+        alpha=0.22,
+        label="Estadístico" if i == 0 else None,
+    )
     plt.plot(
         fN2 * 100,
         yield_teo,
         color=colors[i],
-        label=f"{gap} mm {pressure[i]:.3f} bar"
+        lw=2.0,
+        label=f"{gap:g} mm, {pressure[i]:.3g} bar",
     )
-    
-plt.errorbar(
-        concentration_cf4,
-        ar_cf4_sum_ir_LIP,
-        yerr= ar_cf4_sum_err_ir_LIP,
-        marker="o",
-        linestyle="none",
-        ms=5,
-        color=colors[0],
-        elinewidth=1,
-        capsize=2,
-        label = "1 bar GEM LIP"
-)
-label=f"{gap} mm prediction {pressure[i]:.3f} bar"
 
 plt.errorbar(
-        [20],
-        ar_cf4_sum_ir_Florian_1bar,
-        yerr= ar_cf4_sum_err_ir_Florian_1bar,
-        marker="o",
-        linestyle="none",
-        ms=5,
-        color=colors[1],
-        elinewidth=1,
-        capsize=2,
-        label = "1 bar th-GEM Florian"
+    concentration_cf4,
+    ar_cf4_sum_ir_LIP,
+    yerr=ar_cf4_sum_err_ir_LIP,
+    marker="o",
+    linestyle="none",
+    ms=5,
+    color=colors[0],
+    ecolor=colors[0],
+    markerfacecolor="white",
+    elinewidth=1,
+    capsize=2,
+    label="1 bar GEM LIP",
 )
-
 
 plt.errorbar(
-        [20],
-        ar_cf4_sum_ir_Florian_50mbar,
-        yerr= ar_cf4_sum_err_ir_Florian_50mbar,
-        marker="o",
-        linestyle="none",
-        ms=5,
-        color=colors[2],
-        elinewidth=1,
-        capsize=2,
-        label = "50 mbar th-GEM Florian"
+    [20],
+    ar_cf4_sum_ir_Florian_1bar,
+    yerr=ar_cf4_sum_err_ir_Florian_1bar,
+    marker="s",
+    linestyle="none",
+    ms=5,
+    color=colors[1],
+    ecolor=colors[1],
+    elinewidth=1,
+    capsize=2,
+    label="1 bar th-GEM Florian",
 )
 
-plt.title("NIR (680-800nm) Yield Prediction for Ar/CF mixture")
+plt.errorbar(
+    [20],
+    ar_cf4_sum_ir_Florian_50mbar,
+    yerr=ar_cf4_sum_err_ir_Florian_50mbar,
+    marker="^",
+    linestyle="none",
+    ms=5,
+    color=colors[2],
+    ecolor=colors[2],
+    elinewidth=1,
+    capsize=2,
+    label="50 mbar th-GEM Florian",
+)
+
+
+plt.title("Secondary Ar--CF$_4$ NIR yield prediction")
 plt.xscale("log")
 plt.yscale("log")
-plt.xlim(1e0,8e1)
-plt.ylim(1e-4,2e0)
+plt.xlim(1e0, 8e1)
+plt.ylim(1e-3, 2e0)
 plt.ylabel("ph/e$^-$")
-plt.xlabel("CF$_4$ concentration [\%]")
-plt.legend()
+plt.xlabel(r"CF$_4$ concentration [\%]")
+plt.grid(False)
+plt.legend(fontsize=8, ncol=2,)
 plt.tight_layout()
-plt.savefig(os.path.join(plots_dir, "ArCF4_IR_secondary.pdf"))
+plt.savefig(os.path.join(plots_dir, "ArCF4_IR_secondary_with_bands.pdf"), bbox_inches="tight")
+plt.close()
 
+print("Secondary IR bands saved in:", bands_output_dir)
 
-# ============================================================
-# 6) PREDICCIÓN IR per BAND
-# ============================================================

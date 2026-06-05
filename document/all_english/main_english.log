@@ -1,0 +1,2129 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.3.8)  4 JUN 2026 10:08
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/daniel/GitHub/ScintillationModel_RareGasMixtures/document/all_english/main_english.tex
+(/home/daniel/GitHub/ScintillationModel_RareGasMixtures/document/all_english/main_english.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-01-22>
+(/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(/usr/share/texlive/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count187
+\c@section=\count188
+\c@subsection=\count189
+\c@subsubsection=\count190
+\c@paragraph=\count191
+\c@subparagraph=\count192
+\c@figure=\count193
+\c@table=\count194
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+) (/usr/share/texlive/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+) (/usr/share/texlive/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks17
+\inpenc@posthook=\toks18
+)
+   defining Unicode char U+2032 (decimal 8242)
+ (/usr/share/texlive/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2024/01/07 v24.1 The Babel package
+\babel@savecnt=\count195
+\U@D=\dimen141
+\l@unhyphenated=\language89
+ (/usr/share/texlive/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read2
+\bbl@dirlevel=\count196
+ (/usr/share/texlive/texmf-dist/tex/generic/babel-english/english.ldf
+Language: english 2017/06/06 v3.3r English support from the babel system
+Package babel Info: Hyphen rules for 'canadian' set to \l@english
+(babel)             (\language0). Reported on input line 102.
+Package babel Info: Hyphen rules for 'australian' set to \l@ukenglish
+(babel)             (\language77). Reported on input line 105.
+Package babel Info: Hyphen rules for 'newzealand' set to \l@ukenglish
+(babel)             (\language77). Reported on input line 108.
+)) (/usr/share/texlive/texmf-dist/tex/generic/babel/locale/en/babel-english.tex
+Package babel Info: Importing font and identification data for english
+(babel)             from babel-en.ini. Reported on input line 11.
+) (/usr/share/texlive/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks19
+) (/usr/share/texlive/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+ (/usr/share/texlive/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+))
+\Gm@cnth=\count197
+\Gm@cntv=\count198
+\c@Gm@tempcnt=\count199
+\Gm@bindingoffset=\dimen142
+\Gm@wd@mp=\dimen143
+\Gm@odd@mp=\dimen144
+\Gm@even@mp=\dimen145
+\Gm@layoutwidth=\dimen146
+\Gm@layoutheight=\dimen147
+\Gm@layouthoffset=\dimen148
+\Gm@layoutvoffset=\dimen149
+\Gm@dimlist=\toks20
+) (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.sty
+Package: microtype 2023/03/13 v3.1a Micro-typographical refinements (RS)
+ (/usr/share/texlive/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count266
+)
+\MT@toks=\toks21
+\MT@tempbox=\box51
+\MT@count=\count267
+LaTeX Info: Redefining \noprotrusionifhmode on input line 1059.
+LaTeX Info: Redefining \leftprotrusion on input line 1060.
+\MT@prot@toks=\toks22
+LaTeX Info: Redefining \rightprotrusion on input line 1078.
+LaTeX Info: Redefining \textls on input line 1368.
+\MT@outer@kern=\dimen150
+LaTeX Info: Redefining \textmicrotypecontext on input line 1988.
+\MT@listname@count=\count268
+ (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+File: microtype-pdftex.def 2023/03/13 v3.1a Definitions specific to pdftex (RS)
+LaTeX Info: Redefining \lsstyle on input line 902.
+LaTeX Info: Redefining \lslig on input line 902.
+\MT@outer@space=\skip50
+)
+Package microtype Info: Loading configuration file microtype.cfg.
+ (/usr/share/texlive/texmf-dist/tex/latex/microtype/microtype.cfg
+File: microtype.cfg 2023/03/13 v3.1a microtype main configuration file (RS)
+)) (/usr/share/texlive/texmf-dist/tex/latex/newtx/newtxtext.sty
+Package: newtxtext 2024/01/11 v1.737(Michael Sharpe) latex and unicode latex support for TeXGyreTermesX
+ `newtxtext' v1.737, 2024/01/11 Text macros taking advantage of TeXGyre Termes and its extensions (msharpe) (/usr/share/texlive/texmf-dist/tex/latex/xpatch/xpatch.sty (/usr/share/texlive/texmf-dist/tex/latex/l3kernel/expl3.sty
+Package: expl3 2024-01-22 L3 programming layer (loader) 
+ (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count269
+\l__pdf_internal_box=\box52
+))
+Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
+ (/usr/share/texlive/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
+Package: xparse 2023-10-10 L3 Experimental document command parser
+)) (/usr/share/texlive/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+) (/usr/share/texlive/texmf-dist/tex/latex/xkeyval/xkeyval.sty
+Package: xkeyval 2022/06/16 v2.9 package option processing (HA)
+ (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkvutils.tex
+\XKV@toks=\toks23
+\XKV@tempa@toks=\toks24
+)
+\XKV@depth=\count270
+File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
+)) (/usr/share/texlive/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+) (/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.sty (/usr/share/texlive/texmf-dist/tex/generic/xstring/xstring.tex
+\xs_counta=\count271
+\xs_countb=\count272
+)
+Package: xstring 2023/08/22 v1.86 String manipulations (CT)
+) (/usr/share/texlive/texmf-dist/tex/latex/base/ifthen.sty
+Package: ifthen 2022/04/13 v1.1d Standard LaTeX ifthen package (DPC)
+) (/usr/share/texlive/texmf-dist/tex/latex/carlisle/scalefnt.sty)
+LaTeX Font Info:    Setting ntxLF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxTLF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxOsF sub-encoding to TS1/0 on input line 24.
+LaTeX Font Info:    Setting ntxTOsF sub-encoding to TS1/0 on input line 24.
+ (/usr/share/texlive/texmf-dist/tex/generic/kastrup/binhex.tex)
+\ntx@tmpcnta=\count273
+\ntx@cnt=\count274
+ (/usr/share/texlive/texmf-dist/tex/latex/fontaxes/fontaxes.sty
+Package: fontaxes 2020/07/21 v1.0e Font selection axes
+LaTeX Info: Redefining \upshape on input line 29.
+LaTeX Info: Redefining \itshape on input line 31.
+LaTeX Info: Redefining \slshape on input line 33.
+LaTeX Info: Redefining \swshape on input line 35.
+LaTeX Info: Redefining \scshape on input line 37.
+LaTeX Info: Redefining \sscshape on input line 39.
+LaTeX Info: Redefining \ulcshape on input line 41.
+LaTeX Info: Redefining \textsw on input line 47.
+LaTeX Info: Redefining \textssc on input line 48.
+LaTeX Info: Redefining \textulc on input line 49.
+)
+\tx@sixem=\dimen151
+\tx@y=\dimen152
+\tx@x=\dimen153
+\tx@tmpdima=\dimen154
+\tx@tmpdimb=\dimen155
+\tx@tmpdimc=\dimen156
+\tx@tmpdimd=\dimen157
+\tx@tmpdime=\dimen158
+\tx@tmpdimf=\dimen159
+\tx@dimA=\dimen160
+\tx@dimAA=\dimen161
+\tx@dimB=\dimen162
+\tx@dimBB=\dimen163
+\tx@dimC=\dimen164
+LaTeX Info: Redefining \oldstylenums on input line 893.
+) (/usr/share/texlive/texmf-dist/tex/latex/newtx/newtxmath.sty
+Package: newtxmath 2023/11/05 v1.732
+ `newtxmath' v1.732, 2023/11/05 Math macros based originally on txfonts (msharpe) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip51
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+ (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks25
+\ex@=\dimen165
+)) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen166
+) (/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count275
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count276
+\leftroot@=\count277
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count278
+\DOTSCASE@=\count279
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box53
+\strutbox@=\box54
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen167
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count280
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count281
+\dotsspace@=\muskip16
+\c@parentequation=\count282
+\dspbrk@lvl=\count283
+\tag@help=\toks26
+\row@=\count284
+\column@=\count285
+\maxfields@=\count286
+\andhelp@=\toks27
+\eqnshift@=\dimen168
+\alignsep@=\dimen169
+\tagshift@=\dimen170
+\tagwidth@=\dimen171
+\totwidth@=\dimen172
+\lineht@=\dimen173
+\@envbody=\toks28
+\multlinegap=\skip52
+\multlinetaggap=\skip53
+\mathdisplay@stack=\toks29
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/centernot.sty
+Package: centernot 2016/05/16 v1.4 Centers the not symbol horizontally (HO)
+)
+\tx@cntz=\count287
+ (/usr/share/texlive/texmf-dist/tex/generic/kastrup/binhex.tex)
+\tx@Isdigit=\count288
+\tx@IsAlNum=\count289
+\tx@tA=\toks30
+\tx@tB=\toks31
+\tx@su=\read3
+
+amsthm NOT loaded
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 390.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/minntx/m/n on input line 390.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/m/n on input line 390.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/minntx/m/n --> OT1/minntx/b/n on input line 391.
+LaTeX Font Info:    Redeclaring math alphabet \mathsf on input line 397.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> T1/qhv/m/n on input line 397.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> T1/qhv/m/n on input line 397.
+LaTeX Font Info:    Redeclaring math alphabet \mathit on input line 398.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/minntx/m/it on input line 398.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/minntx/m/it on input line 398.
+LaTeX Font Info:    Redeclaring math alphabet \mathtt on input line 399.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> T1/ntxtt/m/n on input line 399.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> T1/ntxtt/m/n on input line 399.
+LaTeX Font Info:    Redeclaring math alphabet \mathbf on input line 401.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/b/n on input line 401.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/minntx/b/n on input line 401.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/minntx/m/it --> OT1/minntx/b/it on input line 402.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  T1/qhv/m/n --> T1/qhv/b/n on input line 403.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  T1/ntxtt/m/n --> T1/ntxtt/b/n on input line 404.
+LaTeX Font Info:    Redeclaring symbol font `letters' on input line 506.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/ntxmi/m/it on input line 506.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/ntxmi/m/it on input line 506.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/ntxmi/m/it --> OML/ntxmi/b/it on input line 507.
+\symlettersA=\mathgroup4
+LaTeX Font Info:    Overwriting symbol font `lettersA' in version `bold'
+(Font)                  U/ntxmia/m/it --> U/ntxmia/b/it on input line 562.
+Now handling font encoding LMS ...
+... no UTF-8 mapping file for font encoding LMS
+LaTeX Font Info:    Redeclaring symbol font `symbols' on input line 583.
+LaTeX Font Info:    Encoding `OMS' has changed to `LMS' for symbol font
+(Font)              `symbols' in the math version `normal' on input line 583.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> LMS/ntxsy/m/n on input line 583.
+LaTeX Font Info:    Encoding `OMS' has changed to `LMS' for symbol font
+(Font)              `symbols' in the math version `bold' on input line 583.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> LMS/ntxsy/m/n on input line 583.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  LMS/ntxsy/m/n --> LMS/ntxsy/b/n on input line 584.
+\symAMSm=\mathgroup5
+LaTeX Font Info:    Overwriting symbol font `AMSm' in version `bold'
+(Font)                  U/ntxsym/m/n --> U/ntxsym/b/n on input line 609.
+\symsymbolsC=\mathgroup6
+LaTeX Font Info:    Overwriting symbol font `symbolsC' in version `bold'
+(Font)                  U/ntxsyc/m/n --> U/ntxsyc/b/n on input line 630.
+Now handling font encoding LMX ...
+... no UTF-8 mapping file for font encoding LMX
+LaTeX Font Info:    Redeclaring symbol font `largesymbols' on input line 643.
+LaTeX Font Info:    Encoding `OMX' has changed to `LMX' for symbol font
+(Font)              `largesymbols' in the math version `normal' on input line 643.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> LMX/ntxexx/m/n on input line 643.
+LaTeX Font Info:    Encoding `OMX' has changed to `LMX' for symbol font
+(Font)              `largesymbols' in the math version `bold' on input line 643.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> LMX/ntxexx/m/n on input line 643.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  LMX/ntxexx/m/n --> LMX/ntxexx/b/n on input line 644.
+\symlargesymbolsTXA=\mathgroup7
+LaTeX Font Info:    Overwriting symbol font `largesymbolsTXA' in version `bold'
+(Font)                  U/ntxexa/m/n --> U/ntxexa/b/n on input line 658.
+\tx@sbptoks=\toks32
+LaTeX Font Info:    Redeclaring math delimiter \lfloor on input line 881.
+LaTeX Font Info:    Redeclaring math delimiter \rfloor on input line 882.
+LaTeX Font Info:    Redeclaring math delimiter \lceil on input line 883.
+LaTeX Font Info:    Redeclaring math delimiter \rceil on input line 884.
+LaTeX Font Info:    Redeclaring math delimiter \lbrace on input line 889.
+LaTeX Font Info:    Redeclaring math delimiter \rbrace on input line 890.
+LaTeX Font Info:    Redeclaring math delimiter \langle on input line 892.
+LaTeX Font Info:    Redeclaring math delimiter \rangle on input line 894.
+LaTeX Font Info:    Redeclaring math delimiter \arrowvert on input line 898.
+LaTeX Font Info:    Redeclaring math delimiter \vert on input line 899.
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 945.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 970.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 971.
+LaTeX Font Info:    Redeclaring math accent \vec on input line 2044.
+LaTeX Info: Redefining \Bbbk on input line 2834.
+LaTeX Info: Redefining \not on input line 2982.
+) (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mathtools.sty
+Package: mathtools 2022/06/29 v1.29 mathematical typesetting tools
+ (/usr/share/texlive/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count290
+\calc@Bcount=\count291
+\calc@Adimen=\dimen174
+\calc@Bdimen=\dimen175
+\calc@Askip=\skip54
+\calc@Bskip=\skip55
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count292
+\calc@Cskip=\skip56
+) (/usr/share/texlive/texmf-dist/tex/latex/mathtools/mhsetup.sty
+Package: mhsetup 2021/03/18 v1.4 programming setup (MH)
+)
+\g_MT_multlinerow_int=\count293
+\l_MT_multwidth_dim=\dimen176
+\origjot=\skip57
+\l_MT_shortvdotswithinadjustabove_dim=\dimen177
+\l_MT_shortvdotswithinadjustbelow_dim=\dimen178
+\l_MT_above_intertext_sep=\dimen179
+\l_MT_below_intertext_sep=\dimen180
+\l_MT_above_shortintertext_sep=\dimen181
+\l_MT_below_shortintertext_sep=\dimen182
+\xmathstrut@box=\box55
+\xmathstrut@dim=\dimen183
+) (/usr/share/texlive/texmf-dist/tex/latex/physics/physics.sty
+Package: physics 
+) (/usr/share/texlive/texmf-dist/tex/latex/siunitx/siunitx.sty
+Package: siunitx 2024-01-25 v3.3.10 A comprehensive (SI) units package
+\l__siunitx_number_uncert_offset_int=\count294
+\l__siunitx_number_exponent_fixed_int=\count295
+\l__siunitx_number_min_decimal_int=\count296
+\l__siunitx_number_min_integer_int=\count297
+\l__siunitx_number_round_precision_int=\count298
+\l__siunitx_number_lower_threshold_int=\count299
+\l__siunitx_number_upper_threshold_int=\count300
+\l__siunitx_number_group_first_int=\count301
+\l__siunitx_number_group_size_int=\count302
+\l__siunitx_number_group_minimum_int=\count303
+\l__siunitx_angle_tmp_dim=\dimen184
+\l__siunitx_angle_marker_box=\box56
+\l__siunitx_angle_unit_box=\box57
+\l__siunitx_compound_count_int=\count304
+ (/usr/share/texlive/texmf-dist/tex/latex/translations/translations.sty
+Package: translations 2022/02/05 v1.12 internationalization of LaTeX2e packages (CN)
+ (/usr/share/texlive/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+))
+\l__siunitx_table_tmp_box=\box58
+\l__siunitx_table_tmp_dim=\dimen185
+\l__siunitx_table_column_width_dim=\dimen186
+\l__siunitx_table_integer_box=\box59
+\l__siunitx_table_decimal_box=\box60
+\l__siunitx_table_uncert_box=\box61
+\l__siunitx_table_before_box=\box62
+\l__siunitx_table_after_box=\box63
+\l__siunitx_table_before_dim=\dimen187
+\l__siunitx_table_carry_dim=\dimen188
+\l__siunitx_unit_tmp_int=\count305
+\l__siunitx_unit_position_int=\count306
+\l__siunitx_unit_total_int=\count307
+ (/usr/share/texlive/texmf-dist/tex/latex/tools/array.sty
+Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
+\col@sep=\dimen189
+\ar@mcellbox=\box64
+\extrarowheight=\dimen190
+\NC@list=\toks33
+\extratabsurround=\skip58
+\backup@length=\skip59
+\ar@cellbox=\box65
+))
+
+Package siunitx Info: Option "separate-uncertainty" has been deprecated in
+(siunitx)             this release.
+(siunitx)             
+(siunitx)             Use "uncertainty-mode = separate" as a replacement.
+
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+ (/usr/share/texlive/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+)
+\Gin@req@height=\dimen191
+\Gin@req@width=\dimen192
+) (/usr/share/texlive/texmf-dist/tex/latex/booktabs/booktabs.sty
+Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
+\heavyrulewidth=\dimen193
+\lightrulewidth=\dimen194
+\cmidrulewidth=\dimen195
+\belowrulesep=\dimen196
+\belowbottomsep=\dimen197
+\aboverulesep=\dimen198
+\abovetopsep=\dimen199
+\cmidrulesep=\dimen256
+\cmidrulekern=\dimen257
+\defaultaddspace=\dimen258
+\@cmidla=\count308
+\@cmidlb=\count309
+\@aboverulesep=\dimen259
+\@belowrulesep=\dimen260
+\@thisruleclass=\count310
+\@lastruleclass=\count311
+\@thisrulewidth=\dimen261
+) (/usr/share/texlive/texmf-dist/tex/latex/caption/caption.sty
+Package: caption 2023/08/05 v3.6o Customizing captions (AR)
+ (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
+Package: caption3 2023/07/31 v2.4d caption3 kernel (AR)
+\caption@tempdima=\dimen262
+\captionmargin=\dimen263
+\caption@leftmargin=\dimen264
+\caption@rightmargin=\dimen265
+\caption@width=\dimen266
+\caption@indent=\dimen267
+\caption@parindent=\dimen268
+\caption@hangindent=\dimen269
+Package caption Info: Standard document class detected.
+)
+\c@caption@flags=\count312
+\c@continuedfloat=\count313
+) (/usr/share/texlive/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2024-01-20 v7.01h Hypertext links for LaTeX
+ (/usr/share/texlive/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+) (/usr/share/texlive/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+) (/usr/share/texlive/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+) (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+ (/usr/share/texlive/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+) (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+ (/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+))
+\c@section@level=\count314
+)
+\@linkdim=\dimen270
+\Hy@linkcounter=\count315
+\Hy@pagecounter=\count316
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2024-01-20 v7.01h Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+) (/usr/share/texlive/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count317
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2024-01-20 v7.01h Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Hyper figures OFF on input line 4179.
+Package hyperref Info: Link nesting OFF on input line 4184.
+Package hyperref Info: Hyper index ON on input line 4187.
+Package hyperref Info: Plain pages OFF on input line 4194.
+Package hyperref Info: Backreferencing OFF on input line 4199.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4446.
+\c@Hy@tempcnt=\count318
+ (/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4784.
+\XeTeXLinkMargin=\dimen271
+ (/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
+))
+\Fld@menulength=\count319
+\Field@Width=\dimen272
+\Fld@charsize=\dimen273
+Package hyperref Info: Hyper figures OFF on input line 6063.
+Package hyperref Info: Link nesting OFF on input line 6068.
+Package hyperref Info: Hyper index ON on input line 6071.
+Package hyperref Info: backreferencing OFF on input line 6078.
+Package hyperref Info: Link coloring OFF on input line 6083.
+Package hyperref Info: Link coloring with OCG OFF on input line 6088.
+Package hyperref Info: PDF/A mode OFF on input line 6093.
+ (/usr/share/texlive/texmf-dist/tex/latex/base/atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count320
+\c@Item=\count321
+\c@Hfootnote=\count322
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+ (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2024-01-20 v7.01h Hyperref driver for pdfTeX
+ (/usr/share/texlive/texmf-dist/tex/latex/base/atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
+with kernel methods
+)
+\Fld@listcount=\count323
+\c@bookmark@seq@number=\count324
+ (/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+ (/usr/share/texlive/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 285.
+)
+\Hy@SectionHShift=\skip60
+)
+Package hyperref Info: Option `colorlinks' set `true' on input line 65.
+ (/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.sty
+Package: csquotes 2022-09-14 v5.2n context-sensitive quotations (JAW)
+\csq@reset=\count325
+\csq@gtype=\count326
+\csq@glevel=\count327
+\csq@qlevel=\count328
+\csq@maxlvl=\count329
+\csq@tshold=\count330
+\csq@ltx@everypar=\toks34
+ (/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.def
+File: csquotes.def 2022-09-14 v5.2n csquotes generic definitions (JAW)
+)
+Package csquotes Info: Trying to load configuration file 'csquotes.cfg'...
+Package csquotes Info: ... configuration file loaded successfully.
+ (/usr/share/texlive/texmf-dist/tex/latex/csquotes/csquotes.cfg
+File: csquotes.cfg 
+)) (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.sty
+Package: biblatex 2023/03/05 v3.19 programmable bibliographies (PK/MW)
+ (/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.sty
+Package: logreq 2010/08/04 v1.0 xml request logger
+\lrq@indent=\count331
+ (/usr/share/texlive/texmf-dist/tex/latex/logreq/logreq.def
+File: logreq.def 2010/08/04 v1.0 logreq spec v1.0
+))
+\c@tabx@nest=\count332
+\c@listtotal=\count333
+\c@listcount=\count334
+\c@liststart=\count335
+\c@liststop=\count336
+\c@citecount=\count337
+\c@citetotal=\count338
+\c@multicitecount=\count339
+\c@multicitetotal=\count340
+\c@instcount=\count341
+\c@maxnames=\count342
+\c@minnames=\count343
+\c@maxitems=\count344
+\c@minitems=\count345
+\c@citecounter=\count346
+\c@maxcitecounter=\count347
+\c@savedcitecounter=\count348
+\c@uniquelist=\count349
+\c@uniquename=\count350
+\c@refsection=\count351
+\c@refsegment=\count352
+\c@maxextratitle=\count353
+\c@maxextratitleyear=\count354
+\c@maxextraname=\count355
+\c@maxextradate=\count356
+\c@maxextraalpha=\count357
+\c@abbrvpenalty=\count358
+\c@highnamepenalty=\count359
+\c@lownamepenalty=\count360
+\c@maxparens=\count361
+\c@parenlevel=\count362
+\blx@tempcnta=\count363
+\blx@tempcntb=\count364
+\blx@tempcntc=\count365
+\c@blx@maxsection=\count366
+\blx@maxsegment@0=\count367
+\blx@notetype=\count368
+\blx@parenlevel@text=\count369
+\blx@parenlevel@foot=\count370
+\blx@sectionciteorder@0=\count371
+\blx@sectionciteorderinternal@0=\count372
+\blx@entrysetcounter=\count373
+\blx@biblioinstance=\count374
+\labelnumberwidth=\skip61
+\labelalphawidth=\skip62
+\biblabelsep=\skip63
+\bibitemsep=\skip64
+\bibnamesep=\skip65
+\bibinitsep=\skip66
+\bibparsep=\skip67
+\bibhang=\skip68
+\blx@bcfin=\read4
+\blx@bcfout=\write3
+\blx@langwohyphens=\language90
+\c@mincomprange=\count375
+\c@maxcomprange=\count376
+\c@mincompwidth=\count377
+Package biblatex Info: Trying to load biblatex default data model...
+Package biblatex Info: ... file 'blx-dm.def' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-dm.def
+File: blx-dm.def 2023/03/05 v3.19 biblatex localization (PK/MW)
+)
+Package biblatex Info: Trying to load biblatex style data model...
+Package biblatex Info: ... file 'numeric.dbx' not found.
+Package biblatex Info: Trying to load biblatex custom data model...
+Package biblatex Info: ... file 'biblatex-dm.cfg' not found.
+\c@afterword=\count378
+\c@savedafterword=\count379
+\c@annotator=\count380
+\c@savedannotator=\count381
+\c@author=\count382
+\c@savedauthor=\count383
+\c@bookauthor=\count384
+\c@savedbookauthor=\count385
+\c@commentator=\count386
+\c@savedcommentator=\count387
+\c@editor=\count388
+\c@savededitor=\count389
+\c@editora=\count390
+\c@savededitora=\count391
+\c@editorb=\count392
+\c@savededitorb=\count393
+\c@editorc=\count394
+\c@savededitorc=\count395
+\c@foreword=\count396
+\c@savedforeword=\count397
+\c@holder=\count398
+\c@savedholder=\count399
+\c@introduction=\count400
+\c@savedintroduction=\count401
+\c@namea=\count402
+\c@savednamea=\count403
+\c@nameb=\count404
+\c@savednameb=\count405
+\c@namec=\count406
+\c@savednamec=\count407
+\c@translator=\count408
+\c@savedtranslator=\count409
+\c@shortauthor=\count410
+\c@savedshortauthor=\count411
+\c@shorteditor=\count412
+\c@savedshorteditor=\count413
+\c@labelname=\count414
+\c@savedlabelname=\count415
+\c@institution=\count416
+\c@savedinstitution=\count417
+\c@lista=\count418
+\c@savedlista=\count419
+\c@listb=\count420
+\c@savedlistb=\count421
+\c@listc=\count422
+\c@savedlistc=\count423
+\c@listd=\count424
+\c@savedlistd=\count425
+\c@liste=\count426
+\c@savedliste=\count427
+\c@listf=\count428
+\c@savedlistf=\count429
+\c@location=\count430
+\c@savedlocation=\count431
+\c@organization=\count432
+\c@savedorganization=\count433
+\c@origlocation=\count434
+\c@savedoriglocation=\count435
+\c@origpublisher=\count436
+\c@savedorigpublisher=\count437
+\c@publisher=\count438
+\c@savedpublisher=\count439
+\c@language=\count440
+\c@savedlanguage=\count441
+\c@origlanguage=\count442
+\c@savedoriglanguage=\count443
+\c@pageref=\count444
+\c@savedpageref=\count445
+\shorthandwidth=\skip69
+\shortjournalwidth=\skip70
+\shortserieswidth=\skip71
+\shorttitlewidth=\skip72
+\shortauthorwidth=\skip73
+\shorteditorwidth=\skip74
+\locallabelnumberwidth=\skip75
+\locallabelalphawidth=\skip76
+\localshorthandwidth=\skip77
+\localshortjournalwidth=\skip78
+\localshortserieswidth=\skip79
+\localshorttitlewidth=\skip80
+\localshortauthorwidth=\skip81
+\localshorteditorwidth=\skip82
+Package biblatex Info: Trying to load compatibility code...
+Package biblatex Info: ... file 'blx-compat.def' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-compat.def
+File: blx-compat.def 2023/03/05 v3.19 biblatex compatibility (PK/MW)
+)
+Package biblatex Info: Trying to load generic definitions...
+Package biblatex Info: ... file 'biblatex.def' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.def
+File: biblatex.def 2023/03/05 v3.19 biblatex compatibility (PK/MW)
+\c@textcitecount=\count446
+\c@textcitetotal=\count447
+\c@textcitemaxnames=\count448
+\c@biburlbigbreakpenalty=\count449
+\c@biburlbreakpenalty=\count450
+\c@biburlnumpenalty=\count451
+\c@biburlucpenalty=\count452
+\c@biburllcpenalty=\count453
+\biburlbigskip=\muskip18
+\biburlnumskip=\muskip19
+\biburlucskip=\muskip20
+\biburllcskip=\muskip21
+\c@smartand=\count454
+)
+Package biblatex Info: Trying to load bibliography style 'numeric'...
+Package biblatex Info: ... file 'numeric.bbx' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/numeric.bbx
+File: numeric.bbx 2023/03/05 v3.19 biblatex bibliography style (PK/MW)
+Package biblatex Info: Trying to load bibliography style 'standard'...
+Package biblatex Info: ... file 'standard.bbx' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/bbx/standard.bbx
+File: standard.bbx 2023/03/05 v3.19 biblatex bibliography style (PK/MW)
+\c@bbx:relatedcount=\count455
+\c@bbx:relatedtotal=\count456
+))
+Package biblatex Info: Trying to load citation style 'numeric'...
+Package biblatex Info: ... file 'numeric.cbx' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/cbx/numeric.cbx
+File: numeric.cbx 2023/03/05 v3.19 biblatex citation style (PK/MW)
+Package biblatex Info: Redefining '\cite'.
+Package biblatex Info: Redefining '\parencite'.
+Package biblatex Info: Redefining '\footcite'.
+Package biblatex Info: Redefining '\footcitetext'.
+Package biblatex Info: Redefining '\smartcite'.
+Package biblatex Info: Redefining '\supercite'.
+Package biblatex Info: Redefining '\textcite'.
+Package biblatex Info: Redefining '\textcites'.
+Package biblatex Info: Redefining '\cites'.
+Package biblatex Info: Redefining '\parencites'.
+Package biblatex Info: Redefining '\smartcites'.
+)
+Package biblatex Info: Trying to load configuration file...
+Package biblatex Info: ... file 'biblatex.cfg' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/biblatex.cfg
+File: biblatex.cfg 
+)
+Package biblatex Info: Input encoding 'utf8' detected.
+Package biblatex Info: Document encoding is UTF8 ....
+Package biblatex Info: ... and expl3
+(biblatex)             2024-01-22 L3 programming layer (loader) 
+(biblatex)             is new enough (at least 2020/04/06),
+(biblatex)             setting 'casechanger=expl3'.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/blx-case-expl3.sty
+Package: blx-case-expl3 2023/03/05 v3.19 expl3 case changing code for biblatex
+)) (/usr/share/texlive/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
+\f@nch@headwidth=\skip83
+\f@nch@O@elh=\skip84
+\f@nch@O@erh=\skip85
+\f@nch@O@olh=\skip86
+\f@nch@O@orh=\skip87
+\f@nch@O@elf=\skip88
+\f@nch@O@erf=\skip89
+\f@nch@O@olf=\skip90
+\f@nch@O@orf=\skip91
+)
+LaTeX Font Info:    Trying to load font information for T1+ntxtlf on input line 138.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/t1ntxtlf.fd
+File: t1ntxtlf.fd 2021/05/24 v1.1 font definition file for T1/ntx/tlf
+)
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 12.0pt on input line 138.
+Package csquotes Info: Checking for multilingual support...
+Package csquotes Info: ... found 'babel' package.
+Package csquotes Info: Adjusting default style.
+Package csquotes Info: Redefining alias 'default' -> 'english'.
+ (./main_english.aux)
+\openout1 = `main_english.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/ntxmi/m/it on input line 138.
+LaTeX Font Info:    Trying to load font information for OML+ntxmi on input line 138.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/omlntxmi.fd
+File: omlntxmi.fd 2015/08/25 Fontinst v1.933 font definitions for OML/ntxmi.
+)
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 138.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 138.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxexa.fd
+File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
+)
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 138.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 138.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/lmsntxsy.fd
+File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
+)
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 138.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 138.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/lmxntxexx.fd
+File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
+)
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 138.
+LaTeX Font Info:    ... okay on input line 138.
+
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: a4paper
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(56.9055pt, 483.69687pt, 56.9055pt)
+* v-part:(T,H,B)=(64.01869pt, 717.00946pt, 64.01869pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=483.69687pt
+* \textheight=717.00946pt
+* \oddsidemargin=-15.36449pt
+* \evensidemargin=-15.36449pt
+* \topmargin=-45.2513pt
+* \headheight=15.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=35.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+LaTeX Info: Redefining \microtypecontext on input line 138.
+Package microtype Info: Applying patch `item' on input line 138.
+Package microtype Info: Applying patch `toc' on input line 138.
+Package microtype Info: Applying patch `eqnum' on input line 138.
+Package microtype Info: Applying patch `footnote' on input line 138.
+Package microtype Info: Applying patch `verbatim' on input line 138.
+Package microtype Info: Generating PDF output.
+Package microtype Info: Character protrusion enabled (level 2).
+Package microtype Info: Using default protrusion set `alltext'.
+Package microtype Info: Automatic font expansion enabled (level 2),
+(microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
+Package microtype Info: Using default expansion set `alltext-nott'.
+LaTeX Info: Redefining \showhyphens on input line 138.
+Package microtype Info: No adjustment of tracking.
+Package microtype Info: No adjustment of interword spacing.
+Package microtype Info: No adjustment of character kerning.
+(/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-ptm.cfg
+File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
+) (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count457
+\scratchdimen=\dimen274
+\scratchbox=\box66
+\nofMPsegments=\count458
+\nofMParguments=\count459
+\everyMPshowfont=\toks35
+\MPscratchCnt=\count460
+\MPscratchDim=\dimen275
+\MPnumerator=\count461
+\makeMPintoPDFobject=\count462
+\everyMPtoPDFconversion=\toks36
+) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+ (/usr/share/texlive/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+\c@mv@tabular=\count463
+\c@mv@boldtabular=\count464
+LaTeX Info: Command `\dddot' is already robust on input line 138.
+LaTeX Info: Command `\ddddot' is already robust on input line 138.
+
+
+Package siunitx Warning: Detected the "physics" package:
+(siunitx)                omitting definition of \qty.
+(siunitx)                
+(siunitx)                If you want to use \qty with the siunitx definition,
+(siunitx)                add 
+(siunitx)                
+(siunitx)                    \AtBeginDocument{\RenewCommandCopy\qty\SI}
+(siunitx)                
+(siunitx)                to your preamble.
+
+(/usr/share/texlive/texmf-dist/tex/latex/translations/translations-basic-dictionary-english.trsl
+File: translations-basic-dictionary-english.trsl (english translation file `translations-basic-dictionary')
+)
+Package translations Info: loading dictionary `translations-basic-dictionary' for `english'. on input line 138.
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: hyperref package is loaded.
+Package caption Info: End \AtBeginDocument code.
+Package hyperref Info: Link coloring ON on input line 138.
+\@outlinefile=\write4
+\openout4 = `main_english.out'.
+
+Package biblatex Info: Trying to load language 'english'...
+Package biblatex Info: ... file 'english.lbx' found.
+ (/usr/share/texlive/texmf-dist/tex/latex/biblatex/lbx/english.lbx
+File: english.lbx 2023/03/05 v3.19 biblatex localization (PK/MW)
+)
+Package biblatex Info: Input encoding 'utf8' detected.
+Package biblatex Info: Automatic encoding selection.
+(biblatex)             Assuming data encoding 'utf8'.
+\openout3 = `main_english.bcf'.
+
+Package biblatex Info: Trying to load bibliographic data...
+Package biblatex Info: ... file 'main_english.bbl' found.
+ (./main_english.bbl)
+Package biblatex Info: Reference section=0 on input line 138.
+Package biblatex Info: Reference segment=0 on input line 138.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 24.88pt on input line 146.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 24.88pt on input line 146.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 20.74pt on input line 149.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 20.74pt on input line 149.
+LaTeX Font Info:    Trying to load font information for OT1+minntx on input line 149.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/ot1minntx.fd
+File: ot1minntx.fd 2023/09/09 v1.1 font definition file for OT1/minntx
+)
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `minntx' (encoding: OT1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 149.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxmia.fd
+File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
+)
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 149.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsym.fd
+File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
+)
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 149.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsyc.fd
+File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
+)
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 17.28pt on input line 152.
+ [1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/newtx/ntx-ot1-tlf.enc}]
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 17.28pt on input line 159.
+
+No file main_english.toc.
+\tf@toc=\write5
+\openout5 = `main_english.toc'.
+
+
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.160 \clearpage
+                 [1]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 14.4pt on input line 170.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 14.4pt on input line 170.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/it' will be
+(Font)              scaled to size 12.0pt on input line 172.
+ [2
+
+] [3]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 192.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 192.
+
+[4] [5]
+LaTeX Font Info:    Trying to load font information for TS1+ntxtlf on input line 221.
+ (/usr/share/texlive/texmf-dist/tex/latex/newtx/ts1ntxtlf.fd
+File: ts1ntxtlf.fd 2015/01/18 v1.0 fd file for TS1/ntxtlf
+)
+LaTeX Font Info:    Font shape `TS1/ntxtlf/m/n' will be
+(Font)              scaled to size 12.0pt on input line 221.
+ [6{/usr/share/texmf/fonts/enc/dvips/tex-gyre/q-ts1.enc}]
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 12.0pt on input line 246.
+
+
+LaTeX Warning: Reference `fig:3erContinuo' on page 7 undefined on input line 246.
+
+
+LaTeX Warning: Reference `fig:experimentalArGlobalEspectra' on page 7 undefined on input line 250.
+
+<experimental_espectra/3erContinuo.png, id=132, 367.3725pt x 684.5575pt>
+File: experimental_espectra/3erContinuo.png Graphic file (type png)
+<use experimental_espectra/3erContinuo.png>
+Package pdftex.def Info: experimental_espectra/3erContinuo.png  used on input line 254.
+(pdftex.def)             Requested size: 135.43799pt x 252.37355pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 255.
+See the caption package documentation for explanation.
+
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 10.95pt on input line 255.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 10.95pt on input line 255.
+<experimental_espectra/ArEspectroCompleto.png, id=136, 1731.46875pt x 463.7325pt>
+File: experimental_espectra/ArEspectroCompleto.png Graphic file (type png)
+<use experimental_espectra/ArEspectroCompleto.png>
+Package pdftex.def Info: experimental_espectra/ArEspectroCompleto.png  used on input line 263.
+(pdftex.def)             Requested size: 483.69687pt x 129.54701pt.
+[7]
+
+LaTeX Warning: Reference `tab:ArNIRlines' on page 8 undefined on input line 268.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 288.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 288.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 288.
+
+[8 <./experimental_espectra/3erContinuo.png> <./experimental_espectra/ArEspectroCompleto.png>]
+
+LaTeX Warning: Reference `fig:experimentalCF4GlobalEspectra' on page 9 undefined on input line 316.
+
+<experimental_espectra/CF4EspectroCompleto.png, id=160, 1703.36375pt x 419.5675pt>
+File: experimental_espectra/CF4EspectroCompleto.png Graphic file (type png)
+<use experimental_espectra/CF4EspectroCompleto.png>
+Package pdftex.def Info: experimental_espectra/CF4EspectroCompleto.png  used on input line 320.
+(pdftex.def)             Requested size: 483.69687pt x 119.14262pt.
+
+LaTeX Warning: Reference `fig:experimentalArGlobalEspectra' on page 9 undefined on input line 321.
+
+
+LaTeX Warning: Reference `fig:experimentalArGlobalEspectra' on page 9 undefined on input line 321.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 326.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 326.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 326.
+
+
+LaTeX Warning: Reference `fig:N2_spectra' on page 9 undefined on input line 338.
+
+
+LaTeX Warning: Reference `fig:N2_potential' on page 9 undefined on input line 338.
+
+[9 <./experimental_espectra/CF4EspectroCompleto.png>]
+<experimental_espectra/N2_spectra.png, id=173, 986.68625pt x 614.295pt>
+File: experimental_espectra/N2_spectra.png Graphic file (type png)
+<use experimental_espectra/N2_spectra.png>
+Package pdftex.def Info: experimental_espectra/N2_spectra.png  used on input line 342.
+(pdftex.def)             Requested size: 229.85197pt x 143.1033pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 343.
+See the caption package documentation for explanation.
+
+<experimental_espectra/N2_potential.png, id=176, 728.7225pt x 667.49374pt>
+File: experimental_espectra/N2_potential.png Graphic file (type png)
+<use experimental_espectra/N2_potential.png>
+Package pdftex.def Info: experimental_espectra/N2_potential.png  used on input line 349.
+(pdftex.def)             Requested size: 162.51997pt x 148.85555pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 350.
+See the caption package documentation for explanation.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 355.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 355.
+
+
+LaTeX Warning: Reference `subbsec:kinArCF4' on page 10 undefined on input line 359.
+
+
+LaTeX Warning: Reference `fig:experimentalArCF4GlobalEspectra' on page 10 undefined on input line 361.
+
+<experimental_espectra/ArCF4-Abosuluto.png, id=179, 1764.5925pt x 1052.93375pt>
+File: experimental_espectra/ArCF4-Abosuluto.png Graphic file (type png)
+<use experimental_espectra/ArCF4-Abosuluto.png>
+Package pdftex.def Info: experimental_espectra/ArCF4-Abosuluto.png  used on input line 365.
+(pdftex.def)             Requested size: 459.51054pt x 274.19011pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `subbsec:kinArN2' on page 10 undefined on input line 371.
+
+
+LaTeX Warning: Reference `fig:experimentalArN2GlobalEspectra' on page 10 undefined on input line 373.
+
+<experimental_espectra/Ar_N2_global_spectra.png, id=182, 2081.376pt x 1155.5973pt>
+File: experimental_espectra/Ar_N2_global_spectra.png Graphic file (type png)
+<use experimental_espectra/Ar_N2_global_spectra.png>
+Package pdftex.def Info: experimental_espectra/Ar_N2_global_spectra.png  used on input line 377.
+(pdftex.def)             Requested size: 459.51054pt x 255.11383pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `fig:HePrimary' on page 10 undefined on input line 385.
+
+
+LaTeX Warning: Reference `fig:HeSec' on page 10 undefined on input line 385.
+
+<experimental_espectra/HeCF4_primary.png, id=183, 1154.3125pt x 627.34375pt>
+File: experimental_espectra/HeCF4_primary.png Graphic file (type png)
+<use experimental_espectra/HeCF4_primary.png>
+Package pdftex.def Info: experimental_espectra/HeCF4_primary.png  used on input line 389.
+(pdftex.def)             Requested size: 208.95375pt x 113.55835pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 390.
+See the caption package documentation for explanation.
+
+<experimental_espectra/HeCF4_sec.png, id=186, 1157.32375pt x 624.3325pt>
+File: experimental_espectra/HeCF4_sec.png Graphic file (type png)
+<use experimental_espectra/HeCF4_sec.png>
+Package pdftex.def Info: experimental_espectra/HeCF4_sec.png  used on input line 395.
+(pdftex.def)             Requested size: 229.85197pt x 123.98784pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 397.
+See the caption package documentation for explanation.
+
+[10 <./experimental_espectra/N2_spectra.png> <./experimental_espectra/N2_potential.png>]
+Overfull \vbox (40.2823pt too high) has occurred while \output is active []
+
+ [11 <./experimental_espectra/ArCF4-Abosuluto.png> <./experimental_espectra/Ar_N2_global_spectra.png> <./experimental_espectra/HeCF4_primary.png> <./experimental_espectra/HeCF4_sec.png>]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 8.8pt on input line 422.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 6.6pt on input line 422.
+ [12]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 494.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 494.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 494.
+
+[13]
+
+LaTeX Warning: Reference `tab:ArCF4litearture' on page 14 undefined on input line 545.
+
+
+LaTeX Warning: Reference `fig:ArCF4_kinetic_model' on page 14 undefined on input line 545.
+
+(./kinetic_pars/Kinetic_params_CF4.tex)
+
+pdfTeX warning: pdflatex (file ./kinetic_models/Kinetics_Models-3.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<kinetic_models/Kinetics_Models-3.pdf, id=239, 598.09918pt x 468.01103pt>
+File: kinetic_models/Kinetics_Models-3.pdf Graphic file (type pdf)
+<use kinetic_models/Kinetics_Models-3.pdf>
+Package pdftex.def Info: kinetic_models/Kinetics_Models-3.pdf  used on input line 551.
+(pdftex.def)             Requested size: 459.51054pt x 359.56264pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 556.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 556.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 556.
+
+[14] [15 <./kinetic_models/Kinetics_Models-3.pdf>]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 623.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 623.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 623.
+
+
+LaTeX Warning: Reference `fig:HeCF4_kinetic_model' on page 16 undefined on input line 627.
+
+
+
+pdfTeX warning: pdflatex (file ./kinetic_models/Kinetics_Models-5.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<kinetic_models/Kinetics_Models-5.pdf, id=278, 503.76877pt x 451.40033pt>
+File: kinetic_models/Kinetics_Models-5.pdf Graphic file (type pdf)
+<use kinetic_models/Kinetics_Models-5.pdf>
+Package pdftex.def Info: kinetic_models/Kinetics_Models-5.pdf  used on input line 631.
+(pdftex.def)             Requested size: 459.51054pt x 411.753pt.
+
+LaTeX Warning: Reference `eq:YvisCF3' on page 16 undefined on input line 665.
+
+
+LaTeX Warning: Reference `eq:YuvCF4' on page 16 undefined on input line 665.
+
+
+LaTeX Warning: Reference `eq:YuvCF3' on page 16 undefined on input line 665.
+
+[16 <./kinetic_models/Kinetics_Models-5.pdf>]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 667.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 667.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 667.
+
+
+LaTeX Warning: Reference `tab:ArN2litearture' on page 17 undefined on input line 734.
+
+
+LaTeX Warning: Reference `fig:ArN2_kinetic_model' on page 17 undefined on input line 734.
+
+(./kinetic_pars/Kinetic_params_N2.tex
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 8.0pt on input line 2.
+LaTeX Font Info:    Font shape `T1/ntxtlf/b/n' will be
+(Font)              scaled to size 8.0pt on input line 6.
+) [17]
+
+pdfTeX warning: pdflatex (file ./kinetic_models/Kinetics_Models-1.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<kinetic_models/Kinetics_Models-1.pdf, id=326, 286.32489pt x 350.80208pt>
+File: kinetic_models/Kinetics_Models-1.pdf Graphic file (type pdf)
+<use kinetic_models/Kinetics_Models-1.pdf>
+Package pdftex.def Info: kinetic_models/Kinetics_Models-1.pdf  used on input line 740.
+(pdftex.def)             Requested size: 241.84843pt x 296.32039pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 745.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 745.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 745.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 807.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 807.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 807.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 807.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 807.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 807.
+
+[18]
+
+pdfTeX warning: pdflatex (file ./kinetic_models/Kinetics_Models-4.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<kinetic_models/Kinetics_Models-4.pdf, id=343, 232.37395pt x 257.6518pt>
+File: kinetic_models/Kinetics_Models-4.pdf Graphic file (type pdf)
+<use kinetic_models/Kinetics_Models-4.pdf>
+Package pdftex.def Info: kinetic_models/Kinetics_Models-4.pdf  used on input line 831.
+(pdftex.def)             Requested size: 195.02708pt x 216.25304pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 832.
+See the caption package documentation for explanation.
+
+[19 <./kinetic_models/Kinetics_Models-1.pdf>]
+
+LaTeX Warning: Reference `subsec:Ar_spectra' on page 20 undefined on input line 836.
+
+
+LaTeX Warning: Reference `fig:Ar_IR_kinetic_model' on page 20 undefined on input line 836.
+
+
+LaTeX Warning: Reference `fig:ArCs' on page 20 undefined on input line 851.
+
+
+LaTeX Warning: Reference `fig:CF4Cs' on page 20 undefined on input line 851.
+
+
+LaTeX Warning: Reference `fig:N2Cs' on page 20 undefined on input line 851.
+
+[20 <./kinetic_models/Kinetics_Models-4.pdf>]
+<cross_sections/Ar_cs.pdf, id=394, 419.166pt x 274.626pt>
+File: cross_sections/Ar_cs.pdf Graphic file (type pdf)
+<use cross_sections/Ar_cs.pdf>
+Package pdftex.def Info: cross_sections/Ar_cs.pdf  used on input line 855.
+(pdftex.def)             Requested size: 239.43127pt x 156.86948pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 856.
+See the caption package documentation for explanation.
+
+<cross_sections/CF4_cs.pdf, id=395, 419.166pt x 274.626pt>
+File: cross_sections/CF4_cs.pdf Graphic file (type pdf)
+<use cross_sections/CF4_cs.pdf>
+Package pdftex.def Info: cross_sections/CF4_cs.pdf  used on input line 861.
+(pdftex.def)             Requested size: 239.43127pt x 156.86948pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 862.
+See the caption package documentation for explanation.
+
+<cross_sections/N2_cs.pdf, id=396, 419.166pt x 274.626pt>
+File: cross_sections/N2_cs.pdf Graphic file (type pdf)
+<use cross_sections/N2_cs.pdf>
+Package pdftex.def Info: cross_sections/N2_cs.pdf  used on input line 867.
+(pdftex.def)             Requested size: 314.40001pt x 205.98993pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 868.
+See the caption package documentation for explanation.
+
+
+Overfull \hbox (1.79993pt too wide) in paragraph at lines 853--871
+[]$[]$  $[]$
+ []
+
+LaTeX Font Info:    Trying to load font information for T1+ntxtt on input line 874.
+(/usr/share/texlive/texmf-dist/tex/latex/newtx/t1ntxtt.fd
+File: t1ntxtt.fd 2012/04/20 v3.1
+)
+LaTeX Font Info:    Font shape `T1/ntxtt/m/n' will be
+(Font)              scaled to size 12.0pt on input line 874.
+Package microtype Info: Loading generic protrusion settings for font family
+(microtype)             `ntxtt' (encoding: T1).
+(microtype)             For optimal results, create family-specific settings.
+(microtype)             See the microtype manual for details.
+ [21 <./cross_sections/Ar_cs.pdf> <./cross_sections/CF4_cs.pdf> <./cross_sections/N2_cs.pdf>]
+
+LaTeX Warning: Reference `fig:uniformDrift' on page 22 undefined on input line 888.
+
+
+LaTeX Warning: Reference `fig:gainNe' on page 22 undefined on input line 888.
+
+<garfield++/uniform_drift.pdf, id=431, 569.12625pt x 426.59375pt>
+File: garfield++/uniform_drift.pdf Graphic file (type pdf)
+<use garfield++/uniform_drift.pdf>
+Package pdftex.def Info: garfield++/uniform_drift.pdf  used on input line 892.
+(pdftex.def)             Requested size: 205.90738pt x 154.34172pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 893.
+See the caption package documentation for explanation.
+
+<garfield++/cf4_100.0_ar_0.0_95.0kVcm_1.0bar_0.0500mm_1000npe_ne.pdf, id=432, 419.166pt x 274.626pt>
+File: garfield++/cf4_100.0_ar_0.0_95.0kVcm_1.0bar_0.0500mm_1000npe_ne.pdf Graphic file (type pdf)
+<use garfield++/cf4_100.0_ar_0.0_95.0kVcm_1.0bar_0.0500mm_1000npe_ne.pdf>
+Package pdftex.def Info: garfield++/cf4_100.0_ar_0.0_95.0kVcm_1.0bar_0.0500mm_1000npe_ne.pdf  used on input line 899.
+(pdftex.def)             Requested size: 252.7322pt x 165.58562pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 900.
+See the caption package documentation for explanation.
+
+[22 <./garfield++/uniform_drift.pdf, page is rotated 90 degrees> <./garfield++/cf4_100.0_ar_0.0_95.0kVcm_1.0bar_0.0500mm_1000npe_ne.pdf>]
+
+LaTeX Warning: Reference `fig:ionization_potential' on page 23 undefined on input line 939.
+
+<experimental_espectra/Ionization_Potential.pdf, id=500, 314.8014pt x 199.4766pt>
+File: experimental_espectra/Ionization_Potential.pdf Graphic file (type pdf)
+<use experimental_espectra/Ionization_Potential.pdf>
+Package pdftex.def Info: experimental_espectra/Ionization_Potential.pdf  used on input line 942.
+(pdftex.def)             Requested size: 338.58632pt x 214.56099pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[23] [24 <./experimental_espectra/Ionization_Potential.pdf>]
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/sc' will be
+(Font)              scaled to size 12.0pt on input line 1028.
+Package microtype Info: Character `029' is missing
+(microtype)             in font `T1/ntxtlf/m/sc/12'.
+(microtype)             Ignoring protrusion settings for this character.
+ [25{/usr/share/texlive/texmf-dist/fonts/enc/dvips/newtx/ntx-ec-tlf-pc.enc}]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 1032.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1032.
+
+
+LaTeX Warning: Reference `fig:Arcumulative' on page 26 undefined on input line 1036.
+
+
+LaTeX Warning: Reference `fig:CF3cumulative' on page 26 undefined on input line 1036.
+
+<cumulative/ArCF4_cumulative_Ar_dbleStar_cf4_10pct_1bar.pdf, id=560, 433.62pt x 289.08pt>
+File: cumulative/ArCF4_cumulative_Ar_dbleStar_cf4_10pct_1bar.pdf Graphic file (type pdf)
+<use cumulative/ArCF4_cumulative_Ar_dbleStar_cf4_10pct_1bar.pdf>
+Package pdftex.def Info: cumulative/ArCF4_cumulative_Ar_dbleStar_cf4_10pct_1bar.pdf  used on input line 1040.
+(pdftex.def)             Requested size: 229.85197pt x 153.23372pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1041.
+See the caption package documentation for explanation.
+
+<cumulative/ArCF4_cumulative_CF3_cf4_10pct_1bar.pdf, id=561, 433.62pt x 289.08pt>
+File: cumulative/ArCF4_cumulative_CF3_cf4_10pct_1bar.pdf Graphic file (type pdf)
+<use cumulative/ArCF4_cumulative_CF3_cf4_10pct_1bar.pdf>
+Package pdftex.def Info: cumulative/ArCF4_cumulative_CF3_cf4_10pct_1bar.pdf  used on input line 1045.
+(pdftex.def)             Requested size: 229.85197pt x 153.23372pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1046.
+See the caption package documentation for explanation.
+
+[26 <./cumulative/ArCF4_cumulative_Ar_dbleStar_cf4_10pct_1bar.pdf> <./cumulative/ArCF4_cumulative_CF3_cf4_10pct_1bar.pdf>]
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1070.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 1070.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1070.
+
+
+LaTeX Warning: Reference `eq:YvisCF3' on page 27 undefined on input line 1072.
+
+
+LaTeX Warning: Reference `eq:YuvCF4' on page 27 undefined on input line 1072.
+
+
+LaTeX Warning: Reference `eq:YuvAr3rd' on page 27 undefined on input line 1072.
+
+
+Overfull \hbox (10.4348pt too wide) detected at line 1093
+[][]
+ []
+
+
+LaTeX Warning: Reference `fig:ArCF4visFit' on page 27 undefined on input line 1151.
+
+
+LaTeX Warning: Reference `fig:ArCF4uvFit' on page 27 undefined on input line 1151.
+
+<primary_fit/ArCF4_visible.pdf, id=649, 383.53401pt x 270.59143pt>
+File: primary_fit/ArCF4_visible.pdf Graphic file (type pdf)
+<use primary_fit/ArCF4_visible.pdf>
+Package pdftex.def Info: primary_fit/ArCF4_visible.pdf  used on input line 1155.
+(pdftex.def)             Requested size: 229.85197pt x 162.16617pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1156.
+See the caption package documentation for explanation.
+
+<primary_fit/ArCF4_uv.pdf, id=650, 385.3055pt x 270.59143pt>
+File: primary_fit/ArCF4_uv.pdf Graphic file (type pdf)
+<use primary_fit/ArCF4_uv.pdf>
+Package pdftex.def Info: primary_fit/ArCF4_uv.pdf  used on input line 1160.
+(pdftex.def)             Requested size: 229.85197pt x 161.42297pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1161.
+See the caption package documentation for explanation.
+
+[27]
+
+LaTeX Warning: Reference `tab:ArCF4_UV_VIS_toy_uncertainties' on page 28 undefined on input line 1167.
+
+(./latex_tablas/ArCF4_primary_UV_VIS_param_stat_syst.tex)
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1172.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `subscript' on input line 1172.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1172.
+
+
+LaTeX Warning: Reference `eq:YuvN2' on page 28 undefined on input line 1174.
+
+[28 <./primary_fit/ArCF4_visible.pdf> <./primary_fit/ArCF4_uv.pdf>]
+Overfull \hbox (20.64035pt too wide) detected at line 1229
+\OML/ntxmi/m/it/12 P[] \U/ntxmia/m/it/12 = \OML/ntxmi/m/it/12 P[] \LMS/ntxsy/m/n/12 ^^A [] ^^A ¹\OML/ntxmi/m/it/12 f[]P[] \LMS/ntxsy/m/n/12 Ï ¹\OT1/minntx/m/n/12 1 \LMS/ntxsy/m/n/12 ^^@ \OML/ntxmi/m/it/12 f[]\LMS/ntxsy/m/n/12 º\OML/ntxmi/m/it/12 P[]\LMS/ntxsy/m/n/12 º\OML/ntxmi/m/it/12 :
+ []
+
+
+LaTeX Warning: Reference `fig:ArN2Fit' on page 29 undefined on input line 1233.
+
+
+LaTeX Warning: Reference `fig:ArN2Fit1bar' on page 29 undefined on input line 1233.
+
+
+LaTeX Warning: Reference `fig:ArN2Fit5bar' on page 29 undefined on input line 1233.
+
+(./latex_tablas/ArN2_primary_UV_param_stat_syst.tex)
+<primary_fit/ArN2_global.pdf, id=722, 382.42293pt x 270.59143pt>
+File: primary_fit/ArN2_global.pdf Graphic file (type pdf)
+<use primary_fit/ArN2_global.pdf>
+Package pdftex.def Info: primary_fit/ArN2_global.pdf  used on input line 1239.
+(pdftex.def)             Requested size: 314.40001pt x 222.46857pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<primary_fit/ArN2_global_components_1bar.pdf, id=723, 382.42293pt x 270.59143pt>
+File: primary_fit/ArN2_global_components_1bar.pdf Graphic file (type pdf)
+<use primary_fit/ArN2_global_components_1bar.pdf>
+Package pdftex.def Info: primary_fit/ArN2_global_components_1bar.pdf  used on input line 1246.
+(pdftex.def)             Requested size: 215.48668pt x 152.47154pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1247.
+See the caption package documentation for explanation.
+
+<primary_fit/ArN2_global_components_5bar.pdf, id=724, 382.42293pt x 270.59143pt>
+File: primary_fit/ArN2_global_components_5bar.pdf Graphic file (type pdf)
+<use primary_fit/ArN2_global_components_5bar.pdf>
+Package pdftex.def Info: primary_fit/ArN2_global_components_5bar.pdf  used on input line 1253.
+(pdftex.def)             Requested size: 215.48668pt x 152.47154pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1254.
+See the caption package documentation for explanation.
+
+[29 <./primary_fit/ArN2_global_components_1bar.pdf> <./primary_fit/ArN2_global_components_5bar.pdf>] [30 <./primary_fit/ArN2_global.pdf>]
+
+LaTeX Warning: Reference `tab:IR_common_comparison' on page 31 undefined on input line 1266.
+
+
+LaTeX Warning: Reference `fig:ArCF4696' on page 31 undefined on input line 1266.
+
+
+LaTeX Warning: Reference `fig:ArCF4794' on page 31 undefined on input line 1266.
+
+
+LaTeX Warning: Reference `fig:ArN2696' on page 31 undefined on input line 1266.
+
+
+LaTeX Warning: Reference `fig:ArN2772' on page 31 undefined on input line 1266.
+
+(./latex_tablas/IR_common_comparison_table.tex)
+<primary_fit_IR/ArCF4_global_696.pdf, id=822, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_696.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_696.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_696.pdf  used on input line 1272.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1273.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArCF4_global_727.pdf, id=823, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_727.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_727.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_727.pdf  used on input line 1279.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1280.
+See the caption package documentation for explanation.
+
+[31]
+<primary_fit_IR/ArCF4_global_750.pdf, id=829, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_750.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_750.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_750.pdf  used on input line 1287.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1288.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArCF4_global_763.pdf, id=830, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_763.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_763.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_763.pdf  used on input line 1294.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1294.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArCF4_global_772.pdf, id=831, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_772.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_772.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_772.pdf  used on input line 1300.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1301.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArCF4_global_794.pdf, id=832, 384.19438pt x 271.2581pt>
+File: primary_fit_IR/ArCF4_global_794.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArCF4_global_794.pdf>
+Package pdftex.def Info: primary_fit_IR/ArCF4_global_794.pdf  used on input line 1306.
+(pdftex.def)             Requested size: 229.85197pt x 162.28426pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1307.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArN2_global_696.pdf, id=833, 382.42293pt x 271.2581pt>
+File: primary_fit_IR/ArN2_global_696.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArN2_global_696.pdf>
+Package pdftex.def Info: primary_fit_IR/ArN2_global_696.pdf  used on input line 1314.
+(pdftex.def)             Requested size: 229.85197pt x 163.03342pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1315.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArN2_global_727.pdf, id=834, 382.42293pt x 271.2581pt>
+File: primary_fit_IR/ArN2_global_727.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArN2_global_727.pdf>
+Package pdftex.def Info: primary_fit_IR/ArN2_global_727.pdf  used on input line 1321.
+(pdftex.def)             Requested size: 229.85197pt x 163.03342pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1322.
+See the caption package documentation for explanation.
+
+[32 <./primary_fit_IR/ArCF4_global_696.pdf> <./primary_fit_IR/ArCF4_global_727.pdf> <./primary_fit_IR/ArCF4_global_750.pdf> <./primary_fit_IR/ArCF4_global_763.pdf> <./primary_fit_IR/ArCF4_global_772.pdf> <./primary_fit_IR/ArCF4_global_794.pdf>]
+<primary_fit_IR/ArN2_global_750.pdf, id=1014, 382.42293pt x 271.2581pt>
+File: primary_fit_IR/ArN2_global_750.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArN2_global_750.pdf>
+Package pdftex.def Info: primary_fit_IR/ArN2_global_750.pdf  used on input line 1328.
+(pdftex.def)             Requested size: 229.85197pt x 163.03342pt.
+
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1329.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArN2_global_763.pdf, id=1015, 382.42293pt x 271.2581pt>
+File: primary_fit_IR/ArN2_global_763.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArN2_global_763.pdf>
+Package pdftex.def Info: primary_fit_IR/ArN2_global_763.pdf  used on input line 1335.
+(pdftex.def)             Requested size: 229.85197pt x 163.03342pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1335.
+See the caption package documentation for explanation.
+
+<primary_fit_IR/ArN2_global_772.pdf, id=1016, 382.42293pt x 271.2581pt>
+File: primary_fit_IR/ArN2_global_772.pdf Graphic file (type pdf)
+<use primary_fit_IR/ArN2_global_772.pdf>
+Package pdftex.def Info: primary_fit_IR/ArN2_global_772.pdf  used on input line 1342.
+(pdftex.def)             Requested size: 229.85197pt x 163.03342pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1343.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `subbsec:kinArCF4' on page 33 undefined on input line 1351.
+
+
+LaTeX Warning: Reference `subbsec:kinArN2' on page 33 undefined on input line 1351.
+
+
+LaTeX Warning: Reference `subbsec:kinArIR' on page 33 undefined on input line 1351.
+
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 10.0pt on input line 1351.
+LaTeX Font Info:    Font shape `T1/ntxtlf/m/n' will be
+(Font)              scaled to size 7.3pt on input line 1351.
+[33 <./primary_fit_IR/ArN2_global_696.pdf> <./primary_fit_IR/ArN2_global_727.pdf> <./primary_fit_IR/ArN2_global_750.pdf> <./primary_fit_IR/ArN2_global_763.pdf> <./primary_fit_IR/ArN2_global_772.pdf>]
+
+LaTeX Warning: Reference `tab:prediction' on page 34 undefined on input line 1353.
+
+(./latex_tablas/selected_prediction.tex)
+
+LaTeX Warning: Reference `fig:ArCF4visPrimaryPrediction' on page 34 undefined on input line 1366.
+
+
+LaTeX Warning: Reference `fig:ArCF4uvPrimaryPrediction' on page 34 undefined on input line 1366.
+
+<primary_prediction/ArCF4_bands_vis_toy_stat_syst.pdf, id=1151, 448.07399pt x 296.307pt>
+File: primary_prediction/ArCF4_bands_vis_toy_stat_syst.pdf Graphic file (type pdf)
+<use primary_prediction/ArCF4_bands_vis_toy_stat_syst.pdf>
+Package pdftex.def Info: primary_prediction/ArCF4_bands_vis_toy_stat_syst.pdf  used on input line 1370.
+(pdftex.def)             Requested size: 229.85197pt x 152.00073pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1371.
+See the caption package documentation for explanation.
+
+<primary_prediction/ArCF4_bands_uv_toy_stat_syst.pdf, id=1152, 448.07399pt x 296.307pt>
+File: primary_prediction/ArCF4_bands_uv_toy_stat_syst.pdf Graphic file (type pdf)
+<use primary_prediction/ArCF4_bands_uv_toy_stat_syst.pdf>
+Package pdftex.def Info: primary_prediction/ArCF4_bands_uv_toy_stat_syst.pdf  used on input line 1377.
+(pdftex.def)             Requested size: 229.85197pt x 152.00073pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1378.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `fig:ArN2uvPrimaryPrediction' on page 34 undefined on input line 1382.
+
+[34 <./primary_prediction/ArCF4_bands_vis_toy_stat_syst.pdf> <./primary_prediction/ArCF4_bands_uv_toy_stat_syst.pdf>]
+<primary_prediction/ArN2_bands_toy_stat_syst.pdf, id=1235, 454.67412pt x 303.534pt>
+File: primary_prediction/ArN2_bands_toy_stat_syst.pdf Graphic file (type pdf)
+<use primary_prediction/ArN2_bands_toy_stat_syst.pdf>
+Package pdftex.def Info: primary_prediction/ArN2_bands_toy_stat_syst.pdf  used on input line 1386.
+(pdftex.def)             Requested size: 338.58632pt x 226.04279pt.
+
+
+LaTeX Warning: Reference `fig:ArCF4IrPrimaryPrediction' on page 35 undefined on input line 1391.
+
+
+LaTeX Warning: Reference `fig:ArN2IrPrimaryPrediction' on page 35 undefined on input line 1391.
+
+<primary_prediction/ArCF4_IR_total_bands_toy_stat_syst.pdf, id=1236, 455.30101pt x 303.534pt>
+File: primary_prediction/ArCF4_IR_total_bands_toy_stat_syst.pdf Graphic file (type pdf)
+<use primary_prediction/ArCF4_IR_total_bands_toy_stat_syst.pdf>
+Package pdftex.def Info: primary_prediction/ArCF4_IR_total_bands_toy_stat_syst.pdf  used on input line 1395.
+(pdftex.def)             Requested size: 229.85197pt x 153.23482pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1396.
+See the caption package documentation for explanation.
+
+<primary_prediction/ArN2_IR_total_bands_toy_stat_syst.pdf, id=1237, 455.30101pt x 303.534pt>
+File: primary_prediction/ArN2_IR_total_bands_toy_stat_syst.pdf Graphic file (type pdf)
+<use primary_prediction/ArN2_IR_total_bands_toy_stat_syst.pdf>
+Package pdftex.def Info: primary_prediction/ArN2_IR_total_bands_toy_stat_syst.pdf  used on input line 1402.
+(pdftex.def)             Requested size: 229.85197pt x 153.23482pt.
+
+Package caption Warning: The option `hypcap=true' will be ignored for this
+(caption)                particular \caption on input line 1403.
+See the caption package documentation for explanation.
+
+
+LaTeX Warning: Reference `sec:experimental_espectra' on page 35 undefined on input line 1409.
+
+[35 <./primary_prediction/ArN2_bands_toy_stat_syst.pdf> <./primary_prediction/ArCF4_IR_total_bands_toy_stat_syst.pdf> <./primary_prediction/ArN2_IR_total_bands_toy_stat_syst.pdf>]
+
+LaTeX Warning: Reference `fig:ArCF4PrimarySpectra' on page 36 undefined on input line 1415.
+
+
+LaTeX Warning: Reference `fig:ArN2PrimarySpectra' on page 36 undefined on input line 1415.
+
+<predicted_spectra/ArCF4_concentration_ph_MeV_nm.pdf, id=1339, 650.43pt x 449.66396pt>
+File: predicted_spectra/ArCF4_concentration_ph_MeV_nm.pdf Graphic file (type pdf)
+<use predicted_spectra/ArCF4_concentration_ph_MeV_nm.pdf>
+Package pdftex.def Info: predicted_spectra/ArCF4_concentration_ph_MeV_nm.pdf  used on input line 1419.
+(pdftex.def)             Requested size: 435.32422pt x 300.95766pt.
+<predicted_spectra/ArN2_concentration_ph_MeV_nm.pdf, id=1340, 650.43pt x 449.66396pt>
+File: predicted_spectra/ArN2_concentration_ph_MeV_nm.pdf Graphic file (type pdf)
+<use predicted_spectra/ArN2_concentration_ph_MeV_nm.pdf>
+Package pdftex.def Info: predicted_spectra/ArN2_concentration_ph_MeV_nm.pdf  used on input line 1427.
+(pdftex.def)             Requested size: 435.32422pt x 300.95766pt.
+
+LaTeX Warning: Reference `tab:mgpd' on page 36 undefined on input line 1436.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `Sec:model_kin' on page 36 undefined on input line 1453.
+
+[36 <./predicted_spectra/ArCF4_concentration_ph_MeV_nm.pdf>] [37 <./predicted_spectra/ArN2_concentration_ph_MeV_nm.pdf>]
+
+LaTeX Warning: Reference `fig:ArCF4_sec_VIS' on page 38 undefined on input line 1463.
+
+<secondary_prediction/ArCF4_VIS_comparation.pdf, id=1405, 505.89pt x 346.89601pt>
+File: secondary_prediction/ArCF4_VIS_comparation.pdf Graphic file (type pdf)
+<use secondary_prediction/ArCF4_VIS_comparation.pdf>
+Package pdftex.def Info: secondary_prediction/ArCF4_VIS_comparation.pdf  used on input line 1467.
+(pdftex.def)             Requested size: 435.32422pt x 298.5153pt.
+[38 <./secondary_prediction/ArCF4_VIS_comparation.pdf>]
+
+LaTeX Warning: Reference `fig:HeCF4_sec_VIS' on page 39 undefined on input line 1477.
+
+<secondary_prediction/HeCF4_VIS_comparation.pdf, id=1429, 505.89pt x 346.89601pt>
+File: secondary_prediction/HeCF4_VIS_comparation.pdf Graphic file (type pdf)
+<use secondary_prediction/HeCF4_VIS_comparation.pdf>
+Package pdftex.def Info: secondary_prediction/HeCF4_VIS_comparation.pdf  used on input line 1481.
+(pdftex.def)             Requested size: 435.32422pt x 298.5153pt.
+[39 <./secondary_prediction/HeCF4_VIS_comparation.pdf>]
+
+LaTeX Warning: Reference `fig:LIP_UV' on page 40 undefined on input line 1491.
+
+<secondary_prediction/LIP_UV.pdf, id=1453, 505.89pt x 346.89601pt>
+File: secondary_prediction/LIP_UV.pdf Graphic file (type pdf)
+<use secondary_prediction/LIP_UV.pdf>
+Package pdftex.def Info: secondary_prediction/LIP_UV.pdf  used on input line 1495.
+(pdftex.def)             Requested size: 435.32422pt x 298.5153pt.
+
+LaTeX Warning: Reference `subbsec:kinArIR' on page 40 undefined on input line 1503.
+
+
+LaTeX Warning: Reference `fig:ArCF4_sec_IR' on page 40 undefined on input line 1505.
+
+<secondary_prediction/ArCF4_IR_secondary_with_bands.pdf, id=1454, 448.07399pt x 296.307pt>
+File: secondary_prediction/ArCF4_IR_secondary_with_bands.pdf Graphic file (type pdf)
+<use secondary_prediction/ArCF4_IR_secondary_with_bands.pdf>
+Package pdftex.def Info: secondary_prediction/ArCF4_IR_secondary_with_bands.pdf  used on input line 1509.
+(pdftex.def)             Requested size: 435.32422pt x 287.87862pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[40 <./secondary_prediction/LIP_UV.pdf>]
+
+LaTeX Warning: Reference `fig:GEM' on page 41 undefined on input line 1521.
+
+
+LaTeX Warning: Reference `fig:th-GEM' on page 41 undefined on input line 1521.
+
+<secondary_prediction/paper_v2_ArCF4_gem_VIS_IR.pdf, id=1483, 433.62pt x 289.08pt>
+File: secondary_prediction/paper_v2_ArCF4_gem_VIS_IR.pdf Graphic file (type pdf)
+<use secondary_prediction/paper_v2_ArCF4_gem_VIS_IR.pdf>
+Package pdftex.def Info: secondary_prediction/paper_v2_ArCF4_gem_VIS_IR.pdf  used on input line 1525.
+(pdftex.def)             Requested size: 435.32422pt x 290.23055pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+[41 <./secondary_prediction/ArCF4_IR_secondary_with_bands.pdf>]
+<secondary_prediction/paper_v2_ArCF4_thgem_VIS_IR.pdf, id=1507, 433.62pt x 289.08pt>
+File: secondary_prediction/paper_v2_ArCF4_thgem_VIS_IR.pdf Graphic file (type pdf)
+<use secondary_prediction/paper_v2_ArCF4_thgem_VIS_IR.pdf>
+Package pdftex.def Info: secondary_prediction/paper_v2_ArCF4_thgem_VIS_IR.pdf  used on input line 1537.
+(pdftex.def)             Requested size: 435.32422pt x 290.23055pt.
+
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+LaTeX Warning: Reference `fig:th-GEM' on page 42 undefined on input line 1543.
+
+[42 <./secondary_prediction/paper_v2_ArCF4_gem_VIS_IR.pdf>]
+
+LaTeX Warning: Reference `fig:ArCF4_sec_vsE_1percentCF4' on page 43 undefined on input line 1553.
+
+[43 <./secondary_prediction/paper_v2_ArCF4_thgem_VIS_IR.pdf>]
+<secondary_prediction/paper_v2_ArCF4_VIS_IR_vsE_1percentCF4.pdf, id=1555, 433.62pt x 289.08pt>
+File: secondary_prediction/paper_v2_ArCF4_VIS_IR_vsE_1percentCF4.pdf Graphic file (type pdf)
+<use secondary_prediction/paper_v2_ArCF4_VIS_IR_vsE_1percentCF4.pdf>
+Package pdftex.def Info: secondary_prediction/paper_v2_ArCF4_VIS_IR_vsE_1percentCF4.pdf  used on input line 1557.
+(pdftex.def)             Requested size: 435.32422pt x 290.23055pt.
+ [44 <./secondary_prediction/paper_v2_ArCF4_VIS_IR_vsE_1percentCF4.pdf>] [45] [46] [47] [48] [49]
+
+/home/daniel/GitHub/ScintillationModel_RareGasMixtures/document/all_english/main_english.tex:1600: LaTeX Error: Unicode character â€‚ (U+2002)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1600 \addcontentsline
+                       {toc}{section}{References}
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/daniel/GitHub/ScintillationModel_RareGasMixtures/document/all_english/main_english.tex:1600: LaTeX Error: Unicode character â€‚ (U+2002)
+               not set up for use with LaTeX.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1600 \addcontentsline
+                       {toc}{section}{References}
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+[50] (./main_english.aux)
+ ***********
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2020/03/25>
+ ***********
+
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main_english.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main_english.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  14208AD14EB613EB5AB677119DF2A220;6698.
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                main_english
+(biblatex)                and rerun LaTeX afterwards.
+
+Package logreq Info: Writing requests to 'main_english.run.xml'.
+\openout1 = `main_english.run.xml'.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 32750 strings out of 474222
+ 621956 string characters out of 5748734
+ 1951975 words of memory out of 5000000
+ 54067 multiletter control sequences out of 15000+600000
+ 738076 words of font info for 412 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 80i,16n,117p,2038b,2236s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/newtx/NewTXBMI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/NewTXMI5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/NewTXMI7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/share/texmf/fonts/type1/public/tex-gyre/qtmr.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/t1xtt.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txexs.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txsys.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/ztmb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/ztmr.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/ztmri.pfb>
+Output written on main_english.pdf (51 pages, 4813640 bytes).
+PDF statistics:
+ 1823 PDF objects out of 2073 (max. 8388607)
+ 1420 compressed objects within 15 object streams
+ 255 named destinations out of 1000 (max. 500000)
+ 58112 words of extra memory for PDF output out of 61914 (max. 10000000)
+
