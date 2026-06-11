@@ -49,9 +49,9 @@ WAVELENGTH_NM = np.linspace(200.0, 800.0, 2000)
 # Empirical spectral decomposition. The weights are relative and are normalised
 # internally, so the integral of each component equals the model yield.
 CF4_UV_PEAKS = [
-    (230.0, 20.0, 0.75),
-    (290.0, 20.0, 1.00),
-    (364.0, 40.0, 0.10),
+    (235.0, 17.0, 0.55),
+    (290.0, 17.0, 0.75),
+    (364.0, 50.0, 0.35),
 ]
 
 IR_LINES = {
@@ -71,6 +71,8 @@ degrad_data_ir = pd.read_csv(DATA_DIR / "Primary_DegradData" / "ArCF4_IR.csv")
 
 params_uv_vis = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_primary.csv")["parameter"].to_numpy(dtype=float)
 params_ir = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_IR_primary.csv")["parameter"].to_numpy(dtype=float)
+
+norm = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_primary.csv")["parameter"].to_numpy(dtype=float)[0]
 
 
 def arcf4_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_bar: float) -> np.ndarray:
@@ -103,8 +105,8 @@ def arcf4_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_
     spectrum = np.zeros_like(WAVELENGTH_NM, dtype=float)
     spectrum += y_vis * gaussian_pdf(WAVELENGTH_NM, 630.0, 40.0)
     spectrum += weighted_gaussian_sum(WAVELENGTH_NM, y_cf4, CF4_UV_PEAKS)
-    spectrum += y_ar_dblestar * gaussian_pdf(WAVELENGTH_NM, 220.0, 60.0)
-    spectrum += y_cf3_uv * gaussian_pdf(WAVELENGTH_NM, 245.0, 60.0)
+    spectrum += y_ar_dblestar * gaussian_pdf(WAVELENGTH_NM, 190.0, 60.0) / 0.49
+    spectrum += y_cf3_uv * gaussian_pdf(WAVELENGTH_NM, 260.0, 60.0)
 
     for line_nm, func in IR_LINES.items():
         y_ir = model_fit_unit_to_ph_per_MeV(
@@ -112,7 +114,7 @@ def arcf4_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_
         )[0]
         spectrum += y_ir * gaussian_pdf(WAVELENGTH_NM, line_nm, 2.5)
 
-    return spectrum
+    return spectrum/norm
 
 
 def save_pressure_csv(pressure_bar: float, spectra: dict[float, np.ndarray]) -> None:
@@ -149,7 +151,7 @@ def main() -> None:
         ax.set_title(rf"Primary Ar--CF$_4$ spectrum, {pressure_bar:g} bar")
         ax.set_xlim(200, 800)
         ax.set_ylim(bottom=0)
-        ax.legend(ncols=2, fontsize=9)
+        ax.legend(ncols=2, fontsize=9, loc = "upper left")
         fig.tight_layout()
         fig.savefig(OUT_DIR / f"ArCF4_{pressure_bar:g}bar_ph_MeV_nm.pdf", bbox_inches="tight")
         plt.close(fig)
@@ -161,15 +163,17 @@ def main() -> None:
     for ax, con in zip(axs, CONCENTRATIONS_PERCENT):
         for color, pressure_bar in zip(colors_pres, PRESSURES_BAR):
             y = all_spectra[pressure_bar][con]
-            ax.plot(WAVELENGTH_NM, y, color=color, lw=2, label=rf"{pressure_bar:g} bar")
+            ax.plot(WAVELENGTH_NM, y, color=color, lw=1.5, label=rf"{pressure_bar:g} bar")
 
         ax.set_title(rf"Ar--CF$_4$, {con:g}\% CF$_4$")
         ax.set_xlabel(r"$\lambda$ [nm]")
         ax.set_ylabel(r"ph MeV$^{-1}$ nm$^{-1}$")
         ax.set_xlim(200, 800)
         ax.set_ylim(0, 1.05 * global_ymax)
-        ax.legend(ncols=2, fontsize=8, loc="upper right")
+        ax.legend(ncols=2, fontsize=8,  loc = "upper left")
 
+        ax.grid(False)
+    
     fig.suptitle(r"Primary Ar--CF$_4$ spectra", fontsize=14)
     fig.tight_layout()
     fig.savefig(OUT_DIR / "ArCF4_concentration_ph_MeV_nm.pdf", bbox_inches="tight")

@@ -102,7 +102,7 @@ read_experimental(archivo_entrada, yields, presiones, output_dir, concentracione
 DATA_DIR = "../data/Experimental/ArN2/"
 yield_N2_uv  = pd.read_csv(os.path.join(DATA_DIR, "yield_N2.csv"))
 
-mask = yield_N2_uv["N2 concentration (%)"] != 100
+mask = yield_N2_uv["N2 concentration (%)"] != 120
 mask2 = yield_N2_uv["N2 concentration (%)"] != 150
 yield_N2_uv = yield_N2_uv[mask & mask2]
 
@@ -175,7 +175,7 @@ x0_og         = np.array([
 
 upper_og          = np.array([
                1.0, 
-               0.7,
+               1.0,
                0.0, 0.0, 0.0, 
                0.0, 0.0, 0.0,
                0.0, 0.0, 0.0,

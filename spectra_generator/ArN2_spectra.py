@@ -46,7 +46,6 @@ CONCENTRATIONS_PERCENT = [0.1, 1, 10, 100]
 WAVELENGTH_NM = np.linspace(300.0, 800.0, 2000)
 
 N2_SECOND_POSITIVE_PEAKS = [
-    (310.0, 3.0, 0.13),
     (335.0, 3.75, 0.42),
     (355.0, 3.75, 0.30),
     (378.0, 3.75, 0.10),
@@ -60,6 +59,10 @@ IR_LINES = {
     763.0: theory_yield_ArN2_Ir_763,
     772.0: theory_yield_ArN2_Ir_772,
 }
+
+
+norm = pd.read_csv(DATA_DIR / "Parameters" / "ArCF4_primary.csv")["parameter"].to_numpy(dtype=float)[0]
+
 
 # -----------------------------------------------------------------------------
 # Data
@@ -95,7 +98,7 @@ def arn2_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_b
         )[0]
         spectrum += y_ir * gaussian_pdf(WAVELENGTH_NM, line_nm, 2.8)
 
-    return spectrum
+    return spectrum/norm
 
 
 def save_pressure_csv(pressure_bar: float, spectra: dict[float, np.ndarray]) -> None:

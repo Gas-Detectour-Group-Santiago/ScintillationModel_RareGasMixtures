@@ -135,7 +135,7 @@ garfield_data["concentration"] = garfield_data["concentration"] / 100.0
 
 parameter_data = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_IR_primary.csv"))["parameter"].to_numpy()
 
-parameter_data_ArCF4 = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_2_0.csv"))["parameter"].to_numpy()
+parameter_data_ArCF4 = pd.read_csv(os.path.join(DATA_DIR_PAR, "ArCF4_secondary_1_3.csv"))["parameter"].to_numpy()
 
 norm1 = parameter_data_ArCF4[0]
 

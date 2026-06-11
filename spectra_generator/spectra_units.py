@@ -24,6 +24,8 @@ from typing import Any, Iterable
 import numpy as np
 
 EV_PER_MEV = 1.0e6
+KEV_PER_MEV = 1.0e3
+
 
 
 def repo_root_from_script(script_file: str | Path) -> Path:
@@ -86,12 +88,13 @@ def weighted_gaussian_sum(
 
 def model_fit_unit_to_ph_per_MeV(y_ph_per_eV: Any) -> np.ndarray:
     """Convert model output from ph/eV to ph/MeV."""
-    return np.asarray(y_ph_per_eV, dtype=float) * EV_PER_MEV
+    return np.asarray(y_ph_per_eV, dtype=float) * KEV_PER_MEV
 
 
 def ph_per_electron_to_ph_per_MeV(y_ph_per_electron: Any, additive_fraction: float, w_func) -> np.ndarray:
     """Convert ph/e- to ph/MeV using W(f) in eV/e-."""
-    w_value = np.asarray(w_func(additive_fraction), dtype=float)
+    w_value = np.asarray(w_func(additive_fraction), dtype=float)   
+    print(w_value)
     return np.asarray(y_ph_per_electron, dtype=float) * EV_PER_MEV / w_value
 
 
@@ -167,7 +170,9 @@ def get_n2_total_yield_ph_per_electron(row, include_ir: bool = True) -> float:
 
 def get_spectrum_arrays(row, preferred_columns: tuple[str, ...]) -> tuple[np.ndarray, np.ndarray]:
     """Extract wavelength/intensity arrays from a pickle row."""
+
     for col in preferred_columns:
+        print(col)
         if col not in row.index:
             continue
         dic = row[col]
