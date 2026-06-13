@@ -26,5 +26,5 @@ for name in funcs:
         setattr(_special_ufuncs, name, getattr(scipy.special, name))
 
 
-with open("CF4_primary_data_final_with_IR.pkl", "rb") as f:
+with open("CF4_primary_data_final.pkl", "rb") as f:
     df = dill.load(f)

@@ -54,6 +54,15 @@ CF4_UV_PEAKS = [
     (364.0, 50.0, 0.35),
 ]
 
+Ar3rd_UV_PEAKS = [
+    (176.0, 30.0, 1),
+    (188.0, 30.0, 1),
+    (199.0, 30.0, 1),
+    (212.0, 30.0, 1),
+    (225.0, 30.0, 1),
+    (245.0, 30.0, 1),
+]
+
 IR_LINES = {
     696.0: theory_yield_ArCF4_Ir_696,
     727.0: theory_yield_ArCF4_Ir_727,
@@ -105,7 +114,8 @@ def arcf4_primary_spectrum_ph_per_MeV_nm(concentration_percent: float, pressure_
     spectrum = np.zeros_like(WAVELENGTH_NM, dtype=float)
     spectrum += y_vis * gaussian_pdf(WAVELENGTH_NM, 630.0, 40.0)
     spectrum += weighted_gaussian_sum(WAVELENGTH_NM, y_cf4, CF4_UV_PEAKS)
-    spectrum += y_ar_dblestar * gaussian_pdf(WAVELENGTH_NM, 190.0, 60.0) / 0.49
+    spectrum += weighted_gaussian_sum(WAVELENGTH_NM, y_ar_dblestar, Ar3rd_UV_PEAKS) / 0.49 
+
     spectrum += y_cf3_uv * gaussian_pdf(WAVELENGTH_NM, 260.0, 60.0)
 
     for line_nm, func in IR_LINES.items():
