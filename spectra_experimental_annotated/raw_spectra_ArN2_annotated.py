@@ -3,6 +3,7 @@ from __future__ import annotations
 from spectra_annotate import (
     DATA_DIR,
     DEFAULT_PRESSURE_STYLES,
+    DEFAULT_SMOOTH_REGIONS,
     load_spectra,
     plot_raw_spectrum,
     setup_raw_spectrum_style,
@@ -13,6 +14,8 @@ TITLE = "Ar--N$_2$, 99/1, 1 bar"
 OUTPUT_NAME = "ArN2_9901_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (300.0, 820.0)
+smooth_spectra = True
+smooth_regions = DEFAULT_SMOOTH_REGIONS
 
 SOURCE = {
     "pkl_path": DATA_DIR / "Experimental" / "ArN2" / "N2_primary_data_final.pkl",
@@ -61,7 +64,7 @@ ANNOTATIONS = [
     },
     {
         "x_guess_nm": 750.0,
-        "label": "Ar(5p)$\\rightarrow$ Ar(4s)",
+        "label": "Ar$^{*}$(4p)$\\rightarrow$ Ar$^{*}$(4s)",
         "dx_nm": -55.0,
         "dy_frac": 0.4,
         "window_nm": 5.0,
@@ -72,7 +75,12 @@ ANNOTATIONS = [
 
 def main() -> None:
     setup_raw_spectrum_style()
-    spectra = load_spectra(SOURCE, PRESSURES_BAR)
+    spectra = load_spectra(
+        SOURCE,
+        PRESSURES_BAR,
+        smooth_spectra=smooth_spectra,
+        smooth_regions=smooth_regions,
+    )
 
     plot_raw_spectrum(
         spectra=spectra,

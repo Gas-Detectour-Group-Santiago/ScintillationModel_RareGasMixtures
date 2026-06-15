@@ -65,6 +65,13 @@ OUT_DIR = Path(os.environ.get("SPECTRA_OUT_DIR", SCRIPT_DIR / "raw_spectra")).ex
 
 DEFAULT_PRESSURES_BAR = [1.0]
 DEFAULT_FIGSIZE = (10.5, 4.8)
+DEFAULT_SMOOTH_SPECTRA = True
+DEFAULT_SMOOTH_WINDOW_NM = 4.0
+DEFAULT_SMOOTH_REGIONS = (
+    (180.0, 650.0, 12.0),
+    (650.0, 820.0, 1.0),
+)
+DEFAULT_SMOOTH_POLYORDER = 2
 DEFAULT_PRESSURE_STYLES = {
     1.0: {"line": "tab:blue", "label": "1 bar"},
 }
@@ -180,15 +187,30 @@ def extract_spectrum_arrays_quiet(
 
 
 def preprocess_intensity(
+    wavelength: np.ndarray,
     intensity: np.ndarray,
     *,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> np.ndarray:
+    x = np.asarray(wavelength, dtype=float)
     y = np.asarray(intensity, dtype=float).copy()
 
     if clip_negative_values:
         y = np.clip(y, 0.0, None)
+
+    if smooth_spectra:
+        y = smooth_intensity(
+            x,
+            y,
+            window_nm=smooth_window_nm,
+            smooth_regions=smooth_regions,
+            polyorder=smooth_polyorder,
+        )
 
     if normalize_to_max:
         ymax = np.nanmax(y)
@@ -198,12 +220,126 @@ def preprocess_intensity(
     return y
 
 
+def smooth_intensity(
+    wavelength: np.ndarray,
+    intensity: np.ndarray,
+    *,
+    window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = None,
+    polyorder: int = DEFAULT_SMOOTH_POLYORDER,
+) -> np.ndarray:
+    x = np.asarray(wavelength, dtype=float)
+    y = np.asarray(intensity, dtype=float)
+
+    if smooth_regions is not None:
+        return smooth_intensity_by_regions(
+            x,
+            y,
+            smooth_regions=smooth_regions,
+            fallback_window_nm=window_nm,
+            polyorder=polyorder,
+        )
+
+    if y.size < 5 or window_nm <= 0.0:
+        return y.copy()
+
+    finite = np.isfinite(x) & np.isfinite(y)
+    if np.count_nonzero(finite) < 5:
+        return y.copy()
+
+    dx = np.diff(np.sort(x[finite]))
+    dx = dx[np.isfinite(dx) & (dx > 0.0)]
+    if dx.size == 0:
+        return y.copy()
+
+    median_dx = float(np.median(dx))
+    window_length = int(round(window_nm / median_dx))
+    window_length = max(window_length, polyorder + 3, 5)
+
+    if window_length % 2 == 0:
+        window_length += 1
+
+    max_odd = y.size if y.size % 2 == 1 else y.size - 1
+    window_length = min(window_length, max_odd)
+
+    if window_length <= polyorder + 1 or window_length < 5:
+        return y.copy()
+
+    try:
+        from scipy.signal import savgol_filter
+
+        return savgol_filter(
+            y,
+            window_length=window_length,
+            polyorder=min(polyorder, window_length - 2),
+            mode="interp",
+        )
+    except Exception:
+        kernel = np.ones(window_length, dtype=float) / float(window_length)
+        padded = np.pad(y, window_length // 2, mode="edge")
+        return np.convolve(padded, kernel, mode="valid")
+
+
+def smooth_intensity_by_regions(
+    wavelength: np.ndarray,
+    intensity: np.ndarray,
+    *,
+    smooth_regions: tuple[tuple[float, float, float], ...],
+    fallback_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    polyorder: int = DEFAULT_SMOOTH_POLYORDER,
+) -> np.ndarray:
+    x = np.asarray(wavelength, dtype=float)
+    y = np.asarray(intensity, dtype=float)
+    y_out = y.copy()
+
+    if y.size < 5:
+        return y_out
+
+    covered = np.zeros(y.shape, dtype=bool)
+
+    for x_min, x_max, region_window_nm in smooth_regions:
+        mask = (
+            np.isfinite(x)
+            & np.isfinite(y)
+            & (x >= x_min)
+            & (x < x_max)
+        )
+        covered |= mask
+
+        if region_window_nm <= 0.0 or np.count_nonzero(mask) < 5:
+            continue
+
+        y_out[mask] = smooth_intensity(
+            x[mask],
+            y[mask],
+            window_nm=region_window_nm,
+            smooth_regions=None,
+            polyorder=polyorder,
+        )
+
+    fallback_mask = np.isfinite(x) & np.isfinite(y) & ~covered
+    if fallback_window_nm > 0.0 and np.count_nonzero(fallback_mask) >= 5:
+        y_out[fallback_mask] = smooth_intensity(
+            x[fallback_mask],
+            y[fallback_mask],
+            window_nm=fallback_window_nm,
+            smooth_regions=None,
+            polyorder=polyorder,
+        )
+
+    return y_out
+
+
 def get_spectrum_from_source(
     source_config: dict,
     pressure_bar: float,
     *,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> tuple[np.ndarray, np.ndarray] | None:
     pkl_path = resolve_existing_path(
         source_config["pkl_path"],
@@ -239,9 +375,14 @@ def get_spectrum_from_source(
     return (
         np.asarray(wavelength, dtype=float),
         preprocess_intensity(
+            wavelength,
             intensity,
             normalize_to_max=normalize_to_max,
             clip_negative_values=clip_negative_values,
+            smooth_spectra=smooth_spectra,
+            smooth_window_nm=smooth_window_nm,
+            smooth_regions=smooth_regions,
+            smooth_polyorder=smooth_polyorder,
         ),
     )
 
@@ -252,6 +393,10 @@ def load_spectra(
     *,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> dict[float, tuple[np.ndarray, np.ndarray]]:
     spectra: dict[float, tuple[np.ndarray, np.ndarray]] = {}
 
@@ -261,6 +406,10 @@ def load_spectra(
             pressure_bar,
             normalize_to_max=normalize_to_max,
             clip_negative_values=clip_negative_values,
+            smooth_spectra=smooth_spectra,
+            smooth_window_nm=smooth_window_nm,
+            smooth_regions=smooth_regions,
+            smooth_polyorder=smooth_polyorder,
         )
 
         if spectrum is None:
@@ -281,6 +430,10 @@ def load_spectra_with_fallback(
     *,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> tuple[dict[float, tuple[np.ndarray, np.ndarray]], list[str]]:
     spectra: dict[float, tuple[np.ndarray, np.ndarray]] = {}
     used_sources: list[str] = []
@@ -297,6 +450,10 @@ def load_spectra_with_fallback(
                     pressure_bar,
                     normalize_to_max=normalize_to_max,
                     clip_negative_values=clip_negative_values,
+                    smooth_spectra=smooth_spectra,
+                    smooth_window_nm=smooth_window_nm,
+                    smooth_regions=smooth_regions,
+                    smooth_polyorder=smooth_polyorder,
                 )
             except FileNotFoundError as exc:
                 skipped_sources.append(f"{source_config.get('name', 'unnamed source')}: {exc}")
@@ -328,6 +485,10 @@ def load_csv_spectrum(
     intensity_column: int | str = 1,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> tuple[np.ndarray, np.ndarray]:
     csv_path = resolve_existing_path(csv_path, fallback_paths)
 
@@ -352,9 +513,14 @@ def load_csv_spectrum(
     return (
         wavelength,
         preprocess_intensity(
+            wavelength,
             intensity,
             normalize_to_max=normalize_to_max,
             clip_negative_values=clip_negative_values,
+            smooth_spectra=smooth_spectra,
+            smooth_window_nm=smooth_window_nm,
+            smooth_regions=smooth_regions,
+            smooth_polyorder=smooth_polyorder,
         ),
     )
 
@@ -364,6 +530,10 @@ def load_csv_spectra(
     *,
     normalize_to_max: bool = False,
     clip_negative_values: bool = True,
+    smooth_spectra: bool = DEFAULT_SMOOTH_SPECTRA,
+    smooth_window_nm: float = DEFAULT_SMOOTH_WINDOW_NM,
+    smooth_regions: tuple[tuple[float, float, float], ...] | None = DEFAULT_SMOOTH_REGIONS,
+    smooth_polyorder: int = DEFAULT_SMOOTH_POLYORDER,
 ) -> dict[float, tuple[np.ndarray, np.ndarray]]:
     spectra: dict[float, tuple[np.ndarray, np.ndarray]] = {}
 
@@ -378,6 +548,10 @@ def load_csv_spectra(
             intensity_column=csv_config.get("intensity_column", 1),
             normalize_to_max=normalize_to_max,
             clip_negative_values=clip_negative_values,
+            smooth_spectra=smooth_spectra,
+            smooth_window_nm=smooth_window_nm,
+            smooth_regions=smooth_regions,
+            smooth_polyorder=smooth_polyorder,
         )
 
     return spectra

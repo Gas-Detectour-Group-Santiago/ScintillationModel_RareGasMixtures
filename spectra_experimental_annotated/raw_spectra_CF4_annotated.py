@@ -3,6 +3,7 @@ from __future__ import annotations
 from spectra_annotate import (
     DATA_DIR,
     DEFAULT_PRESSURE_STYLES,
+    DEFAULT_SMOOTH_REGIONS,
     load_spectra,
     plot_raw_spectrum,
     setup_raw_spectrum_style,
@@ -13,6 +14,8 @@ TITLE = "Pure CF$_4$, 1 bar"
 OUTPUT_NAME = "CF4_pure_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (200.0, 750.0)
+smooth_spectra = True
+smooth_regions = DEFAULT_SMOOTH_REGIONS
 
 SOURCE = {
     "pkl_path": DATA_DIR / "Experimental" / "ArCF4" / "CF4_primary_data_final.pkl",
@@ -56,7 +59,12 @@ ANNOTATIONS = [
 
 def main() -> None:
     setup_raw_spectrum_style()
-    spectra = load_spectra(SOURCE, PRESSURES_BAR)
+    spectra = load_spectra(
+        SOURCE,
+        PRESSURES_BAR,
+        smooth_spectra=smooth_spectra,
+        smooth_regions=smooth_regions,
+    )
 
     plot_raw_spectrum(
         spectra=spectra,

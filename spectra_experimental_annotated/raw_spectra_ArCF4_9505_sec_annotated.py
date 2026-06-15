@@ -5,6 +5,7 @@ from pathlib import Path
 from spectra_annotate import (
     DATA_DIR,
     DEFAULT_PRESSURE_STYLES,
+    DEFAULT_SMOOTH_REGIONS,
     ROOT_DIR,
     load_csv_spectra,
     plot_raw_spectrum,
@@ -16,6 +17,8 @@ TITLE = "Secondary Ar--CF$_4$, 95/5, 1 bar"
 OUTPUT_NAME = "ArCF4_9505_secondary_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (210.0, 820.0)
+smooth_spectra = True
+smooth_regions = DEFAULT_SMOOTH_REGIONS
 
 CSV_FILENAME = "ArCF4_9505_1_bar_Sara_with_IR.csv"
 
@@ -50,7 +53,7 @@ ANNOTATIONS = [
         "window_nm": 12.0,
     },
     {
-        "x_guess_nm": 364.0,
+        "x_guess_nm": 400.0,
         "label": "CF$_4^{+*}$(D) $\\rightarrow$ CF$_4^{+*}$(C)",
         "dx_nm": 18.0,
         "dy_frac": 0.23,
@@ -76,7 +79,11 @@ ANNOTATIONS = [
 
 def main() -> None:
     setup_raw_spectrum_style()
-    spectra = load_csv_spectra(CSV_SOURCES)
+    spectra = load_csv_spectra(
+        CSV_SOURCES,
+        smooth_spectra=smooth_spectra,
+        smooth_regions=smooth_regions,
+    )
 
     plot_raw_spectrum(
         spectra=spectra,

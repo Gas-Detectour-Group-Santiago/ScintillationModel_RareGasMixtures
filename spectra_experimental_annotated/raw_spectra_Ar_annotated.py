@@ -3,6 +3,7 @@ from __future__ import annotations
 from spectra_annotate import (
     DATA_DIR,
     DEFAULT_PRESSURE_STYLES,
+    DEFAULT_SMOOTH_REGIONS,
     load_spectra_with_fallback,
     plot_raw_spectrum,
     setup_raw_spectrum_style,
@@ -13,6 +14,8 @@ TITLE = "Pure Ar, 1 bar"
 OUTPUT_NAME = "Ar_pure_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (160.0, 820.0)
+smooth_spectra = True
+smooth_regions = DEFAULT_SMOOTH_REGIONS
 
 SOURCES = [
     {
@@ -54,7 +57,12 @@ ANNOTATIONS = [
 
 def main() -> None:
     setup_raw_spectrum_style()
-    spectra, used_sources = load_spectra_with_fallback(SOURCES, PRESSURES_BAR)
+    spectra, used_sources = load_spectra_with_fallback(
+        SOURCES,
+        PRESSURES_BAR,
+        smooth_spectra=smooth_spectra,
+        smooth_regions=smooth_regions,
+    )
 
     plot_raw_spectrum(
         spectra=spectra,

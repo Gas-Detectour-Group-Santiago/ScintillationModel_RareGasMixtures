@@ -5,6 +5,7 @@ from pathlib import Path
 from spectra_annotate import (
     DATA_DIR,
     DEFAULT_PRESSURE_STYLES,
+    DEFAULT_SMOOTH_REGIONS,
     ROOT_DIR,
     load_csv_spectra,
     plot_raw_spectrum,
@@ -16,6 +17,8 @@ TITLE = "Secondary He--CF$_4$, 80/20, 1 bar"
 OUTPUT_NAME = "HeCF4_8020_secondary_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (210.0, 820.0)
+smooth_spectra = True
+smooth_regions = DEFAULT_SMOOTH_REGIONS
 
 CSV_FILENAME = "HeCF4_8020_secundario_1_bar_Florian.csv"
 
@@ -68,7 +71,11 @@ ANNOTATIONS = [
 
 def main() -> None:
     setup_raw_spectrum_style()
-    spectra = load_csv_spectra(CSV_SOURCES)
+    spectra = load_csv_spectra(
+        CSV_SOURCES,
+        smooth_spectra=smooth_spectra,
+        smooth_regions=smooth_regions,
+    )
 
     plot_raw_spectrum(
         spectra=spectra,
