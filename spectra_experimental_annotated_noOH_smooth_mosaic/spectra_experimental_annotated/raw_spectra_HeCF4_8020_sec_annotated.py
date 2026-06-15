@@ -12,16 +12,16 @@ from spectra_annotate import (
 )
 
 
-TITLE = "Secondary Ar--CF$_4$, 95/5, 1 bar"
-OUTPUT_NAME = "ArCF4_9505_secondary_raw_1bar.pdf"
+TITLE = "Secondary He--CF$_4$, 80/20, 1 bar"
+OUTPUT_NAME = "HeCF4_8020_secondary_raw_1bar.pdf"
 PRESSURES_BAR = [1.0]
 X_RANGE_NM = (210.0, 820.0)
 
-CSV_FILENAME = "ArCF4_9505_1_bar_Sara_with_IR.csv"
+CSV_FILENAME = "HeCF4_8020_secundario_1_bar_Florian.csv"
 
 CSV_SOURCES = {
     1.0: {
-        "csv_path": DATA_DIR / "Experimental" / "ArCF4" / CSV_FILENAME,
+        "csv_path": DATA_DIR / "Experimental" / "HeCF4" / CSV_FILENAME,
         "fallback_paths": [
             ROOT_DIR / CSV_FILENAME,
             Path(__file__).resolve().parent / CSV_FILENAME,
@@ -44,32 +44,24 @@ PRESSURE_STYLES = {
 ANNOTATIONS = [
     {
         "x_guess_nm": 235.0,
-        "label": "CF$_3^{*}$(2A$_2$'') $\\rightarrow$  CF$_3^*$(1A$_2$'')",
-        "dx_nm": -35.0,
-        "dy_frac": 0.32,
+        "label": "CF$_4^{+*}$(C) $\\rightarrow$ CF$_4^{+}$(X)",
+        "dx_nm": 0.0,
+        "dy_frac": 0.62,
         "window_nm": 12.0,
     },
     {
-        "x_guess_nm": 364.0,
-        "label": "CF$_4^{+*}$(D) $\\rightarrow$ CF$_4^{+*}$(C)",
-        "dx_nm": 18.0,
-        "dy_frac": 0.23,
+        "x_guess_nm": 290.0,
+        "label": "CF$_4^{+*}$(C) $\\rightarrow$ CF$_4^{+*}$(A)",
+        "dx_nm": 68.0,
+        "dy_frac": 0.13,
         "window_nm": 16.0,
     },
     {
         "x_guess_nm": 615.0,
-        "label": "CF$_3^*$ (2A$_2$'') $\\rightarrow$ CF$_3^*$(1A$_1$')",
-        "dx_nm": -105.0,
+        "label": "CF$_3^*$ (2A$_2$'') $\\rightarrow$ CF$_3^*$(1A$_2$'')",
+        "dx_nm": -35.0,
         "dy_frac": 0.31,
         "window_nm": 10.0,
-    },
-    {
-        "x_guess_nm": 750.0,
-        "label": "Ar$^{*}$(4p)$\\rightarrow$ Ar$^{*}$(4s)",
-        "dx_nm": -55.0,
-        "dy_frac": 0.12,
-        "window_nm": 5.0,
-        "arrow": False,
     },
 ]
 
