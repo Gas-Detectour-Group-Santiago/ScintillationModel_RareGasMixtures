@@ -1,0 +1,11 @@
+{
+  "name": "ArN2_primary",
+  "model_name": "ArN2",
+  "chi2": 10.465308691748895,
+  "dof": 33,
+  "chi2_red": 0.3171305664166332,
+  "success": true,
+  "message": "`ftol` termination condition is satisfied.",
+  "n_stat_toys": 10,
+  "n_syst_toys": 10
+}

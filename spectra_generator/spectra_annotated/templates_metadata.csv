@@ -1,0 +1,7 @@
+spectrum_id,filename,mixture,mode,origin,measured,usable_as,notes
+CF4_pure_secondary_template,CF4_1_bar_Florian.csv,CF4,secondary,digitized_or_reference_template,false,"shape_template;annotation_only","Use as spectral shape/reference, not as experimental yield comparison."
+HeCF4_8020_primary_template,HeCF4_8020_primario_1_bar_Florian.csv,HeCF4,primary,digitized_or_reference_template,false,"shape_template;annotation_only","Use as spectral shape/reference unless explicitly calibrated elsewhere."
+HeCF4_8020_secondary_template,HeCF4_8020_secundario_1_bar_Florian.csv,HeCF4,secondary,digitized_or_reference_template,false,"shape_template;annotation_only","Secondary spectrum template, not a calibrated yield measurement."
+ArCF4_9505_secondary_template,ArCF4_9505_1_bar_Sara_with_IR.csv,ArCF4,secondary,digitized_or_reference_template,false,"shape_template;annotation_only","Secondary/reference shape with IR contribution."
+ArCF4_9901_secondary_template,ArCF4_9901_1_bar_Sara_with_IR_NO_OH.csv,ArCF4,secondary,digitized_or_reference_template,false,"shape_template;annotation_only","Secondary/reference shape with OH peak removed."
+ArCF4_9901_secondary_template_with_OH,ArCF4_9901_1_bar_Sara_with_IR.csv,ArCF4,secondary,digitized_or_reference_template,false,"shape_template;annotation_only","Alternative secondary/reference shape retaining OH feature."

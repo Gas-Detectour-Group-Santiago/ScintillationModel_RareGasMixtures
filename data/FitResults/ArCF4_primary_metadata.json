@@ -1,0 +1,11 @@
+{
+  "name": "ArCF4_primary",
+  "model_name": "ArCF4",
+  "chi2": 44.856293444182626,
+  "dof": 87,
+  "chi2_red": 0.5155895798181911,
+  "success": true,
+  "message": "`ftol` termination condition is satisfied.",
+  "n_stat_toys": 10,
+  "n_syst_toys": 10
+}

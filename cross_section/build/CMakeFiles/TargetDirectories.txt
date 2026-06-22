@@ -1,0 +1,3 @@
+/home/daniel/GitHub/ScintillationModel_RareGasMixtures/cross_section/build/CMakeFiles/cross_section.dir
+/home/daniel/GitHub/ScintillationModel_RareGasMixtures/cross_section/build/CMakeFiles/edit_cache.dir
+/home/daniel/GitHub/ScintillationModel_RareGasMixtures/cross_section/build/CMakeFiles/rebuild_cache.dir
