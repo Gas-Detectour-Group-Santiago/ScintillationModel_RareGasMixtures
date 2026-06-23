@@ -114,10 +114,27 @@ class SecondaryModelAdapter:
         return df.loc[mask].reset_index(drop=True)
 
 
-def prepare_parameters(params: np.ndarray, normalization: NormalizationConfig) -> np.ndarray:
+def prepare_parameters(
+    params: np.ndarray,
+    normalization: NormalizationConfig,
+    *,
+    central_params: np.ndarray | None = None,
+) -> np.ndarray:
     params = np.asarray(params, dtype=float).copy()
-    if normalization.mode == "set_norm_one" and len(params):
+    if not len(params):
+        return params
+
+    if normalization.mode == "set_norm_one":
         params[0] = 1.0
+    elif normalization.mode in {"reference_norm", "fixed_norm"} and not normalization.propagate_nnorm:
+        # For comparison tables/bands the fitted Nnorm is a nuisance global
+        # scale.  Keeping the toy value in params[0] while dividing by a fixed
+        # reference norm makes Nnorm dominate the uncertainty.  By default we
+        # freeze only params[0] to the central value; all other toy parameters
+        # still fluctuate normally.
+        if central_params is not None and len(central_params):
+            params[0] = float(np.asarray(central_params, dtype=float)[0])
+
     return params
 
 

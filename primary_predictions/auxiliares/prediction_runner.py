@@ -54,7 +54,11 @@ class PredictionRunner:
 
     def evaluate(self, fit_name: str, component: str, params: np.ndarray, concentration, pressure: float, normalization: NormalizationConfig):
         adapter = self.adapters[fit_name]
-        params_eval = prepare_parameters(params, normalization)
+        params_eval = prepare_parameters(
+            params,
+            normalization,
+            central_params=self.product(fit_name).central,
+        )
         raw = adapter.evaluate_raw(params_eval, component, concentration, pressure)
         return apply_normalization(
             raw,
@@ -114,6 +118,7 @@ class PredictionRunner:
                     "pressure_bar": point.pressure,
                     "normalization_mode": point.normalization.mode,
                     "normalization_reference": point.normalization.reference_fit_name or "",
+                    "normalization_propagate_nnorm": bool(point.normalization.propagate_nnorm),
                     "unit": point.normalization.output_unit,
                     "value": central,
                     "stat_minus": stat_minus_v,

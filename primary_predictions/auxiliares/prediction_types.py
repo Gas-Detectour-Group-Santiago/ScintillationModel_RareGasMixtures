@@ -25,7 +25,10 @@ class NormalizationConfig:
         the first parameter.
     reference_norm:
         Divide by the central first parameter of another fit, e.g. the Ar-CF4
-        normalization used for the TFM comparison table.
+        normalization used for the TFM comparison table. By default the
+        evaluated fit's own Nnorm toy is frozen to its central value so Nnorm
+        does not contribute to the propagated uncertainty. Set
+        propagate_nnorm=True to recover the old behaviour.
     set_norm_one:
         Set the first parameter of every evaluated vector to one before
         calling the model.
@@ -38,6 +41,7 @@ class NormalizationConfig:
     fixed_norm: float | None = None
     output_scale: float = 1000.0
     output_unit: str = "ph/MeV"
+    propagate_nnorm: bool = False
 
 
 @dataclass(frozen=True)

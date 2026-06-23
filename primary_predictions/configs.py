@@ -90,20 +90,29 @@ PRIMARY_ADAPTERS = {
 
 
 OWN_NORM = NormalizationConfig(mode="own_norm", output_unit="ph/MeV")
+
+# Default requested behaviour: Nnorm is treated as a nuisance global scale and
+# must not inflate the propagated errors.  Set this to True to recover the old
+# behaviour where reference/fixed-normalised toys keep their own Nnorm toy.
+PROPAGATE_NNORM_IN_REFERENCE_NORM = False
+
 COMMON_ARCF4_NORM = NormalizationConfig(
     mode="reference_norm",
     reference_fit_name="ArCF4_primary",
     output_unit="ph/MeV",
+    propagate_nnorm=PROPAGATE_NNORM_IN_REFERENCE_NORM,
 )
 ARCF4_PRIMARY_NORM = NormalizationConfig(
     mode="reference_norm",
     reference_fit_name="ArCF4_primary",
     output_unit="ph/MeV",
+    propagate_nnorm=PROPAGATE_NNORM_IN_REFERENCE_NORM,
 )
 ARN2_PRIMARY_NORM = NormalizationConfig(
     mode="reference_norm",
     reference_fit_name="ArN2_primary",
     output_unit="ph/MeV",
+    propagate_nnorm=PROPAGATE_NNORM_IN_REFERENCE_NORM,
 )
 
 
@@ -205,6 +214,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             ylabel=r"Yield [ph/MeV]",
             xlim=(8e-2, 110),
             ylim=(6e1, 4e3),
+            yscale="linear",
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArCF4_primary_vis_bands.pdf",
         ),
         BandPlotConfig(
