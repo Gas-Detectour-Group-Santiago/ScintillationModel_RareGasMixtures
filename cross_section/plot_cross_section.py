@@ -82,3 +82,10 @@ plot_cross_sections("data/N2.txt","pdf/N2_cs.pdf","N$_2$ Cross Section",
                     ion_index=[2,14],
                     att_index=[14,15],
                     inel_index=[15,-1])
+
+
+plot_cross_sections("data/He.txt","pdf/He_cs.pdf","He Cross Section",
+                    elastic_index=[1,2],
+                    ion_index=[2,4],
+                    att_index=[4,5],
+                    inel_index=[5,-1])

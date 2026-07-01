@@ -132,10 +132,22 @@ def _read_csv_dataset(path: Path, spec: DatasetSpec) -> pd.DataFrame:
 
         if col not in df.columns:
             raise KeyError(f"{path} no contiene la columna de presión {col!r}.")
+
+        # Compatibilidad con CSV antiguos/simples: algunos ficheros IR solo
+        # traen ``Err <p>bar``. En ese caso lo tratamos como incertidumbre
+        # total para el ajuste nominal y como estadística para los toys; el
+        # sistemático queda a cero. Si existen Stat/Syst explícitos se respeta
+        # el formato nuevo.
         if err_stat not in df.columns:
-            raise KeyError(f"{path} no contiene la columna de error estadístico {err_stat!r}.")
+            if err in df.columns:
+                df[err_stat] = df[err]
+            else:
+                raise KeyError(
+                    f"{path} no contiene {err_stat!r} ni una columna total {err!r}."
+                )
+
         if err_syst not in df.columns:
-            raise KeyError(f"{path} no contiene la columna de error sistemático {err_syst!r}.")
+            df[err_syst] = 0.0
 
         # Las columnas de error son incertidumbres. Si el CSV conserva un
         # desplazamiento sistemático con signo, el ajuste usa su módulo.

@@ -16,6 +16,10 @@ PAPER_PRIMARY_IDS = {
     "ArN2_IR_primary_total",
 }
 
+ARCF4_PURE_ARGON_DISPLAY_PERCENT = 0.001
+ARCF4_IR_LEGACY_PRESSURES = (1.0, 2.0, 3.0)
+ARCF4_IR_DISCARDED_CONCENTRATIONS_PERCENT = (20.0, 50.0, 100.0)
+
 
 def paper_colors(plt, n: int = 4):
     return plt.get_cmap("viridis")(np.linspace(0.18, 0.82, n))
@@ -35,6 +39,27 @@ def pressure_label(p: float) -> str:
 
 def error_label(p: float) -> str:
     return f"Err {pressure_label(p)}"
+
+
+def _display_cf4_x(x: np.ndarray) -> np.ndarray:
+    x = np.asarray(x, dtype=float).copy()
+    x[x <= 0.0] = ARCF4_PURE_ARGON_DISPLAY_PERCENT
+    return x
+
+
+def _discarded_concentration_mask(x_percent: np.ndarray) -> np.ndarray:
+    x_percent = np.asarray(x_percent, dtype=float)
+    mask = np.zeros_like(x_percent, dtype=bool)
+    for c in ARCF4_IR_DISCARDED_CONCENTRATIONS_PERCENT:
+        mask |= np.isclose(x_percent, c, rtol=0.0, atol=1e-10)
+    return mask
+
+
+def _first_existing_path(paths: list[Path]) -> Path | None:
+    for path in paths:
+        if path.exists():
+            return path
+    return None
 
 
 def _first_existing_col(df: pd.DataFrame, candidates: list[str]) -> str | None:
@@ -100,6 +125,12 @@ def _scaled_experimental_xy(
     w_func,
 ) -> tuple[np.ndarray, np.ndarray, np.ndarray] | None:
     path = project_root / csv_path
+    if not path.exists() and "csv" in csv_path.parts:
+        parts = list(csv_path.parts)
+        parts.remove("csv")
+        fallback = project_root / Path(*parts)
+        if fallback.exists():
+            path = fallback
     if not path.exists():
         return None
 
@@ -121,7 +152,7 @@ def _scaled_experimental_xy(
     scale = float(config.normalization.output_scale) / denom
     y = df[pcol].to_numpy(dtype=float) / w * scale
     yerr = df[ecol].to_numpy(dtype=float) / w * scale if ecol is not None else np.zeros_like(y)
-    xsafe = np.where(x <= 0, np.min(x[x > 0]) * 0.1 if np.any(x > 0) else 1e-6, x)
+    xsafe = _display_cf4_x(x)
     return xsafe, y, yerr
 
 
@@ -130,15 +161,18 @@ def _scaled_ir_total(project_root: Path, config: BandPlotConfig, *, gas: str, x_
     if denom is None or denom == 0:
         return None
 
-    base = project_root / "data" / "Experimental" / gas / "csv"
+    base_candidates = [
+        project_root / "data" / "Experimental" / gas / "csv",
+        project_root / "data" / "Experimental" / gas,
+    ]
     lines = ("696", "727", "750", "763", "772")
     x_ref = None
     y_total = None
     e2_total = None
 
     for line in lines:
-        path = base / f"{line}.csv"
-        if not path.exists():
+        path = _first_existing_path([base / f"{line}.csv" for base in base_candidates])
+        if path is None:
             return None
         df = pd.read_csv(path)
         if x_col not in df.columns:
@@ -158,8 +192,49 @@ def _scaled_ir_total(project_root: Path, config: BandPlotConfig, *, gas: str, x_
 
     if x_ref is None or y_total is None or e2_total is None:
         return None
-    xsafe = np.where(x_ref <= 0, np.min(x_ref[x_ref > 0]) * 0.1 if np.any(x_ref > 0) else 1e-6, x_ref)
-    return xsafe, y_total, np.sqrt(e2_total)
+
+    x_plot = _display_cf4_x(x_ref) if gas == "ArCF4" else np.where(
+        x_ref <= 0,
+        np.min(x_ref[x_ref > 0]) * 0.1 if np.any(x_ref > 0) else 1e-6,
+        x_ref,
+    )
+    yerr_total = np.sqrt(e2_total)
+
+    # Mismo criterio visual que en el ajuste IR, pero solo para ArCF4 y solo
+    # para 1, 2 y 3 bar: 20/50/100 % no se dibujan, y se quitan puntos por
+    # debajo del floor = min_p max(Y_20,Y_50,Y_100), calculado con p=1,2,3.
+    if gas == "ArCF4" and any(np.isclose(float(pressure), p) for p in ARCF4_IR_LEGACY_PRESSURES):
+        discarded = _discarded_concentration_mask(x_ref)
+
+        maxima = []
+        for p_floor in ARCF4_IR_LEGACY_PRESSURES:
+            total_for_p = None
+            for line in lines:
+                path = _first_existing_path([base / f"{line}.csv" for base in base_candidates])
+                if path is None:
+                    continue
+                df = pd.read_csv(path)
+                pcol = _first_existing_col(df, [pressure_label(p_floor), f"{p_floor:.1f}bar"])
+                if pcol is None or x_col not in df.columns:
+                    continue
+                xx = df[x_col].to_numpy(dtype=float)
+                yy = df[pcol].to_numpy(dtype=float) / np.asarray(w_func(xx * 0.01), dtype=float) * scale
+                total_for_p = yy if total_for_p is None else total_for_p + yy
+
+            if total_for_p is not None:
+                vals = total_for_p[discarded & np.isfinite(total_for_p) & (total_for_p > 0.0)]
+                if vals.size:
+                    maxima.append(float(np.nanmax(vals)))
+
+        floor = float(np.nanmin(maxima)) if maxima else None
+        mask = np.isfinite(x_plot) & np.isfinite(y_total) & np.isfinite(yerr_total) & (y_total > 0.0) & (yerr_total > 0.0)
+        mask &= ~discarded
+        if floor is not None and np.isfinite(floor):
+            mask &= y_total >= floor
+        return x_plot[mask], y_total[mask], yerr_total[mask]
+
+    mask = np.isfinite(x_plot) & np.isfinite(y_total) & np.isfinite(yerr_total) & (y_total > 0.0) & (yerr_total > 0.0)
+    return x_plot[mask], y_total[mask], yerr_total[mask]
 
 
 def _err(ax, x, y, yerr, *, color, label, marker="o", ms=4):

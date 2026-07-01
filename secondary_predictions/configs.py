@@ -231,6 +231,7 @@ ARCF4_VISIBLE_OCW = OCWBandConfig(
     label="OCW",
     use_corners=False,
     rules=(
+    #    OCWParameterRule("Nnorm", low_factor=1, high_factor=1.5, optimum_factor=1.3, clip_max=1.0),
         OCWParameterRule("P_CF3_vis_dir", low_factor=0.5, high_factor=1.0, optimum_factor=0.8, clip_max=1.0),
         OCWParameterRule("P_Ar_dbleStar", low_factor=1.0, high_factor=2.0, optimum_factor=1.5, clip_max=1.0),
         OCWParameterRule("P_CF4_dir", low_factor=0.15, high_factor=1.0, optimum_factor=0.5, clip_max=1.0),

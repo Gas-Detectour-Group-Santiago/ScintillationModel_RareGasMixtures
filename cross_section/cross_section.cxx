@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
   using namespace Garfield;
 
   MediumMagboltz gas;
-  gas.SetComposition("n2", 100.0);
+  gas.SetComposition("he", 100.0);
   gas.SetTemperature(293.15);
   gas.SetPressure(760.0);
   gas.SetMaxElectronEnergy(20000.0);
@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
   
   gas.PrintGas();
 
-  c1->SaveAs("../cross_sections_n2_pretty.pdf");
+  c1->SaveAs("../cross_sections_he_pretty.pdf");
 
   return 0;
 }

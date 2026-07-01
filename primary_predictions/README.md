@@ -30,6 +30,22 @@ The ordinary runner also calls these overlays by default. It also generates
 the individual Ar--CF4 IR 1, 2, 3, 4 and 5 bar PDFs. Disable overlays from
 Python with `main(make_multibands=False)`.
 
+
+Selected 95/5 Ar--CF4 reference
+--------------------------------
+
+The selected-yield row used by `integral_comparations` is VIS-only:
+
+- id: `ArCF4_VIS_95_5`
+- fit: `ArCF4_primary`
+- component: `vis`
+- concentration: 5% CF$_4$ at 1 bar
+
+It deliberately does not use the summed `uv_vis` component. Regenerate the
+CSV tables with `python primary_predictions/run_primary_predictions.py` after
+changing this module so `data/Predictions/primary_selected_yields_arcf4_vs_arn2_norm.csv`
+contains the corrected reference.
+
 Outputs:
 
 - `data/Predictions/primary_selected_yields_common_arcf4_norm.csv`

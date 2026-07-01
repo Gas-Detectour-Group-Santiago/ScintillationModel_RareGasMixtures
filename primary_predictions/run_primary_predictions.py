@@ -10,6 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from primary_predictions.auxiliares import PredictionRunner  # noqa: E402
 from primary_predictions.configs import (  # noqa: E402
     COMMON_ARCF4_NORM,
+    COMMON_ARN2_NORM,
     OWN_NORM,
     PRIMARY_ADAPTERS,
     arcf4_ir_multiband_plots,
@@ -47,6 +48,18 @@ def main(
                 r"la normalización propia de cada ajuste."
             ),
             label="tab:primary_selected_yields_own_norm",
+        )
+
+        runner.run_normalization_comparison_points(
+            selected_primary_points(OWN_NORM, force_common_normalization=True),
+            "primary_selected_yields_arcf4_vs_arn2_norm",
+            left_normalization=COMMON_ARCF4_NORM,
+            right_normalization=COMMON_ARN2_NORM,
+            caption=(
+                r"Predicciones primarias seleccionadas en ph/MeV evaluadas con "
+                r"normalización de Ar--CF$_4$ y de Ar--N$_2$."
+            ),
+            label="tab:primary_selected_yields_arcf4_vs_arn2_norm",
         )
 
     if make_bands:

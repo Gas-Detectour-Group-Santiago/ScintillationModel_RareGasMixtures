@@ -1,11 +1,11 @@
 {
   "name": "ArN2_IR_primary",
   "model_name": "ArN2_infrarred",
-  "chi2": 144.2787222103088,
-  "dof": 75,
-  "chi2_red": 1.9237162961374508,
+  "chi2": 1584.5697229252596,
+  "dof": 185,
+  "chi2_red": 8.565241745541943,
   "success": true,
   "message": "`ftol` termination condition is satisfied.",
-  "n_stat_toys": 10,
-  "n_syst_toys": 10
+  "n_stat_toys": 5,
+  "n_syst_toys": 5
 }

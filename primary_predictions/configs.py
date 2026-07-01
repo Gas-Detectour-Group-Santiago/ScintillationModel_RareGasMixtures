@@ -53,6 +53,7 @@ PRIMARY_ADAPTERS = {
         components={
             "uv": ARCF4_CONFIG.equations["uv"],
             "vis": ARCF4_CONFIG.equations["vis"],
+            "uv_vis": _sum_components(ARCF4_CONFIG.equations["uv"], ARCF4_CONFIG.equations["vis"]),
         },
     ),
     "ArN2_primary": PrimaryModelAdapter(
@@ -102,6 +103,12 @@ COMMON_ARCF4_NORM = NormalizationConfig(
     output_unit="ph/MeV",
     propagate_nnorm=PROPAGATE_NNORM_IN_REFERENCE_NORM,
 )
+COMMON_ARN2_NORM = NormalizationConfig(
+    mode="reference_norm",
+    reference_fit_name="ArN2_primary",
+    output_unit="ph/MeV",
+    propagate_nnorm=PROPAGATE_NNORM_IN_REFERENCE_NORM,
+)
 ARCF4_PRIMARY_NORM = NormalizationConfig(
     mode="reference_norm",
     reference_fit_name="ArCF4_primary",
@@ -116,7 +123,22 @@ ARN2_PRIMARY_NORM = NormalizationConfig(
 )
 
 
-def selected_primary_points(normalization: NormalizationConfig) -> list[PredictionPoint]:
+def selected_primary_points(
+    normalization: NormalizationConfig,
+    *,
+    force_common_normalization: bool = False,
+) -> list[PredictionPoint]:
+    """Reference primary yields used in compact prediction tables.
+
+    By default the IR rows keep the physically associated primary
+    normalization of their gas.  For normalization-comparison tables, set
+    ``force_common_normalization=True`` so every row is evaluated with the
+    same supplied reference normalization.
+    """
+
+    arcf4_ir_norm = normalization if force_common_normalization else ARCF4_PRIMARY_NORM
+    arn2_ir_norm = normalization if force_common_normalization else ARN2_PRIMARY_NORM
+
     return [
         PredictionPoint(
             id="Ar3rd_UV_Ar",
@@ -171,7 +193,7 @@ def selected_primary_points(normalization: NormalizationConfig) -> list[Predicti
             component="total",
             concentration=1e-5,
             pressure=1.0,
-            normalization=ARCF4_PRIMARY_NORM,
+            normalization=arcf4_ir_norm,
         ),
         PredictionPoint(
             id="ArN2_IR_Ar",
@@ -182,7 +204,19 @@ def selected_primary_points(normalization: NormalizationConfig) -> list[Predicti
             component="total",
             concentration=1e-5,
             pressure=1.0,
-            normalization=ARN2_PRIMARY_NORM,
+            normalization=arn2_ir_norm,
+        ),
+        PredictionPoint(
+            id="ArCF4_VIS_95_5",
+            label=r"$Y_{\mathrm{ArCF_4,VIS}}(95/5)$",
+            gas="ArCF4",
+            channel="vis",
+            fit_name="ArCF4_primary",
+            component="vis",
+            concentration=0.05,
+            pressure=1.0,
+            normalization=normalization,
+            note="Visible Ar--CF4 95/5 prediction at 1 bar.",
         ),
     ]
 
@@ -240,7 +274,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             title=r"Primary Ar--CF$_4$ IR prediction",
             xlabel=r"CF$_4$ concentration [\%]",
             ylabel=r"Yield [ph/MeV]",
-            xlim=(1e-2, 20),
+            xlim=(1e-3, 110),
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArCF4_IR_primary_total_bands.pdf",
         ),
         BandPlotConfig(

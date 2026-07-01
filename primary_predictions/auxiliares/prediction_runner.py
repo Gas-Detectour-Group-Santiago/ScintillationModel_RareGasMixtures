@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 from time import perf_counter
 
@@ -18,7 +19,7 @@ from .prediction_types import (
     NormalizationConfig,
     PredictionPoint,
 )
-from .tables import export_prediction_table
+from .tables import export_normalization_comparison_table, export_prediction_table
 
 
 class PredictionRunner:
@@ -139,6 +140,108 @@ class PredictionRunner:
         df.to_csv(csv_path, index=False)
         export_prediction_table(df, tex_path, caption=caption, label=label)
         return csv_path, tex_path
+
+
+    def build_normalization_comparison_table(
+        self,
+        points: list[PredictionPoint],
+        *,
+        left_normalization: NormalizationConfig,
+        right_normalization: NormalizationConfig,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> pd.DataFrame:
+        """Evaluate the same point list under two reference normalizations."""
+
+        left_df = self.build_point_table([replace(point, normalization=left_normalization) for point in points])
+        right_df = self.build_point_table([replace(point, normalization=right_normalization) for point in points])
+
+        base_cols = [
+            "id",
+            "label",
+            "tex_label",
+            "gas",
+            "channel",
+            "fit_name",
+            "component",
+            "concentration",
+            "pressure_bar",
+            "unit",
+            "note",
+        ]
+        value_cols = [
+            "normalization_mode",
+            "normalization_reference",
+            "normalization_propagate_nnorm",
+            "value",
+            "stat_minus",
+            "stat_plus",
+            "syst_minus",
+            "syst_plus",
+            "total_minus",
+            "total_plus",
+        ]
+
+        out = left_df[base_cols].copy()
+        for col in value_cols:
+            out[f"{col}_{left_prefix}"] = left_df[col].to_numpy()
+            out[f"{col}_{right_prefix}"] = right_df[col].to_numpy()
+        return out
+
+    def export_normalization_comparison_table(
+        self,
+        df: pd.DataFrame,
+        stem: str,
+        *,
+        caption: str,
+        label: str,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> tuple[Path, Path]:
+        csv_path = self.predictions_dir / f"{stem}.csv"
+        tex_path = self.tables_dir / f"{stem}.tex"
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(csv_path, index=False)
+        export_normalization_comparison_table(
+            df,
+            tex_path,
+            caption=caption,
+            label=label,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        return csv_path, tex_path
+
+    def run_normalization_comparison_points(
+        self,
+        points: list[PredictionPoint],
+        stem: str,
+        *,
+        left_normalization: NormalizationConfig,
+        right_normalization: NormalizationConfig,
+        caption: str,
+        label: str,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> pd.DataFrame:
+        df = self.build_normalization_comparison_table(
+            points,
+            left_normalization=left_normalization,
+            right_normalization=right_normalization,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        csv_path, tex_path = self.export_normalization_comparison_table(
+            df,
+            stem,
+            caption=caption,
+            label=label,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        print(f"[primary_predictions] tabla comparación CSV: {csv_path}")
+        print(f"[primary_predictions] tabla comparación TeX: {tex_path}")
+        return df
 
     def evaluate_curve(self, config: BandPlotConfig, params: np.ndarray) -> np.ndarray:
         return np.asarray(

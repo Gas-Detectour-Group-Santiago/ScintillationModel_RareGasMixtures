@@ -59,7 +59,7 @@ def config_arcf4_secondary() -> pd.DataFrame:
             "Ar* 750": [["EXC"], "Ar", 13.47, 13.47 + 10.0, "Ar_750"],
             "Ar* 763": [["EXC"], "Ar", 13.17, 13.17 + 10.0, "Ar_763"],
             "Ar* 772": [["EXC"], "Ar", 13.32, 13.32 + 10.0, "Ar_772"],
-            "Ar* 794": [["EXC"], "Ar", 13.50, 13.50 + 10.0, "Ar_794"],
+            "Ar* 794": [["EXC"], "Ar", 13.28, 13.28 + 10.0, "Ar_794"],
         },
         index=["name principal", "gas", "energy low", "energy up", "name output"],
     )
@@ -77,7 +77,7 @@ def config_arn2_secondary() -> pd.DataFrame:
             "Ar* 750": [["EXC"], "Ar", 13.47, 13.47 + 10.0, "Ar_750"],
             "Ar* 763": [["EXC"], "Ar", 13.17, 13.17 + 10.0, "Ar_763"],
             "Ar* 772": [["EXC"], "Ar", 13.32, 13.32 + 10.0, "Ar_772"],
-            "Ar* 794": [["EXC"], "Ar", 13.50, 13.50 + 10.0, "Ar_794"],
+            "Ar* 794": [["EXC"], "Ar", 13.28, 13.28 + 10.0, "Ar_794"],
         },
         index=["name principal", "gas", "energy low", "energy up", "name output"],
     )

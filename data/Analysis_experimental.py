@@ -124,7 +124,8 @@ class ExperimentalRunConfig:
 RUNS: tuple[ExperimentalRunConfig, ...] = (
     ExperimentalRunConfig(
         name="ArCF4_UV_VIS",
-        pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data.pkl", # _pure_CF4_nomalised.pkl",
+        pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data_pure_CF4_nomalised.pkl",  
+       # pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data.pkl", 
         output_dir=EXPERIMENTAL_DIR / "ArCF4" / "csv",
         yields=("UV", "vis"),
         pressures=None,
@@ -133,7 +134,8 @@ RUNS: tuple[ExperimentalRunConfig, ...] = (
     ),
     ExperimentalRunConfig(
         name="ArCF4_IR",
-        pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data.pkl", # _pure_CF4_nomalised.pkl",
+        pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data_pure_CF4_nomalised.pkl", 
+       # pickle_path=EXPERIMENTAL_DIR / "ArCF4" / "CF4_data.pkl",  
         output_dir=EXPERIMENTAL_DIR / "ArCF4" / "csv",
         yields=(696, 727, 750, 763, 772),
         pressures=None,
@@ -142,7 +144,8 @@ RUNS: tuple[ExperimentalRunConfig, ...] = (
     ),
     ExperimentalRunConfig(
         name="ArN2_UV",
-        pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data.pkl", # _pure_CF4_nomalised.pkl",
+        pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data_pure_CF4_normalised.pkl",  
+     #   pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data.pkl",  
         output_dir=EXPERIMENTAL_DIR / "ArN2" / "csv",
         yields=("yield_N2",),
         pressures=None,
@@ -151,7 +154,8 @@ RUNS: tuple[ExperimentalRunConfig, ...] = (
     ),
     ExperimentalRunConfig(
         name="ArN2_IR",
-        pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data.pkl", # _pure_CF4_nomalised.pkl",
+        pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data_pure_CF4_normalised.pkl", 
+     #   pickle_path=EXPERIMENTAL_DIR / "ArN2" / "N2_data.pkl",  
         output_dir=EXPERIMENTAL_DIR / "ArN2" / "csv",
         yields=(696, 727, 750, 763, 772),
         pressures=None,
