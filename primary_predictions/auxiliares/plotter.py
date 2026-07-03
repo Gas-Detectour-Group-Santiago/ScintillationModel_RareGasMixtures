@@ -18,7 +18,7 @@ def configure_matplotlib(plt) -> None:
     try:
         import scienceplots  # noqa: F401
 
-        plt.style.use(["science", "no-latex"])
+        plt.style.use(["science", "grid", "no-latex"])
     except Exception:
         plt.style.use("default")
 
@@ -33,6 +33,10 @@ def configure_matplotlib(plt) -> None:
             "xtick.labelsize": 10,
             "ytick.labelsize": 10,
             "axes.grid": False,
+            "legend.frameon": True,
+            "legend.fancybox": True,
+            "legend.edgecolor": "0.50",
+            "legend.framealpha": 0.78,
         }
     )
 
@@ -245,7 +249,10 @@ def plot_multi_band(
         ax.set_xlim(*_expanded_xlim(config.xlim, config.xscale))
     if config.ylim:
         ax.set_ylim(*config.ylim)
-    ax.legend(loc=config.legend_loc, ncol=config.legend_ncol)
+    legend_kwargs = {"loc": config.legend_loc, "ncol": config.legend_ncol, "frameon": True}
+    if getattr(config, "legend_fontsize", None) is not None:
+        legend_kwargs["fontsize"] = float(config.legend_fontsize)
+    ax.legend(**legend_kwargs)
     fig.tight_layout()
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output)

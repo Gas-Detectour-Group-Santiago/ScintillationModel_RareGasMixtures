@@ -48,9 +48,15 @@ TAUS = {"696": 28.3, "727": 28.3, "750": 21.7, "763": 29.4, "772": 28.3}
 #     ARCF4_IR_SELECTION_MODE=legacy_floor python3 primary_fits/ArCF4_IR_fit.py
 IR_SELECTION_MODE = os.environ.get("ARCF4_IR_SELECTION_MODE", "legacy_floor").strip().lower()
 IR_FIT_PRESSURES = (1.0, 2.0, 3.0)
-IR_DISCARDED_CONCENTRATIONS_PERCENT = (20.0, 50.0, 100.0) # (20.0, 50.0, 100.0)
+IR_DISCARDED_CONCENTRATIONS_PERCENT = (50.0, 100.0) # (20.0, 50.0, 100.0)
 IR_PURE_ARGON_DISPLAY_PERCENT = 0.001
 IR_PLOT_MAX_CONCENTRATION_PERCENT = 100.0
+IR_FIRST_POINT_ANCHOR_ENABLED = os.environ.get(
+    "ARCF4_IR_FIRST_POINT_ANCHOR_ENABLED", "1"
+).strip().lower() not in {"0", "false", "no", "off"}
+IR_FIRST_POINT_ANCHOR_WEIGHT = float(os.environ.get("ARCF4_IR_FIRST_POINT_ANCHOR_WEIGHT", "25.0"))
+if not IR_FIRST_POINT_ANCHOR_ENABLED:
+    IR_FIRST_POINT_ANCHOR_WEIGHT = 1.0
 
 
 def _arcf4_ir_csv_path(line: str) -> Path:
@@ -174,14 +180,14 @@ def ir_parameters():
             [
                 Parameter(
                     f"PAr_star_{display}",
-                    rf"$P_{{\mathrm{{Ar}}^*\ {display}\ \mathrm{{nm}}}}$",
+                    rf"$\mathcal{{W}}_{{\mathrm{{Ar}}^{{**}},{display}\,\mathrm{{nm}}}}$",
                     0.02,
                     0.0,
                     0.02,
                 ),
                 Parameter(
                     f"tau_CF4_{display}",
-                    rf"$\tau_{{\mathrm{{Ar}}^*\ {display}\ \mathrm{{nm}}}}$",
+                    rf"$\tau_{{\mathrm{{Ar}}^{{**}},{display}\,\mathrm{{nm}}}}$",
                     tau,
                     tau * 0.999999999999999,
                     tau * 1.000000000000001,
@@ -191,14 +197,14 @@ def ir_parameters():
                 ),
                 Parameter(
                     f"K_Ar_Q_Ar_{display}",
-                    rf"$K_{{\mathrm{{Ar}}^*,Q(\mathrm{{Ar}})\ {display}\ \mathrm{{nm}}}}$",
+                    rf"$K_{{\mathrm{{Ar}}^{{**}}Q(\mathrm{{Ar}}),{display}\,\mathrm{{nm}}}}$",
                     1.0,
                     0.0,
                     1000.0,
                 ),
                 Parameter(
                     f"K_Ar_Q_CF4_{display}",
-                    rf"$K_{{\mathrm{{Ar}}^*,Q(\mathrm{{CF}}_4)\ {display}\ \mathrm{{nm}}}}$",
+                    rf"$K_{{\mathrm{{Ar}}^{{**}}Q(\mathrm{{CF}}_4),{display}\,\mathrm{{nm}}}}$",
                     1.0,
                     0.0,
                     1000.0,
@@ -242,14 +248,14 @@ def build_plots(selection_mode: str = IR_SELECTION_MODE, *, output_subdir: str =
             theory_key=line,
             pressures=IR_FIT_PRESSURES,
             concentration_grid=np.logspace(-5, 0, 1000),
-            title=rf"Primary ArCF$_4$ IR ({line} nm) Yield fit",
-            xlabel=r"Concentration of CF$_4$ [$\%$]",
-            ylabel="Normalized Yield",
+            title=rf"Ar--CF$_4$ primary IR fit, {line} nm",
+            xlabel=r"CF$_4$ concentration [$\%$]",
+            ylabel=r"Yield [arb. units]",
             x_col="fCF4",
             min_positive_x=IR_PURE_ARGON_DISPLAY_PERCENT,
             xlim=(IR_PURE_ARGON_DISPLAY_PERCENT, IR_PLOT_MAX_CONCENTRATION_PERCENT * 1.1),
             output=PROJECT_ROOT / "primary_fits" / "plots" / "plot_fit" / output_subdir / f"ArCF4_global_{line}.pdf",
-            legend_kwargs={"ncol": 2, "fontsize": 9},
+            legend_kwargs={"ncol": 2},
         )
         for line in IR_LINES
     ]
@@ -270,6 +276,7 @@ def build_config(
         parameters=ir_parameters(),
         plots=build_plots(selection_mode, output_subdir=output_subdir),
         is_infrared=True,
+        first_point_anchor_weight=IR_FIRST_POINT_ANCHOR_WEIGHT,
         toy_spec=ToySpec(
             n_stat=5,
             n_syst=5,

@@ -90,12 +90,12 @@ class RatioPlotter:
             try:
                 import scienceplots  # noqa: F401
 
-                plt.style.use(["science", "grid"] if use_grid else ["science"])
+                plt.style.use(["science", "grid", "no-latex"])
             except Exception:
                 plt.style.use("default")
         else:
             plt.style.use("default")
-        plt.rcParams.update({"figure.dpi": 120, "savefig.dpi": 300, "legend.frameon": False})
+        plt.rcParams.update({"figure.dpi": 120, "savefig.dpi": 300, "axes.grid": False, "legend.frameon": True, "legend.fancybox": True, "legend.edgecolor": "0.50", "legend.framealpha": 0.92})
 
     def plot_by_pressure(self, results: pd.DataFrame, fig_path: str | Path, config: RatioPlotConfig) -> None:
         df = _filter_results(results, config)
@@ -197,7 +197,7 @@ class RatioPlotter:
             ax.set_visible(False)
 
         if handles and labels:
-            fig.legend(handles, labels, title=config.legend_title, loc="upper center", ncol=min(len(labels), 5), fontsize=8)
+            fig.legend(handles, labels, title=config.legend_title, loc="upper center", ncol=min(len(labels), 5), fontsize=8, frameon=False)
 
         fig.suptitle(config.title, y=0.995)
         fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.94))
@@ -249,12 +249,12 @@ class GaussianFitPlotter:
             try:
                 import scienceplots  # noqa: F401
 
-                plt.style.use(["science", "grid"] if use_grid else ["science"])
+                plt.style.use(["science", "grid", "no-latex"])
             except Exception:
                 plt.style.use("default")
         else:
             plt.style.use("default")
-        plt.rcParams.update({"figure.dpi": 120, "savefig.dpi": 300, "legend.frameon": False})
+        plt.rcParams.update({"figure.dpi": 120, "savefig.dpi": 300, "axes.grid": False, "legend.frameon": True, "legend.fancybox": True, "legend.edgecolor": "0.50", "legend.framealpha": 0.92})
 
     def plot(self, result: IntegralResult, fig_path: str | Path, config: GaussianPlotConfig | None = None) -> None:
         config = config or GaussianPlotConfig()
@@ -341,6 +341,7 @@ class GaussianFitPlotter:
                 ncol=min(len(labels), 5),
                 fontsize=8,
                 bbox_to_anchor=(0.5, 0.975),
+                frameon=False,
             )
             rect = (0.0, 0.0, 1.0, 0.90)
             suptitle_y = 0.995

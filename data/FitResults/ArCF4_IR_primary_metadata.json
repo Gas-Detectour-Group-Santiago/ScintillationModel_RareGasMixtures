@@ -1,11 +1,19 @@
 {
   "name": "ArCF4_IR_primary",
   "model_name": "ArCF4_infrarred",
-  "chi2": 111.35625754076018,
-  "dof": 69,
-  "chi2_red": 1.6138588049385534,
+  "chi2": 372.0064080465277,
+  "dof": 106,
+  "chi2_red": 3.5094944155332803,
   "success": true,
   "message": "`ftol` termination condition is satisfied.",
-  "n_stat_toys": 5,
-  "n_syst_toys": 5
+  "n_stat_toys": 300,
+  "n_syst_toys": 300,
+  "toy_correlations": {
+    "stat": {
+      "n_valid_toys": 300,
+      "covariance_csv": "data/FitResults/ArCF4_IR_primary_toy_covariance_stat.csv",
+      "correlation_csv": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.csv",
+      "correlation_pdf": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.pdf"
+    }
+  }
 }

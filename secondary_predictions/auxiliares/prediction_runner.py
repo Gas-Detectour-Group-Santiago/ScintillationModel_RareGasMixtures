@@ -16,6 +16,7 @@ from .prediction_types import (
     BandCurveConfig,
     CombinedBandCurveConfig,
     BandPlotConfig,
+    ExperimentalSeries,
     ExperimentalOverlay,
     MetadataCurveConfig,
     MetadataPlotConfig,
@@ -354,7 +355,7 @@ class PredictionRunner:
             plot_band(df, config, output=plot_path, overlays=self.overlays)
         return csv_path, plot_path if make_plot else None
 
-    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph/MeV]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
+    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
         return curve.as_band_plot_config(
             title=title,
             xlabel=xlabel,
@@ -536,7 +537,7 @@ class PredictionRunner:
                     out[col] = values.iloc[0]
         return out
 
-    def build_or_load_curve_band(self, curve: BandCurveConfig | CombinedBandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph/MeV]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
+    def build_or_load_curve_band(self, curve: BandCurveConfig | CombinedBandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
         csv_path = self.predictions_dir / "Bands" / f"{curve.id}.csv"
         if csv_path.exists() and not overwrite:
             print(f"{self.log_prefix} banda {curve.id}: usando caché {csv_path}")
@@ -802,9 +803,108 @@ class PredictionRunner:
                     xlim=config.xlim,
                     ylim=config.ylim,
                 )
-            if config.output is not None:
-                plot_multi_band(band_dfs, config, output=config.output)
-                print(f"{self.log_prefix} multibanda plot: {config.output}")
             out[config.id] = band_dfs
+
+        experimental_scale_factors = self._experimental_scale_factors(configs, out)
+        for group, scale in experimental_scale_factors.items():
+            print(f"{self.log_prefix} escala experimental {group}: {scale:.6g}")
+
+        for config in configs:
+            if config.output is not None:
+                plot_multi_band(
+                    out[config.id],
+                    config,
+                    output=config.output,
+                    experimental_scale_factors=experimental_scale_factors,
+                )
+                print(f"{self.log_prefix} multibanda plot: {config.output}")
         print(f"{self.log_prefix} multibandas terminadas en {perf_counter() - t0:.1f} s")
         return out
+
+    @staticmethod
+    def _curve_by_id(config: MultiBandPlotConfig) -> dict[str, BandCurveConfig | CombinedBandCurveConfig]:
+        return {curve.id: curve for curve in config.curves}
+
+    @staticmethod
+    def _curve_x_values(df: pd.DataFrame, curve: BandCurveConfig | CombinedBandCurveConfig) -> np.ndarray:
+        x_plot_factor = curve.x_plot_factor if curve.x_plot_factor is not None else 100.0
+        if "x" in df.columns:
+            return df["x"].to_numpy(dtype=float) * float(x_plot_factor)
+        if "concentration" in df.columns:
+            return df["concentration"].to_numpy(dtype=float) * float(x_plot_factor)
+        raise KeyError("El CSV de banda no contiene columna 'x' ni 'concentration'.")
+
+    @staticmethod
+    def _optimized_model_column(df: pd.DataFrame, series: ExperimentalSeries) -> str:
+        requested = str(series.scale_model_column or "auto").strip()
+        if requested and requested != "auto":
+            if requested not in df.columns:
+                raise KeyError(f"La columna optimizada solicitada {requested!r} no existe en la banda.")
+            return requested
+        return "ocw_optimum" if "ocw_optimum" in df.columns else "central"
+
+    @staticmethod
+    def _interp_model_value_at_x(df: pd.DataFrame, curve: BandCurveConfig | CombinedBandCurveConfig, series: ExperimentalSeries, x_target: float) -> float:
+        x_model = PredictionRunner._curve_x_values(df, curve)
+        y_model = df[PredictionRunner._optimized_model_column(df, series)].to_numpy(dtype=float)
+        finite = np.isfinite(x_model) & np.isfinite(y_model)
+        if finite.sum() == 0:
+            return float("nan")
+        x_model = x_model[finite]
+        y_model = y_model[finite]
+        order = np.argsort(x_model)
+        x_sorted = x_model[order]
+        y_sorted = y_model[order]
+        if x_target <= x_sorted[0]:
+            return float(y_sorted[0])
+        if x_target >= x_sorted[-1]:
+            return float(y_sorted[-1])
+        return float(np.interp(float(x_target), x_sorted, y_sorted))
+
+    @staticmethod
+    def _anchor_raw_y(series: ExperimentalSeries, x_target: float) -> float:
+        x = np.asarray(series.x, dtype=float)
+        y = np.asarray(series.y, dtype=float)
+        finite = np.isfinite(x) & np.isfinite(y)
+        if finite.sum() == 0:
+            return float("nan")
+        x = x[finite]
+        y = y[finite]
+        idx = int(np.nanargmin(np.abs(x - float(x_target))))
+        return float(y[idx])
+
+    def _experimental_scale_factors(
+        self,
+        configs: list[MultiBandPlotConfig],
+        band_outputs: dict[str, dict[str, pd.DataFrame]],
+    ) -> dict[str, float]:
+        """Infer global multiplicative factors for arbitrary-normalized points.
+
+        A factor is computed from each ExperimentalSeries marked as an anchor:
+            model_optimized(anchor_x) / raw_experimental(anchor_x)
+
+        The same factor is then used for every series with the same
+        ``scale_group``.  This is meant for Florian indirect points, whose
+        relative normalization is meaningful but whose absolute normalization is
+        arbitrary.
+        """
+        values_by_group: dict[str, list[float]] = {}
+        for config in configs:
+            curve_by_id = self._curve_by_id(config)
+            dfs = band_outputs.get(config.id, {})
+            for series in config.experimental_series:
+                if not series.scale_group or not series.scale_anchor:
+                    continue
+                curve_id = series.scale_anchor_curve_id or series.color_from_curve_id
+                if not curve_id or curve_id not in dfs or curve_id not in curve_by_id:
+                    continue
+                x_target = float(series.scale_anchor_x) if series.scale_anchor_x is not None else float(np.asarray(series.x, dtype=float)[0])
+                raw_y = self._anchor_raw_y(series, x_target)
+                model_y = self._interp_model_value_at_x(dfs[curve_id], curve_by_id[curve_id], series, x_target)
+                if not (np.isfinite(raw_y) and np.isfinite(model_y)) or raw_y == 0.0:
+                    continue
+                factor = float(model_y / raw_y)
+                if np.isfinite(factor) and factor > 0.0:
+                    values_by_group.setdefault(series.scale_group, []).append(factor)
+
+        return {group: float(np.nanmedian(values)) for group, values in values_by_group.items() if values}

@@ -10,10 +10,13 @@ import pandas as pd
 
 from .fit_exports import (
     build_parameter_summary,
+    export_dataframe,
     export_matrix,
     export_stat_syst_latex,
     export_toys,
     export_vector,
+    plot_parameter_correlation,
+    toy_covariance_correlation,
 )
 from .fit_io import ensure_project_paths, load_dataset_triplet, project_root_from_file, write_json
 from .fit_toys import make_stat_toy, make_syst_toy, summarize_toys
@@ -86,15 +89,36 @@ class PrimaryFitRunner:
             x0=x0_use,
             bounds=self.config.bounds,
             is_infrared=self.config.is_infrared,
+            first_point_anchor_weight=self.config.first_point_anchor_weight,
             fixed_idx=fixed_idx,
             fixed_values=fixed_values,
             fixed_error=self.config.fixed_error,
             verbose=verbose,
         )
 
+    @staticmethod
+    def _toy_count_from_environment(kind: str, default: int) -> int:
+        """Allow run_all.sh to set the toy statistics without editing configs.
+
+        PRIMARY_FIT_N_TOYS applies to both statistical and systematic toys.
+        PRIMARY_FIT_N_STAT_TOYS / PRIMARY_FIT_N_SYST_TOYS override each side.
+        """
+
+        generic = os.environ.get("PRIMARY_FIT_N_TOYS")
+        specific_name = "PRIMARY_FIT_N_STAT_TOYS" if kind == "stat" else "PRIMARY_FIT_N_SYST_TOYS"
+        specific = os.environ.get(specific_name)
+        value = specific if specific not in {None, ""} else generic
+        if value in {None, ""}:
+            return int(default)
+        try:
+            return max(0, int(float(str(value))))
+        except ValueError:
+            raise ValueError(f"{specific_name}/PRIMARY_FIT_N_TOYS debe ser entero, recibido {value!r}") from None
+
     def _run_toy_loop(self, kind, degrad, nominal, stat_errors, syst_errors, central_x):
         spec = self.config.toy_spec
-        n_toys = spec.n_stat if kind == "stat" else spec.n_syst
+        default_n_toys = spec.n_stat if kind == "stat" else spec.n_syst
+        n_toys = self._toy_count_from_environment(kind, default_n_toys)
         if n_toys <= 0:
             return np.empty((0, len(central_x)), dtype=float)
 
@@ -182,6 +206,15 @@ class PrimaryFitRunner:
         export_toys(fit_prefix.with_name(f"{self.config.name}_toys_stat.csv"), names, stat_toys)
         export_toys(fit_prefix.with_name(f"{self.config.name}_toys_syst.csv"), names, syst_toys)
 
+        toy_corr_metadata = {}
+        if self.config.make_correlation_plot:
+            toy_corr_metadata = self.export_toy_correlations(
+                names=names,
+                tex_names=tex,
+                stat_toys=stat_toys,
+                syst_toys=syst_toys,
+            )
+
         if hasattr(central, "pcov"):
             export_matrix(fit_prefix.with_name(f"{self.config.name}_covariance.csv"), names, central.pcov)
             diag = np.sqrt(np.clip(np.diag(central.pcov), 0, None))
@@ -202,6 +235,7 @@ class PrimaryFitRunner:
                 "message": str(getattr(central, "message", "")),
                 "n_stat_toys": int(len(stat_toys)),
                 "n_syst_toys": int(len(syst_toys)),
+                "toy_correlations": toy_corr_metadata,
             },
         )
 
@@ -213,6 +247,35 @@ class PrimaryFitRunner:
         )
 
         return summary
+
+    def export_toy_correlations(self, names, tex_names, stat_toys, syst_toys):
+        """Export only the empirical statistical toy correlations."""
+        fit_prefix = self.fit_results_dir / self.config.name
+        metadata: dict[str, dict[str, int | str]] = {}
+
+        cov, corr, n_valid = toy_covariance_correlation(stat_toys, names)
+
+        cov_path = fit_prefix.with_name(f"{self.config.name}_toy_covariance_stat.csv")
+        corr_path = fit_prefix.with_name(f"{self.config.name}_toy_correlation_stat.csv")
+        fig_path = fit_prefix.with_name(f"{self.config.name}_toy_correlation_stat.pdf")
+
+        export_dataframe(cov_path, cov)
+        export_dataframe(corr_path, corr)
+        plot_parameter_correlation(
+            fig_path,
+            corr,
+            labels=list(tex_names),
+            title=f"{self.config.name}: statistical toy parameter correlations",
+        )
+
+        metadata["stat"] = {
+            "n_valid_toys": int(n_valid),
+            "covariance_csv": str(cov_path.relative_to(self.project_root)),
+            "correlation_csv": str(corr_path.relative_to(self.project_root)),
+            "correlation_pdf": str(fig_path.relative_to(self.project_root)),
+        }
+
+        return metadata
 
     def plot_fits(self, degrad, nominal, central):
         for plot in self.config.plots:

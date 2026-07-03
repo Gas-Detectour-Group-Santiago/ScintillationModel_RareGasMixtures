@@ -14,6 +14,7 @@ from .auxiliares.prediction_types import (
 )
 from .configs import (
     ARCF4_IR_CONFIG,
+    ARCF4_IR_OCW,
     ARCF4_SECONDARY_NORM_NE,
     ARCF4_UV_OCW,
     ARCF4_VISIBLE_OCW,
@@ -32,10 +33,11 @@ CONFIG_NAME = "config_comparation"
 # OCW prescription for the UV comparison too:
 #   - visible: VIS OCW envelope + OCW optimum line;
 #   - UV: UV OCW envelope (P_CF3_uv_dir +0.25 and P_CF4_dir variation);
-#   - IR: propagated stat.⊕syst. envelope from the corresponding IR fit.
+#   - IR: propagated stat.⊕syst. envelope around the secondary optimum,
+#     where all Ar--CF4 IR optical-conversion weights are doubled.
 COMPARATION_VISIBLE_BAND_MODE = VISIBLE_BAND_MODE
 COMPARATION_UV_BAND_MODE = "ocw_bands"
-COMPARATION_IR_BAND_MODE = "sys_stat"
+COMPARATION_IR_BAND_MODE = "sum"
 
 X_GRID = np.logspace(-3, 0, 700)  # 0.1%--100% CF4, internally as fraction.
 OUTDIR = PROJECT_ROOT / "secondary_predictions" / "plots" / "secondary_comparation"
@@ -52,7 +54,7 @@ def _sum_line_dicts(values: dict[int, float], errors: dict[int, float]) -> tuple
 # Experimental points taken from the latest LIP comparison scripts.
 # Hollow marker = direct measurement; filled marker = indirect measurement.
 # -----------------------------------------------------------------------------
-RATE_FLORIAN_TO_LIP = 2.42
+FLORIAN_INDIRECT_SCALE_GROUP = "florian_indirect"
 
 # Ar--CF4, LIP (direct), GEM 0.050 mm, 1 bar.
 _ARCF4_VIS_DIRECT_X = np.array([5.0, 10.0, 67.0, 100.0])
@@ -87,28 +89,30 @@ _ARCF4_IR_DIRECT_X = np.array([p[0] for p in _ARCF4_IR_DIRECT_POINTS])
 _ARCF4_IR_DIRECT_Y = np.array([p[1] for p in _ARCF4_IR_DIRECT_POINTS])
 _ARCF4_IR_DIRECT_ERR = np.array([p[2] for p in _ARCF4_IR_DIRECT_POINTS])
 
-# Ar--CF4, Florian (indirect), TH-GEM.  Values scaled by RATE_FLORIAN_TO_LIP,
-# following LIP_VIS_ArCF4.py.
+# Ar--CF4, Florian (indirect), TH-GEM.  These values are intentionally kept in
+# Florian's arbitrary relative normalization.  The runner infers one global
+# multiplicative scale from the Ar--CF4 TH-GEM 1 bar, 80/20 point and applies it
+# to every indirect Florian point, including IR and He--CF4.
 _ARCF4_VIS_INDIRECT_1BAR_X = np.array([20.0, 100.0])
-_ARCF4_VIS_INDIRECT_1BAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.3542035420581855, 0.09335376])
-_ARCF4_VIS_INDIRECT_1BAR_ERR = RATE_FLORIAN_TO_LIP * np.array([0.07607389619126878, 0.02004987990487861])
+_ARCF4_VIS_INDIRECT_1BAR_Y = np.array([0.3542035420581855, 0.09335376])
+_ARCF4_VIS_INDIRECT_1BAR_ERR = np.array([0.07607389619126878, 0.02004987990487861])
 
 _ARCF4_VIS_INDIRECT_50MBAR_X = np.array([20.0, 100.0])
-_ARCF4_VIS_INDIRECT_50MBAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.1057123306627957, 0.04372129913229157])
-_ARCF4_VIS_INDIRECT_50MBAR_ERR = RATE_FLORIAN_TO_LIP * np.array([0.022704169293163653, 0.25 * 0.04372129913229157])
+_ARCF4_VIS_INDIRECT_50MBAR_Y = np.array([0.1057123306627957, 0.04372129913229157])
+_ARCF4_VIS_INDIRECT_50MBAR_ERR = np.array([0.022704169293163653, 0.25 * 0.04372129913229157])
 
 _ARCF4_UV_INDIRECT_1BAR_X = np.array([20.0, 100.0])
-_ARCF4_UV_INDIRECT_1BAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.04599727051007351, 0.03942121448304051])
-_ARCF4_UV_INDIRECT_1BAR_ERR = RATE_FLORIAN_TO_LIP * np.array([0.010023071441114785, 0.00859011077564899])
+_ARCF4_UV_INDIRECT_1BAR_Y = np.array([0.04599727051007351, 0.03942121448304051])
+_ARCF4_UV_INDIRECT_1BAR_ERR = np.array([0.010023071441114785, 0.00859011077564899])
 
-# IR Florian, TH-GEM, scaled by RATE_FLORIAN_TO_LIP.
+# IR Florian, TH-GEM, in the same arbitrary relative normalization.
 _ARCF4_IR_INDIRECT_1BAR_X = np.array([20.0])
-_ARCF4_IR_INDIRECT_1BAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.0012121110778869518 + 0.0009963113528044523 + 0.010641617291858389 + 0.005277639438703508 + 0.0018895075477094276 + 0.0])
-_ARCF4_IR_INDIRECT_1BAR_ERR = RATE_FLORIAN_TO_LIP * np.sqrt(np.array([0.00026032890460820274])**2 + np.array([0.0002139809196170797])**2 + np.array([0.0022855335813600896])**2 + np.array([0.0011334952044080517])**2 + np.array([0.0004058154727878853])**2 + np.array([0.0])**2)
+_ARCF4_IR_INDIRECT_1BAR_Y = np.array([0.0012121110778869518 + 0.0009963113528044523 + 0.010641617291858389 + 0.005277639438703508 + 0.0018895075477094276 + 0.0])
+_ARCF4_IR_INDIRECT_1BAR_ERR = np.sqrt(np.array([0.00026032890460820274])**2 + np.array([0.0002139809196170797])**2 + np.array([0.0022855335813600896])**2 + np.array([0.0011334952044080517])**2 + np.array([0.0004058154727878853])**2 + np.array([0.0])**2)
 
 _ARCF4_IR_INDIRECT_50MBAR_X = np.array([20.0])
-_ARCF4_IR_INDIRECT_50MBAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.002246119186430594 + 0.0005887938444242574 + 0.057088337541668865 + 0.02364076551779444 + 0.00668799699933377 + 0.004140203178868282])
-_ARCF4_IR_INDIRECT_50MBAR_ERR = RATE_FLORIAN_TO_LIP * np.sqrt(np.array([0.00048240607489727035])**2 + np.array([0.0001264571039365711])**2 + np.array([0.012261041623375114])**2 + np.array([0.005077401488711407])**2 + np.array([0.0014364021289985191])**2 + np.array([0.0008892044450984726])**2)
+_ARCF4_IR_INDIRECT_50MBAR_Y = np.array([0.002246119186430594 + 0.0005887938444242574 + 0.057088337541668865 + 0.02364076551779444 + 0.00668799699933377 + 0.004140203178868282])
+_ARCF4_IR_INDIRECT_50MBAR_ERR = np.sqrt(np.array([0.00048240607489727035])**2 + np.array([0.0001264571039365711])**2 + np.array([0.012261041623375114])**2 + np.array([0.005077401488711407])**2 + np.array([0.0014364021289985191])**2 + np.array([0.0008892044450984726])**2)
 
 # He--CF4, LIP (direct), GEM 0.050 mm, 1 bar.
 _HECF4_VIS_DIRECT_X = np.array([20.0, 40.0, 100.0])
@@ -119,19 +123,20 @@ _HECF4_UV_DIRECT_X = np.array([20.0, 40.0, 100.0])
 _HECF4_UV_DIRECT_Y = np.array([0.0586689111317149, 0.12606696047521188, 0.03942121448304051])
 _HECF4_UV_DIRECT_ERR = np.array([0.014241770732051665, 0.04213797898747448, 0.00859011077564899])
 
-# He--CF4, Florian (indirect), TH-GEM, scaled by RATE_FLORIAN_TO_LIP.
+# He--CF4, Florian (indirect), TH-GEM, in Florian's same arbitrary relative
+# normalization.  It is scaled by the same factor as the Ar--CF4 indirect data.
 _HECF4_VIS_INDIRECT_1BAR_X = np.array([100.0, 20.0])
 
-_HECF4_VIS_INDIRECT_1BAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.3542 * 187.0 / 530.0, 0.3542 * 45.0 / 530.0])
-_HECF4_VIS_INDIRECT_1BAR_ERR = RATE_FLORIAN_TO_LIP * 0.25 * np.array([0.3542 * 187.0 / 530.0, 0.3542 * 45.0 / 530.0])
+_HECF4_VIS_INDIRECT_1BAR_Y = np.array([0.3542 * 187.0 / 530.0, 0.3542 * 45.0 / 530.0])
+_HECF4_VIS_INDIRECT_1BAR_ERR = 0.25 * np.array([0.3542 * 187.0 / 530.0, 0.3542 * 45.0 / 530.0])
 
 _HECF4_VIS_INDIRECT_300MBAR_X = np.array([100.0, 20.0])
-_HECF4_VIS_INDIRECT_300MBAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.3542 * 100.0 / 530.0, 0.3542 * 45.0 / 530.0])
-_HECF4_VIS_INDIRECT_300MBAR_ERR = RATE_FLORIAN_TO_LIP * 0.25 * np.array([0.3542 * 100.0 / 530.0, 0.3542 * 45.0 / 530.0])
+_HECF4_VIS_INDIRECT_300MBAR_Y = np.array([0.3542 * 100.0 / 530.0, 0.3542 * 45.0 / 530.0])
+_HECF4_VIS_INDIRECT_300MBAR_ERR = 0.25 * np.array([0.3542 * 100.0 / 530.0, 0.3542 * 45.0 / 530.0])
 
 _HECF4_UV_INDIRECT_300MBAR_X = np.array([20.0])
-_HECF4_UV_INDIRECT_300MBAR_Y = RATE_FLORIAN_TO_LIP * np.array([0.0709633243946791])
-_HECF4_UV_INDIRECT_300MBAR_ERR = RATE_FLORIAN_TO_LIP * np.array([0.015463319066967298])
+_HECF4_UV_INDIRECT_300MBAR_Y = np.array([0.0709633243946791])
+_HECF4_UV_INDIRECT_300MBAR_ERR = np.array([0.015463319066967298])
 
 
 def _exp_series(
@@ -143,6 +148,8 @@ def _exp_series(
     label: str,
     direct: bool,
     marker: str = "o",
+    scale_anchor: bool = False,
+    scale_anchor_x: float | None = None,
 ) -> ExperimentalSeries:
     return ExperimentalSeries(
         x=x,
@@ -153,9 +160,13 @@ def _exp_series(
         linestyle="none",
         color_from_curve_id=curve_id,
         markerfacecolor="white" if direct else None,
-        markeredgewidth=1.25,
-        markersize=5.5,
-        capsize=3.0,
+        markeredgewidth=1.35,
+        markersize=6.8,
+        capsize=3.4,
+        scale_group=None if direct else FLORIAN_INDIRECT_SCALE_GROUP,
+        scale_anchor=scale_anchor,
+        scale_anchor_x=scale_anchor_x,
+        scale_anchor_curve_id=curve_id,
     )
 
 
@@ -222,7 +233,7 @@ def _ir_curve(*, curve_id: str, label: str, pressure_bar: float, selection: Seco
         pressure_bar=pressure_bar,
         selection=selection,
         band_mode=COMPARATION_IR_BAND_MODE,
-        ocw_config=None,
+        ocw_config=ARCF4_IR_OCW,
     )
 
 
@@ -333,7 +344,7 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             legend_loc="lower left",
             experimental_series=(
                 _exp_series(curve_id=ar_vis_curves[0].id, x=_ARCF4_VIS_DIRECT_X, y=_ARCF4_VIS_DIRECT_Y, yerr=_ARCF4_VIS_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
-                _exp_series(curve_id=ar_vis_curves[1].id, x=_ARCF4_VIS_INDIRECT_1BAR_X, y=_ARCF4_VIS_INDIRECT_1BAR_Y, yerr=_ARCF4_VIS_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s"),
+                _exp_series(curve_id=ar_vis_curves[1].id, x=_ARCF4_VIS_INDIRECT_1BAR_X, y=_ARCF4_VIS_INDIRECT_1BAR_Y, yerr=_ARCF4_VIS_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s", scale_anchor=True, scale_anchor_x=20.0),
                 _exp_series(curve_id=ar_vis_curves[2].id, x=_ARCF4_VIS_INDIRECT_50MBAR_X, y=_ARCF4_VIS_INDIRECT_50MBAR_Y, yerr=_ARCF4_VIS_INDIRECT_50MBAR_ERR, label="Indirect exp., TH-GEM 0.05 bar", direct=False, marker="^"),
             ),
         ),
@@ -350,6 +361,7 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             output=OUTDIR / "comparation_HeCF4_visible_GEM_THGEM.pdf",
             legend_ncol=1,
             legend_loc="upper left",
+            legend_fontsize=8.8,
             experimental_series=(
                 _exp_series(curve_id=he_vis_curves[0].id, x=_HECF4_VIS_DIRECT_X, y=_HECF4_VIS_DIRECT_Y, yerr=_HECF4_VIS_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
                 _exp_series(curve_id=he_vis_curves[1].id, x=_HECF4_VIS_INDIRECT_1BAR_X, y=_HECF4_VIS_INDIRECT_1BAR_Y, yerr=_HECF4_VIS_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s"),
@@ -381,12 +393,14 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             xlabel=r"CF$_4$ concentration [%]",
             ylabel=r"Secondary IR yield [ph/e$^-$]",
             xscale=VISIBLE_XSCALE,
-            yscale=VISIBLE_YSCALE,
-            xlim=(1.0, 100.0),
-            ylim=(1e-3, 0.6),
+            yscale="log",
+            xlim=(0.8, 100.0),
+            ylim=(1.0e-3, 6.0e-1),
             output=OUTDIR / "comparation_ArCF4_IR_total_GEM_THGEM.pdf",
             legend_ncol=1,
-            legend_loc="best",
+            legend_loc="lower left",
+            legend_fontsize=9.2,
+            hide_ocw_legend=True,
             experimental_series=(
                 _exp_series(curve_id=ir_curves[0].id, x=_ARCF4_IR_DIRECT_X, y=_ARCF4_IR_DIRECT_Y, yerr=_ARCF4_IR_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
                 _exp_series(curve_id=ir_curves[1].id, x=_ARCF4_IR_INDIRECT_1BAR_X, y=_ARCF4_IR_INDIRECT_1BAR_Y, yerr=_ARCF4_IR_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s"),

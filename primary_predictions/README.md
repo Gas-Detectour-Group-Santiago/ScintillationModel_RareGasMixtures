@@ -81,8 +81,7 @@ For example, a future mixed plot can be built with curves such as
 `ArN2_primary` at 1 bar, `ArXe_primary` at 3 bar and `HeCF4_primary` at 5 bar,
 as long as the corresponding adapters exist in `PRIMARY_ADAPTERS`.
 
-The Ar--CF4 IR 1--5 bar overlay is defined in `primary_multiband_plots()` and
-writes:
+The Ar--CF4 IR overlays are defined in `arcf4_ir_multiband_plots()` and write:
 
 - `data/Predictions/Bands/ArCF4_IR_primary_total_1p0bar.csv`
 - `data/Predictions/Bands/ArCF4_IR_primary_total_2p0bar.csv`
@@ -90,17 +89,25 @@ writes:
 - `data/Predictions/Bands/ArCF4_IR_primary_total_4p0bar.csv`
 - `data/Predictions/Bands/ArCF4_IR_primary_total_5p0bar.csv`
 - `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_1to5bar_overlay.pdf`
-- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_1p0bar_bands.pdf`
-- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_2p0bar_bands.pdf`
-- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_3p0bar_bands.pdf`
-- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_4p0bar_bands.pdf`
-- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_5p0bar_bands.pdf`
+- `primary_predictions/plots/primary_bands/multibar_ir/ArCF4_IR_primary_total_0p1to1000mbar_overlay.pdf`
 
-For the default Ar--CF4 IR 1--5 bar overlay, each curve uses
+`arn2_ir_multiband_plots_arcf4_norm()` builds the same overlays for the
+Ar--N2 IR model, but using `ARCF4_PRIMARY_NORM` deliberately.  Its outputs use
+the suffix `arcf4norm`, for example:
+
+- `data/Predictions/Bands/ArN2_IR_primary_total_arcf4norm_1p0bar.csv`
+- `data/Predictions/Bands/ArN2_IR_primary_total_arcf4norm_5p0bar.csv`
+- `data/Predictions/Bands/ArN2_IR_primary_total_arcf4norm_0p1mbar.csv`
+- `primary_predictions/plots/primary_bands/multibar_ir/ArN2_IR_primary_total_arcf4norm_1to5bar_overlay.pdf`
+- `primary_predictions/plots/primary_bands/multibar_ir/ArN2_IR_primary_total_arcf4norm_0p1to1000mbar_overlay.pdf`
+
+For the default Ar--CF4 IR overlays, each curve uses
 `paper_overlay_id="ArCF4_IR_primary_total"`, so the X-ray points for the
 corresponding pressure are read from `data/Experimental/ArCF4/csv/*.csv`, summed
 over the IR lines, divided by the appropriate W value and normalized with
-`ARCF4_PRIMARY_NORM`.
+`ARCF4_PRIMARY_NORM`.  The Ar--N2/Ar--CF4-normalized overlays use
+`paper_overlay_id="ArN2_IR_primary_total"`, so any available Ar--N2 IR points
+are displayed with the same Ar--CF4 normalization.
 
 The secondary prediction machinery should use the same runner/band/table layer.
 Its Garfield-specific choices should be expressed with `SecondarySelection`:

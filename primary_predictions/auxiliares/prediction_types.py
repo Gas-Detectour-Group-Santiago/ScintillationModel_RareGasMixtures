@@ -156,6 +156,7 @@ class MultiBandPlotConfig:
     output: Path | None = None
     legend_loc: str = "best"
     legend_ncol: int = 2
+    legend_fontsize: float | None = None
 
 
 @dataclass(frozen=True)

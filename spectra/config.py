@@ -93,8 +93,38 @@ WAVELENGTH_RANGE_GENERATED = {
     "ArCF4": (200.0, 800.0),
     "ArN2": (300.0, 800.0),
 }
+# Extended/generated VUV spectra.  These keep the normal generated spectra intact
+# and optionally add the Ar second continuum plus, for Ar--CF4, the CF4 ionic VUV branch.
+WAVELENGTH_RANGE_GENERATED_AMPLIED = {
+    "ArCF4": (100.0, 800.0),
+    "ArN2": (100.0, 800.0),
+}
 WAVELENGTH_RANGE_COMPARISON_NM = (180.0, 800.0)
 WAVELENGTH_POINTS = 2000
+WAVELENGTH_POINTS_AMPLIED = 2500
+
+AR2ND_CONTINIUM_PARAMETER_CSV = "data/Parameters/Ar2nd_continium.csv"
+AR2ND_DEGRAD_CSVS = {
+    "ArCF4": "data/Primary_DegradData/ArCF4_Ar2nd.csv",
+    "ArN2": "data/Primary_DegradData/ArN2_Ar2nd.csv",
+}
+
+# Extended/generated VUV switch. The amplied spectra include the current Ar
+# second-continuum prediction directly.  The Ar second continuum is not anchored
+# and is not divided by the fitted primary Nnorm; conversion to ph MeV^-1 uses
+# the X-ray energy of each degradation calculation.
+AMPLIED_INCLUDE_AR2ND_CONTINIUM = True
+
+# The 0% additive panel is pure argon in both Ar--CF4 and Ar--N2 mosaics.
+# By default we keep the two dedicated Degrad extractions separate, because the
+# generated spectrum uses the total second-continuum emission in the
+# extended VUV plots, while preserving the branch-dependent Degrad inputs for
+# Ar--CF4 and Ar--N2.
+# Set AR2ND_FORCE_COMMON_PURE_REFERENCE=True only for a debugging plot where the
+# two pure-Ar panels are intentionally forced to use one identical input.
+AR2ND_FORCE_COMMON_PURE_REFERENCE = False
+AR2ND_PURE_REFERENCE_GAS = "ArN2"
+AR2ND_PURE_REFERENCE_CONCENTRATION_PERCENT = 0.0
 
 # Anchors at 95/5: ArCF4 visible band and ArN2 327 nm peak.
 ANCHORS = {
@@ -108,6 +138,39 @@ ANCHORS = {
 RAW_SHARE_YLIM = True
 GENERATED_SHARE_YLIM = True
 COMPARISON_SHARE_YLIM = True
+
+# The extended/generated VUV spectra may contain strong sub-200 nm structure. In
+# linear scale this can compress the UV/VIS/IR region, so the amplied generated
+# mosaics can be drawn in log-y scale when desired.
+GENERATED_AMPLIED_LOG_SCALE = False
+GENERATED_AMPLIED_LOG_YMIN = 1.0e0
+GENERATED_AMPLIED_LOG_YMAX_FACTOR = 1.35
+
+# Alternative layouts for the extended VUV generated mosaics. These are meant
+# to keep the VUV branch visible without hiding the optical structure.
+GENERATED_AMPLIED_INSET_ENABLED = True
+GENERATED_AMPLIED_BROKENX_ENABLED = True
+GENERATED_AMPLIED_VUV_WINDOW_NM = (110.0, 170.0)
+# In the inset layout the main axes still show the full 100--800 nm range so the
+# reader sees how dominant the VUV branch is. Their y-limits, however, are set
+# from an optical-only sub-window so the weaker UV/VIS/IR lines remain visible
+# and the VUV peak is intentionally clipped on the main axes.
+GENERATED_AMPLIED_MAIN_WINDOW = {
+    "ArCF4": WAVELENGTH_RANGE_GENERATED_AMPLIED["ArCF4"],
+    "ArN2": WAVELENGTH_RANGE_GENERATED_AMPLIED["ArN2"],
+}
+GENERATED_AMPLIED_MAIN_YLIM_WINDOW = {
+    "ArCF4": (200.0, 800.0),
+    "ArN2": (300.0, 800.0),
+}
+GENERATED_AMPLIED_INSET_LOC = "upper right"
+GENERATED_AMPLIED_INSET_WIDTH = "45%"
+GENERATED_AMPLIED_INSET_HEIGHT = "45%"
+# Extra headroom on the main axis so the narrow infrared lines do not sit right
+# against the top frame when the VUV is moved to the inset.
+GENERATED_AMPLIED_INSET_MAIN_YMAX_FACTOR = 1.32
+GENERATED_AMPLIED_INSET_VUV_YMAX_FACTOR = 1.12
+GENERATED_AMPLIED_BROKENX_WIDTH_RATIOS = (1.0, 3.2)
 
 
 # =============================================================================

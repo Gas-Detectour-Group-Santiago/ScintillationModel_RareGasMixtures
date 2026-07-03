@@ -15,7 +15,7 @@
     "uniformE.C": "cpp",
     "iostream": "cpp"
   },
-  "cmake.sourceDirectory": "/home/daniel/GitHub/ScintillationModel_RareGasMixtures/cross_section",
+  "cmake.sourceDirectory": "/home/daniel/GitHub/ScintillationModel_RareGasMixtures/cross_sections",
 
   "cmake.configureSettings": {
     "CMAKE_PREFIX_PATH": "/home/daniel/garfield/install"

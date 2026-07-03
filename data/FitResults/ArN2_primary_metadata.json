@@ -6,6 +6,14 @@
   "chi2_red": 0.5220922539837717,
   "success": true,
   "message": "`ftol` termination condition is satisfied.",
-  "n_stat_toys": 10,
-  "n_syst_toys": 10
+  "n_stat_toys": 300,
+  "n_syst_toys": 300,
+  "toy_correlations": {
+    "stat": {
+      "n_valid_toys": 300,
+      "covariance_csv": "data/FitResults/ArN2_primary_toy_covariance_stat.csv",
+      "correlation_csv": "data/FitResults/ArN2_primary_toy_correlation_stat.csv",
+      "correlation_pdf": "data/FitResults/ArN2_primary_toy_correlation_stat.pdf"
+    }
+  }
 }

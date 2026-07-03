@@ -5,9 +5,19 @@ from matplotlib import colors as mcolors
 from matplotlib.transforms import Bbox
 try:
     import scienceplots  # noqa: F401
-    plt.style.use(["science", "no-latex"])
+    plt.style.use(["science", "grid", "no-latex"])
 except Exception:
     plt.style.use("default")
+
+plt.rcParams.update(
+    {
+        "axes.grid": False,
+        "legend.frameon": True,
+        "legend.fancybox": True,
+        "legend.edgecolor": "0.50",
+        "legend.framealpha": 0.78,
+    }
+)
 
 
 def darken_color(color, factor=0.65):

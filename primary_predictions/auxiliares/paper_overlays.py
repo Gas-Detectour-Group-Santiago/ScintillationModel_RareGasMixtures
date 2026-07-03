@@ -1,6 +1,11 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
 
 import numpy as np
 import pandas as pd
@@ -22,7 +27,15 @@ ARCF4_IR_DISCARDED_CONCENTRATIONS_PERCENT = (20.0, 50.0, 100.0)
 
 
 def paper_colors(plt, n: int = 4):
-    return plt.get_cmap("viridis")(np.linspace(0.18, 0.82, n))
+    del plt
+    try:
+        from plot_style import palette
+
+        return palette(n, start=0.18, stop=0.82)
+    except Exception:  # pragma: no cover - standalone fallback
+        import matplotlib.pyplot as _plt
+
+        return _plt.get_cmap("viridis")(np.linspace(0.18, 0.82, n))
 
 
 def find_project_root(path: Path) -> Path:

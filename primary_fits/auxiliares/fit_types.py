@@ -74,7 +74,7 @@ class PlotSpec:
     ylim: tuple[float, float] | None = None
     xscale: str = "log"
     yscale: str = "log"
-    cmap: str = "viridis"
+    cmap: str | None = None
     darken_factor: float = -0.15
     legend_kwargs: dict | None = None
     label_mode: str = "legend"
@@ -94,6 +94,7 @@ class FitConfig:
     parameters: Sequence[Parameter]
     plots: Sequence[PlotSpec] = field(default_factory=tuple)
     is_infrared: bool = False
+    first_point_anchor_weight: float = 1.0
     toy_spec: ToySpec = field(default_factory=ToySpec)
     table_caption: str = ""
     table_label: str = ""

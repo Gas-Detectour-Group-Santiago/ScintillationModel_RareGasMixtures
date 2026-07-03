@@ -101,3 +101,111 @@ def export_vector(path: Path, names: list[str], values: np.ndarray) -> None:
 def export_matrix(path: Path, names: list[str], matrix: np.ndarray) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(matrix, index=names, columns=names).to_csv(path)
+
+def toy_covariance_correlation(toys: np.ndarray, names: list[str]) -> tuple[pd.DataFrame, pd.DataFrame, int]:
+    """Compute empirical covariance and correlation matrices from toy-fit parameters.
+
+    The returned matrices keep all parameters. Parameters that do not vary across
+    the valid toy ensemble (typically fixed parameters) have undefined
+    correlations and are therefore left as NaN outside the diagonal.
+    """
+    names = list(names)
+    empty = pd.DataFrame(np.nan, index=names, columns=names, dtype=float)
+
+    toys = np.asarray(toys, dtype=float)
+    if toys.size == 0 or toys.ndim != 2 or toys.shape[1] != len(names):
+        return empty.copy(), empty.copy(), 0
+
+    df = pd.DataFrame(toys, columns=names)
+    df = df.replace([np.inf, -np.inf], np.nan).dropna(axis=0, how="any")
+    n_valid = int(len(df))
+    if n_valid < 2:
+        return empty.copy(), empty.copy(), n_valid
+
+    cov = df.cov()
+    corr = df.corr()
+
+    # Make the diagonal explicit for parameters with a finite variance. For fixed
+    # or numerically constant parameters the variance is zero and the correlation
+    # is not defined; keeping NaN avoids creating artificial correlations.
+    variances = np.diag(cov.to_numpy(dtype=float))
+    corr_values = corr.to_numpy(dtype=float)
+    for i, var in enumerate(variances):
+        if np.isfinite(var) and var > 0:
+            corr_values[i, i] = 1.0
+        else:
+            corr_values[i, i] = np.nan
+    corr = pd.DataFrame(corr_values, index=names, columns=names)
+
+    return cov, corr, n_valid
+
+
+def export_dataframe(path: Path, df: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.to_csv(path)
+
+
+def plot_parameter_correlation(
+    path: Path,
+    corr: pd.DataFrame,
+    labels: list[str] | None = None,
+    title: str = "Parameter correlations",
+) -> None:
+    """Export a seaborn PDF heatmap for a parameter correlation matrix."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+
+    sns.set_theme(
+        context="paper",
+        style="white",
+        font="serif",
+        rc={
+            "axes.grid": False,
+            "axes.titlesize": 11,
+            "xtick.labelsize": 9,
+            "ytick.labelsize": 9,
+        },
+    )
+
+    values = corr.to_numpy(dtype=float)
+    n = len(corr.columns)
+    if labels is None:
+        labels = list(corr.columns)
+
+    mask = ~np.isfinite(values)
+    plot_df = pd.DataFrame(values, index=labels, columns=labels)
+    annot = np.empty(values.shape, dtype=object)
+    annot[:] = ""
+    finite = np.isfinite(values)
+    annot[finite] = np.vectorize(lambda x: f"{x:.2f}")(values[finite])
+    diag_nan = np.eye(n, dtype=bool) & mask
+    annot[diag_nan] = "--"
+
+    fig_size = max(5.0, 0.58 * n + 2.1)
+    fig, ax = plt.subplots(figsize=(fig_size, fig_size))
+    sns.heatmap(
+        plot_df,
+        ax=ax,
+        vmin=-1.0,
+        vmax=1.0,
+        center=0.0,
+        cmap="vlag",
+        mask=mask & ~diag_nan,
+        square=True,
+        linewidths=0.45,
+        linecolor="white",
+        annot=annot,
+        fmt="",
+        annot_kws={"fontsize": 7},
+        cbar_kws={"label": r"Coeficiente de correlación $\rho_{ij}$", "shrink": 0.82},
+    )
+    ax.set_title(title, pad=10)
+    ax.set_xticklabels(labels, rotation=45, ha="right", rotation_mode="anchor")
+    ax.set_yticklabels(labels, rotation=0)
+
+    fig.tight_layout()
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+

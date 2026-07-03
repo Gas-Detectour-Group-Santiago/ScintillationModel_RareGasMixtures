@@ -8,7 +8,8 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from secondary_predictions.auxiliares import PredictionRunner  # noqa: E402
-from secondary_predictions.configs import SECONDARY_ADAPTERS  # noqa: E402
+from secondary_predictions.configs import PARAM_SECONDARY_FIT_NAMES, SECONDARY_ADAPTERS  # noqa: E402
+from secondary_predictions.auxiliares.tables import export_secondary_parameter_tables  # noqa: E402
 from secondary_predictions import config_comparation, config_paper  # noqa: E402
 
 
@@ -51,11 +52,15 @@ def main(
 
     out = {}
 
+    parameter_table_configs = []
+
     if make_config_paper:
         paper_out = {}
         if make_paper_multibands:
+            paper_multiband_configs = config_paper.multiband_plots()
+            parameter_table_configs.extend(paper_multiband_configs)
             paper_out["multibands"] = runner.run_multi_bands(
-                config_paper.multiband_plots(),
+                paper_multiband_configs,
                 overwrite=overwrite_paper_bands,
             )
         if make_paper_metadata:
@@ -66,8 +71,10 @@ def main(
         out[config_paper.CONFIG_NAME] = paper_out
 
     if make_config_comparation:
+        comparation_configs = config_comparation.multiband_plots()
+        parameter_table_configs.extend(comparation_configs)
         comparation_out = runner.run_multi_bands(
-            config_comparation.multiband_plots(),
+            comparation_configs,
             overwrite=overwrite_comparation_bands,
         )
         if hasattr(config_comparation, "export_comparation_tables"):
@@ -78,6 +85,19 @@ def main(
             except Exception as exc:
                 print(f"[secondary_predictions] aviso: no se pudo exportar la tabla de comparation: {exc}")
         out[config_comparation.CONFIG_NAME] = comparation_out
+
+    if parameter_table_configs:
+        try:
+            parameter_tables = export_secondary_parameter_tables(
+                PROJECT_ROOT,
+                parameter_table_configs,
+                extra_fit_names=PARAM_SECONDARY_FIT_NAMES,
+            )
+            if parameter_tables:
+                print(f"[secondary_predictions] parameter secondary tables: {parameter_tables}")
+                out["param_secondary"] = parameter_tables
+        except Exception as exc:
+            print(f"[secondary_predictions] aviso: no se pudieron exportar las tablas param_secondary: {exc}")
 
     return out
 

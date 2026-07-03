@@ -64,7 +64,7 @@ X_RAY_ENERGY_ARCF4_KEV = 15.0
 VISIBLE_BAND_MODE = "ocw_bands"
 VISIBLE_XSCALE = "log"
 VISIBLE_YSCALE = "log"
-FIELD_SCAN_XSCALE = "linear"
+FIELD_SCAN_XSCALE = "log"
 FIELD_SCAN_YSCALE = "linear"
 
 # Metadata/charge-balance plots.  Change these two lines if you want another
@@ -83,6 +83,17 @@ def _sum_components(*funcs):
         return out
 
     return total
+
+
+# Parameter tables duplicated by the secondary runner.  Ar--N2 fits are
+# included even though current secondary yield plots are Ar--CF4-only, so the
+# duplicated table set stays complete for UV/VIS and IR primary fits.
+PARAM_SECONDARY_FIT_NAMES = (
+    "ArCF4_primary",
+    "ArCF4_IR_primary",
+    "ArN2_primary",
+    "ArN2_IR_primary",
+)
 
 
 SECONDARY_ADAPTERS = {
@@ -255,6 +266,27 @@ ARCF4_UV_OCW = OCWBandConfig(
 )
 
 
+# Secondary-only OCW prescription for the Ar--CF4 IR model.
+# The fitted primary IR optical-conversion weights are kept unchanged, but the
+# secondary optimum uses 2 x W for every fitted IR line.  Low/high/optimum are
+# identical on purpose: this is a deterministic rescaling, not an additional
+# OCW uncertainty band.
+ARCF4_IR_OCW = OCWBandConfig(
+    id="ArCF4_IR_OCW_x2",
+    label="IR OCW x2",
+    use_corners=False,
+    rules=tuple(
+        OCWParameterRule(
+            f"PAr_star_{line}",
+            low_factor=2.0,
+            high_factor=2.0,
+            optimum_factor=2.0,
+            clip_max=1.0,
+        )
+        for line in ("696", "727", "750", "764", "772")
+    ),
+)
+
 def _pressure_tag(pressure_bar: float) -> str:
     return str(pressure_bar).replace(".", "p")
 
@@ -308,8 +340,8 @@ def _ir_total_curve_for_paper_reference(
         show_stat=False,
         show_syst=False,
         show_total=True,
-        band_mode="sys_stat",
-        ocw_config=None,
+        band_mode="sum",
+        ocw_config=ARCF4_IR_OCW,
     )
 
 
@@ -396,8 +428,8 @@ def _ir_total_curve_for_field_scan(pressure_bar: float) -> BandCurveConfig:
         show_stat=False,
         show_syst=False,
         show_total=True,
-        band_mode="sys_stat",
-        ocw_config=None,
+        band_mode="sum",
+        ocw_config=ARCF4_IR_OCW,
     )
 
 
@@ -523,6 +555,7 @@ def _make_config_paper(
             xscale="log",
             yscale="linear",
             xlim=(0.09, 110.0),
+            legend_fontsize=13.0,
             output=outdir / "ArCF4_paper_metadata_GEM_concentration.pdf",
         ),
         MetadataPlotConfig(
@@ -536,6 +569,7 @@ def _make_config_paper(
             xscale="log",
             yscale="linear",
             xlim=(0.09, 110.0),
+            legend_fontsize=13.0,
             output=outdir / "ArCF4_paper_metadata_THGEM_concentration.pdf",
         ),
         MetadataPlotConfig(
@@ -549,6 +583,7 @@ def _make_config_paper(
             xscale=FIELD_SCAN_XSCALE,
             yscale="linear",
             xlim=None,
+            legend_fontsize=13.0,
             output=outdir / "ArCF4_paper_metadata_vsE_cf4_1pct.pdf",
         ),
     ]
@@ -592,9 +627,9 @@ def secondary_multiband_plots() -> list[MultiBandPlotConfig]:
         xlabel=r"CF$_4$ concentration [%]",
         ylabel=r"Secondary 400--800 nm yield [ph/e$^-$]",
         xscale=VISIBLE_XSCALE,
-        yscale=VISIBLE_YSCALE,
+        yscale="linear",
         xlim=(0.09, 110.0),
-        ylim=(0.005, 2.0),
+        ylim=(0.0, 2.0),
         output=outdir / "ArCF4_paper_400_800nm_GEM_concentration.pdf",
         legend_ncol=1,
         legend_loc="best",
@@ -606,9 +641,9 @@ def secondary_multiband_plots() -> list[MultiBandPlotConfig]:
         xlabel=r"CF$_4$ concentration [%]",
         ylabel=r"Secondary 400--800 nm yield [ph/e$^-$]",
         xscale=VISIBLE_XSCALE,
-        yscale=VISIBLE_YSCALE,
+        yscale="linear",
         xlim=(0.09, 110.0),
-        ylim=(0.005, 10.0),
+        ylim=(0.0, 10.0),
         output=outdir / "ArCF4_paper_400_800nm_THGEM_concentration.pdf",
         legend_ncol=1,
         legend_loc="best",
@@ -645,7 +680,8 @@ def arcf4_visible_plus_ir_total_curve(x_grid: np.ndarray, *, band_mode: str = "s
         show_stat=False,
         show_syst=False,
         show_total=True,
-        band_mode="sys_stat",
+        band_mode="sum",
+        ocw_config=ARCF4_IR_OCW,
     )
     return CombinedBandCurveConfig(
         id="ArCF4_secondary_vis_plus_ir_total_gap0p050_gain100pm20",

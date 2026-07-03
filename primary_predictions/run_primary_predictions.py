@@ -14,8 +14,11 @@ from primary_predictions.configs import (  # noqa: E402
     OWN_NORM,
     PRIMARY_ADAPTERS,
     arcf4_ir_multiband_plots,
+    arn2_ir_multiband_plots_arcf4_norm,
     primary_band_plots,
+    pure_ar_low_pressure_ir_points,
     selected_primary_points,
+    vuv_primary_points,
 )
 
 
@@ -62,11 +65,57 @@ def main(
             label="tab:primary_selected_yields_arcf4_vs_arn2_norm",
         )
 
+
+        runner.run_values_by_normalization(
+            vuv_primary_points(OWN_NORM),
+            "primary_vuv_absolute_yields_by_norm",
+            normalizations={
+                "value": OWN_NORM,
+            },
+            column_headings={
+                "value": r"Valor",
+            },
+            caption=(
+                r"Predicciones de las dos componentes VUV primarias añadidas al modelo "
+                r"en ph/MeV: segundo continuo total de argón y rama "
+                r"CF$_4^+{}^*(D)\to$CF$_4^+(X)$."
+            ),
+            label="tab:primary_vuv_absolute_yields_by_norm",
+        )
+
+        low_pressure_df = runner.run_normalization_comparison_points(
+            pure_ar_low_pressure_ir_points(OWN_NORM),
+            "primary_low_pressure_pure_ar_ir_arcf4_vs_arn2_norm",
+            left_normalization=COMMON_ARCF4_NORM,
+            right_normalization=COMMON_ARN2_NORM,
+            caption=(
+                r"Predicciones IR primarias en el límite de argón puro para la "
+                r"extrapolación a baja presión, evaluadas con normalización de "
+                r"Ar--CF$_4$ y de Ar--N$_2$."
+            ),
+            label="tab:primary_low_pressure_pure_ar_ir_arcf4_vs_arn2_norm",
+        )
+
+        runner.run_pure_ar_model_average_table(
+            low_pressure_df,
+            "primary_low_pressure_pure_ar_ir_model_average",
+            caption=(
+                r"Predicción IR primaria media en el límite de argón puro para la "
+                r"extrapolación a baja presión. La columna media es el promedio "
+                r"aritmético de las extrapolaciones Ar--CF$_4$ y Ar--N$_2$; "
+                r"$\Delta_{\mathrm{modelo}}$ es la semidiferencia entre ambas."
+            ),
+            label="tab:primary_low_pressure_pure_ar_ir_model_average",
+        )
+
     if make_bands:
         runner.run_bands(primary_band_plots(OWN_NORM), make_plots=make_plots, overwrite=overwrite_bands)
 
     if make_multibands:
-        runner.run_multi_bands(arcf4_ir_multiband_plots(), overwrite=overwrite_bands)
+        runner.run_multi_bands(
+            arcf4_ir_multiband_plots() + arn2_ir_multiband_plots_arcf4_norm(),
+            overwrite=overwrite_bands,
+        )
 
 
 if __name__ == "__main__":

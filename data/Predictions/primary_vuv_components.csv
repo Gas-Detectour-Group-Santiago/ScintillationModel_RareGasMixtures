@@ -1,0 +1,4 @@
+id,component_tex,case_tex,wavelength_nm,yield_used_in_spectrum_ph_MeV,ar2nd_fast_ph_MeV,ar2nd_total_ph_MeV,cf4_value_arcf4_norm_ph_MeV,cf4_value_arn2_norm_ph_MeV,relative_difference_percent,table_note_tex
+Ar2nd_total_ArCF4_pure_panel,Ar$_2^*$ segundo continuo,Ar puro (mosaico Ar--CF$_4$),128.0,5503.659008943404,847.5634873772842,5503.659008943404,,,0.11160372888392797,total $S+T$; $Y_S=\num{848}$; $f_S/f_T=\num{0.15}/\num{0.85}$
+Ar2nd_total_ArN2_pure_panel,Ar$_2^*$ segundo continuo,Ar puro (mosaico Ar--N$_2$),128.0,5497.523567645639,3490.92746545498,5497.523567645639,,,0.0,total $S+T$; $Y_S=\num{3.49e+03}$; $f_S/f_T=\num{0.64}/\num{0.36}$
+CF4_D_to_X_VUV_CF4,CF$_4^+{}^*(D)\to$CF$_4^+(X),CF$_4$ puro,155.0,432.47867853060774,,,432.47867853060774,177.1814352457584,59.03117447367553,Br=\num{0.1}; norm. Ar--N$_2$: \num{177}; $\Delta=\num{59}\%$

@@ -1,0 +1,29 @@
+name,tex_name,value,fixed,description
+W_Ar_dbleStar_to_1s,$\mathcal{W}_{\mathrm{Ar}^{**}\to 1s}$,1.0,True,Effective cascade/feed-down weight from upper argon states into the Ar(4s/1s) precursor family; kept at 1 as a fiducial upper-limit because the result scales linearly with this unknown weight.
+scale_Ar2nd,$S_{2nd}$,1.0,True,Optional global scale applied before the pure-Ar absolute anchor; keep at 1 unless doing sensitivity scans.
+anchor_Ar2nd_to_pure_argon,$A_{\mathrm{pure}}$,0.0,True,"If 1, rescale the reported Ar second-continuum channel so pure argon at the reference pressure is fixed to Y_Ar2nd_pure_ph_MeV; kept at 0 for direct kinetic spectra."
+Y_Ar2nd_pure_ph_MeV,$Y_{\mathrm{Ar2nd}}^{\mathrm{pure}}$ [ph/MeV],20000.0,True,Absolute reference yield for the total Ar second-continuum channel in pure argon. With triplet_weight=0 the prompt component is anchored to f_S times this value.
+reference_pressure_bar,$p_{\mathrm{ref}}$ [bar],1.0,True,Reference pressure used for the pure-argon second-continuum anchor.
+reference_additive_fraction,$f_{\mathrm{ref}}$,1.0e-5,True,Small additive fraction used numerically to represent pure argon in the degradation tables.
+tau_Ar_star_ns,$\tau_{\mathrm{Ar}^*}$ [ns],30.0,True,Effective finite Ar(4s/1s) precursor loss time. A finite value avoids saturating P_form and gives the expected pressure dependence.
+K_Ar_star_Q_2Ar,$K_{\mathrm{Ar}^*Q(2\mathrm{Ar})}$ [ns$^{-1}$],0.01586,True,Ternary formation coefficient in the pressure-normalised convention used by the model
+K_Ar_star_Q_Ar,$K_{\mathrm{Ar}^*Q(\mathrm{Ar})}$ [ns$^{-1}$],0.0,True,Direct Ar(4s/1s) loss by Ar; zero leaves formation as upper-limit channel
+K_Ar_star_Q_CF4,$K_{\mathrm{Ar}^*Q(\mathrm{CF}_4)}$ [ns$^{-1}$],0.0,True,"CF4 competition/quenching of the Ar(4s/1s) precursor. Kept at zero by default because K_Ar_dbleStar_Q_CF4 from ArCF4_primary.csv is a fitted relative/effective quantity, not an absolute second-continuum precursor quenching rate."
+K_Ar_star_Q_N2,$K_{\mathrm{Ar}^*Q(\mathrm{N}_2)}$ [ns$^{-1}$],0.8430859769,True,"Effective Ar(4s/1s) competition/quenching by N2, using K_ArMeta_Q_N2c + K_ArMeta_Q_N2b from the existing ArN2 primary model."
+tau_S_ns,$\tau_S$ [ns],4.2,True,Singlet/fast Ar2* lifetime
+tau_T_ns,$\tau_T$ [ns],3200.0,True,Triplet/slow Ar2* lifetime
+f_S,$f_S$,0.1538461538461538,True,Backwards-compatible fallback singlet fraction used only if no gas-specific fraction is present.
+f_S_CF4,$f_S^{\mathrm{CF_4}}$,0.154,True,Singlet/fast fraction used for the Ar--CF4 second-continuum branch; f_T = 1 - f_S = 0.846.
+f_S_N2,$f_S^{\mathrm{N_2}}$,0.635,True,Singlet/fast fraction used for the Ar--N2 second-continuum branch; f_T = 1 - f_S = 0.365.
+triplet_weight,$w_T$,0.0,True,Weight applied to the slow triplet component. 0 keeps the physical prompt/fast estimate; 1 gives the singlet+triplet total.
+K_Ar2starS_Q_Ar,"$K_{\mathrm{Ar}_2^{*,S}Q(\mathrm{Ar})}$ [ns$^{-1}$]",0.0,True,Singlet excimer quenching by Ar
+K_Ar2starT_Q_Ar,"$K_{\mathrm{Ar}_2^{*,T}Q(\mathrm{Ar})}$ [ns$^{-1}$]",0.0,True,Triplet excimer quenching by Ar
+K_Ar2starS_Q_CF4,"$K_{\mathrm{Ar}_2^{*,S}Q(\mathrm{CF}_4)}$ [ns$^{-1}$]",0.0,True,Singlet excimer quenching by CF4; zero gives upper-limit estimate
+K_Ar2starT_Q_CF4,"$K_{\mathrm{Ar}_2^{*,T}Q(\mathrm{CF}_4)}$ [ns$^{-1}$]",0.0,True,Triplet excimer quenching by CF4; zero gives upper-limit estimate
+K_Ar2starS_Q_N2,"$K_{\mathrm{Ar}_2^{*,S}Q(\mathrm{N}_2)}$ [ns$^{-1}$]",0.0,True,Singlet excimer quenching by N2
+K_Ar2starT_Q_N2,"$K_{\mathrm{Ar}_2^{*,T}Q(\mathrm{N}_2)}$ [ns$^{-1}$]",0.1,True,Effective slow-triplet Ar2* quenching by N2. Kept configurable; use zero to recover an upper-limit estimate.
+lambda_Ar2nd_nm,$\lambda_{2nd}$ [nm],128.0,True,Central wavelength of the Ar second continuum
+fwhm_Ar2nd_nm,$\mathrm{FWHM}_{2nd}$ [nm],10.0,True,Gaussian FWHM used to draw the Ar second-continuum band; converted internally to sigma
+Br_CF4_D_to_X,$\mathcal{B}r_{D\to X}$,0.1,True,Effective CF4+*(D)->CF4+(X) VUV branching ratio relative to the CF4 ionic UV channel
+lambda_CF4_D_to_X_nm,$\lambda_{D\to X}$ [nm],155.0,True,Central wavelength of the CF4 ionic VUV branch
+fwhm_CF4_D_to_X_nm,$\mathrm{FWHM}_{D\to X}$ [nm],10.0,True,Gaussian FWHM used to draw the CF4 ionic VUV branch; converted internally to sigma

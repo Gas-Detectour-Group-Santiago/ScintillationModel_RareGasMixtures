@@ -18,6 +18,7 @@ from spectra.auxiliares import (
     run_generated_mosaics,
     run_annotated_figures,
     run_raw_mosaics,
+    export_vuv_prediction_tables,
 )
 
 
@@ -40,6 +41,7 @@ def main(
 
     if make_generated:
         run_generated_mosaics(project_root, outdir, generated)
+        export_vuv_prediction_tables(project_root)
 
     if make_comparison:
         run_comparison_mosaics(project_root, outdir, generated)

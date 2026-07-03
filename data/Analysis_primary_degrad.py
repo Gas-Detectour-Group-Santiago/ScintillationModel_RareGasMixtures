@@ -63,6 +63,24 @@ def degrad_config_arn2() -> pd.DataFrame:
     )
 
 
+def degrad_config_ar2nd() -> pd.DataFrame:
+    """Selection used only by the Ar second-continuum model.
+
+    It deliberately does not replace the historical ``Ar_dbleStar`` column used
+    by the Ar--CF4 UV/VIS fit.  The second continuum needs the full atomic
+    precursor family, so it stores Ar_meta, Ar_res, Ar_dbleStar and their sum in
+    dedicated ``*_Ar2nd.csv`` files.
+    """
+    return pd.DataFrame(
+        {
+            "Ar Meta": [["EXC"], "ARGON", 0.0, 11.6, "Ar_meta"],
+            "Ar Res": [["EXC"], "ARGON", 11.6, 11.7, "Ar_res"],
+            "Ar**": [["EXC"], "ARGON", E_TH_AR_N2, 100.0, "Ar_dbleStar"],
+        },
+        index=["name principal", "gas", "energy low", "energy up", "name output"],
+    )
+
+
 def degrad_config_ir() -> pd.DataFrame:
     return pd.DataFrame(
         {
@@ -103,6 +121,17 @@ RUNS: tuple[DegradRunConfig, ...] = (
         output_general_csv=PRIMARY_DIR / "ArCF4.csv",
     ),
     DegradRunConfig(
+        name="ArCF4_Ar2nd",
+        txt_dir=PRIMARY_DIR / "ArCF4" / "txt",
+        gas1="ARGON",
+        gas2="CF4",
+        concentration_gas="CF4",
+        dataframe=degrad_config_ar2nd(),
+        raw_csv_dir=PRIMARY_DIR / "ArCF4" / "csv",
+        population_dir=PRIMARY_DIR / "ArCF4_Ar2nd",
+        output_general_csv=PRIMARY_DIR / "ArCF4_Ar2nd.csv",
+    ),
+    DegradRunConfig(
         name="ArCF4_IR",
         txt_dir=PRIMARY_DIR / "ArCF4" / "txt",
         gas1="ARGON",
@@ -123,6 +152,17 @@ RUNS: tuple[DegradRunConfig, ...] = (
         raw_csv_dir=PRIMARY_DIR / "ArN2" / "csv",
         population_dir=PRIMARY_DIR / "ArN2",
         output_general_csv=PRIMARY_DIR / "ArN2.csv",
+    ),
+    DegradRunConfig(
+        name="ArN2_Ar2nd",
+        txt_dir=PRIMARY_DIR / "ArN2" / "txt",
+        gas1="ARGON",
+        gas2="NITROGEN",
+        concentration_gas="N2",
+        dataframe=degrad_config_ar2nd(),
+        raw_csv_dir=PRIMARY_DIR / "ArN2" / "csv",
+        population_dir=PRIMARY_DIR / "ArN2_Ar2nd",
+        output_general_csv=PRIMARY_DIR / "ArN2_Ar2nd.csv",
     ),
     DegradRunConfig(
         name="ArN2_IR",
@@ -306,6 +346,22 @@ def select_population(df: pd.DataFrame, name_tokens, gas: str, energy_low: float
     return float(value), float(err)
 
 
+AR2ND_PRECURSOR_COLUMNS = ("Ar_meta", "Ar_res", "Ar_dbleStar")
+
+
+def add_ar2nd_precursor_sum(df: pd.DataFrame) -> pd.DataFrame:
+    """Add the explicit precursor population used by the Ar second continuum."""
+    out = df.copy()
+    if not all(col in out.columns for col in AR2ND_PRECURSOR_COLUMNS):
+        return out
+
+    out["Ar_2nd_precursor"] = out[list(AR2ND_PRECURSOR_COLUMNS)].sum(axis=1)
+    err_cols = [f"Err{col}" for col in AR2ND_PRECURSOR_COLUMNS]
+    if all(col in out.columns for col in err_cols):
+        out["ErrAr_2nd_precursor"] = np.sqrt(np.square(out[err_cols]).sum(axis=1))
+    return out
+
+
 def analyse_degrad_run(config: DegradRunConfig) -> pd.DataFrame:
     if not config.txt_dir.is_dir():
         raise NotADirectoryError(f"No existe la carpeta TXT: {config.txt_dir}")
@@ -337,6 +393,8 @@ def analyse_degrad_run(config: DegradRunConfig) -> pd.DataFrame:
 
     population_gen = pd.DataFrame(rows).sort_values("concentration").reset_index(drop=True)
     population_gen = population_gen.fillna(0)
+    if config.name.endswith("_Ar2nd"):
+        population_gen = add_ar2nd_precursor_sum(population_gen)
 
     config.population_dir.mkdir(parents=True, exist_ok=True)
     config.output_general_csv.parent.mkdir(parents=True, exist_ok=True)
@@ -345,6 +403,10 @@ def analyse_degrad_run(config: DegradRunConfig) -> pd.DataFrame:
         out_name = config.dataframe.loc["name output", col]
         one = population_gen[["concentration", out_name, f"Err{out_name}"]].copy()
         one.to_csv(config.population_dir / f"{out_name}.csv", index=False)
+
+    if config.name.endswith("_Ar2nd") and "Ar_2nd_precursor" in population_gen.columns:
+        one = population_gen[["concentration", "Ar_2nd_precursor", "ErrAr_2nd_precursor"]].copy()
+        one.to_csv(config.population_dir / "Ar_2nd_precursor.csv", index=False)
 
     population_gen.to_csv(config.output_general_csv, index=False)
     print(f"✅ {config.name}: {config.output_general_csv.relative_to(ROOT_DIR)}")

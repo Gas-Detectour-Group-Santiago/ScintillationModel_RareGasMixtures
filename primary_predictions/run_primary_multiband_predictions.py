@@ -11,12 +11,16 @@ from primary_predictions.auxiliares import PredictionRunner  # noqa: E402
 from primary_predictions.configs import (  # noqa: E402
     PRIMARY_ADAPTERS,
     arcf4_ir_multiband_plots,
+    arn2_ir_multiband_plots_arcf4_norm,
 )
 
 
-def main(*, overwrite_bands: bool = False):
+def main(*, overwrite_bands: bool = True):
     runner = PredictionRunner(PROJECT_ROOT, PRIMARY_ADAPTERS)
-    runner.run_multi_bands(arcf4_ir_multiband_plots(), overwrite=overwrite_bands)
+    runner.run_multi_bands(
+        arcf4_ir_multiband_plots() + arn2_ir_multiband_plots_arcf4_norm(),
+        overwrite=overwrite_bands,
+    )
 
 
 if __name__ == "__main__":

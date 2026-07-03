@@ -1,0 +1,3 @@
+id,label,tex_label,gas,channel,fit_name,component,concentration,pressure_bar,unit,note,value_value,normalization_mode_value,normalization_reference_value
+Ar2nd_total_VUV_Ar_pure,"$Y_{\mathrm{Ar2nd,total}}(100\%\,\mathrm{Ar})$","$Y_{\mathrm{Ar2nd,total}}(100\%\,\mathrm{Ar})$",Ar,vuv,ArCF4_primary,ar2_2nd_total_reference,1e-05,1.0,ph/MeV,Total singlet+triplet Ar second-continuum value; this is the value plotted in the extended spectra.,2754.628409258282,as_fit,
+CF4_D_to_X_VUV_CF4,"$Y_{\mathrm{CF_4^+(D\to X)}}(100\%\,\mathrm{CF_4})$","$Y_{\mathrm{CF_4^+(D\to X)}}(100\%\,\mathrm{CF_4})$",ArCF4,vuv,ArCF4_primary,cf4_d_to_x_vuv,1.0,1.0,ph/MeV,"CF4 ionic VUV branch at 155 nm, Br(D->X) times the fitted CF4 UV ionic channel.",432.47867853060774,own_norm,

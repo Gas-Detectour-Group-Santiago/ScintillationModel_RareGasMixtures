@@ -48,21 +48,28 @@ def configure_matplotlib(plt) -> None:
     try:
         import scienceplots  # noqa: F401
 
-        plt.style.use(["science", "no-latex"])
+        plt.style.use(["science", "grid", "no-latex"])
     except Exception:
         plt.style.use("default")
 
     plt.rcParams.update(
         {
+            "font.family": "serif",
+            "font.serif": ["Computer Modern Roman", "CMU Serif", "DejaVu Serif"],
+            "mathtext.fontset": "cm",
             "figure.figsize": (6.5, 4.3),
             "figure.dpi": 120,
             "savefig.dpi": 300,
             "axes.labelsize": 12,
             "axes.titlesize": 12,
-            "legend.fontsize": 8.5,
-            "xtick.labelsize": 10,
-            "ytick.labelsize": 10,
+            "legend.fontsize": 10.5,
+            "xtick.labelsize": 11,
+            "ytick.labelsize": 11,
             "axes.grid": False,
+            "legend.frameon": True,
+            "legend.fancybox": True,
+            "legend.edgecolor": "0.50",
+            "legend.framealpha": 0.78,
         }
     )
 
@@ -133,7 +140,7 @@ def plot_band(
             band_df["ocw_low"].to_numpy(dtype=float),
             band_df["ocw_high"].to_numpy(dtype=float),
             color=cmap(0.55),
-            alpha=0.40,
+            alpha=0.18,
             label="OCW",
             linewidth=0,
         )
@@ -144,7 +151,7 @@ def plot_band(
             band_df["total_low"].to_numpy(dtype=float),
             band_df["total_high"].to_numpy(dtype=float),
             color=total_color,
-            alpha=0.20,
+            alpha=0.14,
             label=r"stat. $\oplus$ syst.",
             linewidth=0,
         )
@@ -154,7 +161,7 @@ def plot_band(
             band_df["syst_low"].to_numpy(dtype=float),
             band_df["syst_high"].to_numpy(dtype=float),
             color=syst_color,
-            alpha=0.45 if is_paper_primary else 0.45,
+            alpha=0.18 if is_paper_primary else 0.18,
             label="Sistemático" if is_paper_primary else "syst.",
             linewidth=0,
         )
@@ -164,7 +171,7 @@ def plot_band(
             band_df["stat_low"].to_numpy(dtype=float),
             band_df["stat_high"].to_numpy(dtype=float),
             color=stat_color,
-            alpha=0.2 if is_paper_primary else 0.2,
+            alpha=0.08 if is_paper_primary else 0.08,
             label="Estadístico" if is_paper_primary else "stat.",
             linewidth=0,
         )
@@ -187,7 +194,7 @@ def plot_band(
                 df[overlay.y_col].to_numpy(dtype=float),
                 yerr=yerr,
                 fmt=overlay.marker,
-                ms=4,
+                ms=5.5,
                 capsize=2,
                 label=overlay.label or overlay.id,
                 color=overlay.color,
@@ -206,9 +213,9 @@ def plot_band(
     if config.ylim:
         ax.set_ylim(*config.ylim)
     if is_paper_primary and config.id == "ArCF4_IR_primary_total":
-        ax.legend(ncol=2)
+        ax.legend(ncol=2, frameon=True)
     else:
-        ax.legend()
+        ax.legend(frameon=True)
     fig.tight_layout()
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output)
@@ -220,6 +227,7 @@ def plot_multi_band(
     config: MultiBandPlotConfig,
     *,
     output: Path,
+    experimental_scale_factors: dict[str, float] | None = None,
 ) -> None:
     import matplotlib.pyplot as plt
 
@@ -240,6 +248,7 @@ def plot_multi_band(
         band_mode = _canonical_band_mode(getattr(curve, "band_mode", "sys_stat"))
         use_ocw = _mode_uses_ocw(band_mode) and {"ocw_low", "ocw_high", "ocw_optimum"}.issubset(df.columns)
         use_sys_stat = _mode_uses_sys_stat(band_mode)
+        hide_ocw_legend = bool(getattr(config, "hide_ocw_legend", False))
 
         if use_ocw:
             ax.fill_between(
@@ -247,9 +256,9 @@ def plot_multi_band(
                 df["ocw_low"].to_numpy(dtype=float),
                 df["ocw_high"].to_numpy(dtype=float),
                 color=color,
-                alpha=0.40,
+                alpha=0.18,
                 linewidth=0,
-                label=f"{curve.label} OCW",
+                label="_nolegend_" if hide_ocw_legend else f"{curve.label} OCW",
             )
 
         if use_sys_stat and curve.show_total and {"total_low", "total_high"}.issubset(df.columns):
@@ -258,7 +267,7 @@ def plot_multi_band(
                 df["total_low"].to_numpy(dtype=float),
                 df["total_high"].to_numpy(dtype=float),
                 color=color,
-                alpha=0.20,
+                alpha=0.14,
                 linewidth=0,
                 label=rf"{curve.label} stat. $\oplus$ syst.",
             )
@@ -268,7 +277,7 @@ def plot_multi_band(
                 df["syst_low"].to_numpy(dtype=float),
                 df["syst_high"].to_numpy(dtype=float),
                 color=color,
-                alpha=0.40,
+                alpha=0.18,
                 linewidth=0,
                 label=f"{curve.label} OCW",
             )
@@ -284,7 +293,7 @@ def plot_multi_band(
             )
 
         line_y = df["ocw_optimum"].to_numpy(dtype=float) if use_ocw else y
-        line_label = f"{curve.label} (OCW)" if use_ocw else curve.label
+        line_label = curve.label if (use_ocw and hide_ocw_legend) else (f"{curve.label} (OCW)" if use_ocw else curve.label)
         ax.plot(x, line_y, color=color, lw=2.0, label=line_label)
         curve_colors[curve.id] = color
 
@@ -300,12 +309,14 @@ def plot_multi_band(
                     yerr=np.asarray(item["yerr"], dtype=float),
                     marker=str(item.get("marker", "o")),
                     linestyle="none",
-                    ms=float(item.get("ms", 4)),
+                    ms=max(float(item.get("ms", 4)), 5.5),
                     color=color,
                     ecolor=color,
                     capsize=2,
                     label=str(item.get("label", f"X-ray {curve.label}")),
                 )
+
+    scale_factors = experimental_scale_factors or {}
 
     for series in config.experimental_series:
         color = series.color
@@ -317,6 +328,11 @@ def plot_multi_band(
         x = np.asarray(series.x, dtype=float)
         y = np.asarray(series.y, dtype=float)
         yerr = None if series.yerr is None else np.asarray(series.yerr, dtype=float)
+        if series.scale_group:
+            scale = float(scale_factors.get(series.scale_group, 1.0))
+            y = y * scale
+            if yerr is not None:
+                yerr = yerr * scale
         markerfacecolor = series.markerfacecolor
         if markerfacecolor is None:
             markerfacecolor = "white" if str(series.marker).endswith("open") else color
@@ -349,7 +365,10 @@ def plot_multi_band(
         ax.set_xlim(*_expanded_xlim(config.xlim, config.xscale))
     if config.ylim:
         ax.set_ylim(*config.ylim)
-    ax.legend(loc=config.legend_loc, ncol=config.legend_ncol)
+    legend_kwargs = {"loc": config.legend_loc, "ncol": config.legend_ncol, "frameon": True}
+    if getattr(config, "legend_fontsize", None) is not None:
+        legend_kwargs["fontsize"] = float(config.legend_fontsize)
+    ax.legend(**legend_kwargs)
     fig.tight_layout()
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output)
@@ -401,7 +420,10 @@ def plot_metadata_curves(
         ax.set_xlim(*_expanded_xlim(config.xlim, config.xscale))
     if config.ylim:
         ax.set_ylim(*config.ylim)
-    ax.legend(loc=config.legend_loc, ncol=config.legend_ncol)
+    legend_kwargs = {"loc": config.legend_loc, "ncol": config.legend_ncol, "frameon": True}
+    if getattr(config, "legend_fontsize", None) is not None:
+        legend_kwargs["fontsize"] = float(config.legend_fontsize)
+    ax.legend(**legend_kwargs)
     fig.tight_layout()
     output.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(output)

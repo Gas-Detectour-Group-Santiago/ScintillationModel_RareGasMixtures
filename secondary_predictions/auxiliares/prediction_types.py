@@ -326,10 +326,11 @@ class MetadataPlotConfig:
     output: Path | None = None
     legend_loc: str = "best"
     legend_ncol: int = 1
+    legend_fontsize: float | None = None
     marker: str = "o"
     linestyle: str = "-"
     linewidth: float = 1.5
-    markersize: float = 4.0
+    markersize: float = 4.8
     group_duplicate_x: bool = True
 
 @dataclass(frozen=True)
@@ -346,10 +347,20 @@ class ExperimentalSeries:
     color_from_curve_id: str | None = None
     markerfacecolor: str | None = None
     markeredgecolor: str | None = None
-    markeredgewidth: float = 1.1
-    markersize: float = 5.0
-    capsize: float = 2.0
+    markeredgewidth: float = 1.2
+    markersize: float = 6.0
+    capsize: float = 2.5
     alpha: float = 1.0
+    # Optional global rescaling for arbitrary-normalized experimental series.
+    # All series sharing the same scale_group are multiplied by the same factor.
+    # A group factor is inferred from the series marked as scale_anchor=True by
+    # matching its point at scale_anchor_x to the corresponding optimized model
+    # line: ocw_optimum when available, central otherwise.
+    scale_group: str | None = None
+    scale_anchor: bool = False
+    scale_anchor_x: float | None = None
+    scale_anchor_curve_id: str | None = None
+    scale_model_column: str = "auto"
 
 @dataclass(frozen=True)
 class MultiBandPlotConfig:
@@ -367,6 +378,8 @@ class MultiBandPlotConfig:
     output: Path | None = None
     legend_loc: str = "best"
     legend_ncol: int = 2
+    legend_fontsize: float | None = None
+    hide_ocw_legend: bool = False
     experimental_series: Sequence[ExperimentalSeries] = field(default_factory=tuple)
 
 

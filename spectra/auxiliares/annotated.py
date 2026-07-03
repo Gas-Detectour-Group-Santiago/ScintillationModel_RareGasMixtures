@@ -410,7 +410,7 @@ def _plot_one_annotated(outdir: Path, spec: dict[str, Any], wavelength: np.ndarr
         _annotate_peak(ax, wavelength, intensity, annotation, x_range_nm=x_range_nm)
 
     ax.set_xlabel(r"$\lambda$ [nm]")
-    ax.legend(loc="upper right", frameon=False, fontsize=14)
+    ax.legend(loc="upper right", frameon=True, fontsize=14)
     fig.subplots_adjust(left=0.07, right=0.96, bottom=0.15, top=0.88)
 
     pdf_path = outdir / "plots" / "annotated" / str(spec["output_pdf"])

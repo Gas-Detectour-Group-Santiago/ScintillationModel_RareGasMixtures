@@ -111,7 +111,7 @@ def setup_plot_style() -> None:
 
     try:
         import scienceplots  # noqa: F401
-        plt.style.use(["science", "no-latex"])
+        plt.style.use(["science", "grid", "no-latex"])
     except Exception:
         plt.style.use("default")
 
@@ -120,11 +120,15 @@ def setup_plot_style() -> None:
             "figure.dpi": 130,
             "savefig.dpi": 300,
             "axes.grid": False,
-            "axes.labelsize": 11,
-            "axes.titlesize": 11,
-            "legend.fontsize": 7.0,
-            "xtick.labelsize": 9,
-            "ytick.labelsize": 9,
+            "legend.frameon": True,
+            "legend.fancybox": False,
+            "legend.edgecolor": "0.25",
+            "legend.framealpha": 0.92,
+            "axes.labelsize": 12.5,
+            "axes.titlesize": 12.0,
+            "legend.fontsize": 9.5,
+            "xtick.labelsize": 10.5,
+            "ytick.labelsize": 10.5,
         }
     )
 

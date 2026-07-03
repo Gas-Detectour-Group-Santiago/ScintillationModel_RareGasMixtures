@@ -12,6 +12,7 @@ def fitParameters(
     x0,
     bounds,
     is_infrared=False,
+    first_point_anchor_weight=1.0,
     fixed_idx=None,
     fixed_values=None,
     fixed_error=np.nan,   # usa 0.0 si prefieres que los fijados salgan con error 0
@@ -45,6 +46,11 @@ def fitParameters(
     """
 
     concentration = degrad_data["concentration"]
+
+    first_point_anchor_weight = float(first_point_anchor_weight)
+    if not np.isfinite(first_point_anchor_weight) or first_point_anchor_weight < 1.0:
+        raise ValueError("first_point_anchor_weight debe ser un número finito >= 1.0. Usa 1.0 para desactivarlo.")
+    first_point_anchor_extra_scale = np.sqrt(first_point_anchor_weight - 1.0)
 
     x0 = np.asarray(x0, dtype=float).copy()
     lb = np.asarray(bounds[0], dtype=float).copy()
@@ -163,6 +169,14 @@ def fitParameters(
                 res = (y_exp - y_th) / s_exp_eff
                 res_list.append(res)
 
+                if is_infrared and first_point_anchor_extra_scale > 0.0 and res.size > 0:
+                    # Restricción blanda: el primer punto válido de cada línea y
+                    # presión IR cuenta más, sin modificar errores ni CSVs.
+                    # Como el residuo normal ya está incluido una vez, añadimos
+                    # solo el peso extra para que el peso total sea
+                    # ``first_point_anchor_weight``.
+                    res_list.append(np.asarray([first_point_anchor_extra_scale * res[0]], dtype=float))
+
         if not res_list:
             return np.array([], dtype=float)
 
@@ -202,6 +216,7 @@ def fitParameters(
         result.free_idx = free_idx
         result.fixed_idx = fixed_idx
         result.n_full = n_full
+        result.first_point_anchor_weight = first_point_anchor_weight
 
         return result
 
@@ -303,6 +318,7 @@ def fitParameters(
     result.chi2 = chi2
     result.dof = dof
     result.chi2_red = chi2_red
+    result.first_point_anchor_weight = first_point_anchor_weight
 
     # =========================================================
     # Comprobaciones duras: que falle AQUÍ y no luego en export

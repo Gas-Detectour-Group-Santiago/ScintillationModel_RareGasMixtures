@@ -19,7 +19,12 @@ from .prediction_types import (
     NormalizationConfig,
     PredictionPoint,
 )
-from .tables import export_normalization_comparison_table, export_prediction_table
+from .tables import (
+    export_normalization_comparison_table,
+    export_prediction_table,
+    export_pure_ar_model_average_table,
+    export_values_by_normalization_table,
+)
 
 
 class PredictionRunner:
@@ -212,6 +217,90 @@ class PredictionRunner:
         )
         return csv_path, tex_path
 
+    def build_values_by_normalization_table(
+        self,
+        points: list[PredictionPoint],
+        *,
+        normalizations: dict[str, NormalizationConfig],
+    ) -> pd.DataFrame:
+        """Evaluate central values for several normalisations, without toys/errors."""
+
+        rows: list[dict[str, object]] = []
+        for point in points:
+            base = {
+                "id": point.id,
+                "label": point.label,
+                "tex_label": point.label,
+                "gas": point.gas,
+                "channel": point.channel,
+                "fit_name": point.fit_name,
+                "component": point.component,
+                "concentration": point.concentration,
+                "pressure_bar": point.pressure,
+                "unit": point.normalization.output_unit,
+                "note": point.note,
+            }
+            for prefix, normalization in normalizations.items():
+                product = self.product(point.fit_name)
+                # Points explicitly marked as ``as_fit`` are absolute model
+                # predictions, not quantities that should be divided by an
+                # external primary Nnorm.  This is used by the Ar second
+                # continuum.  Normalisation-sensitive branches, such as the
+                # CF4(D->X) VUV branch, keep using the requested normalisation.
+                effective_normalization = point.normalization if point.normalization.mode == "as_fit" else normalization
+                point_eval = replace(point, normalization=effective_normalization)
+                value = float(np.ravel(self.evaluate_point(point_eval, product.central))[0])
+                base[f"value_{prefix}"] = value
+                base[f"normalization_mode_{prefix}"] = effective_normalization.mode
+                base[f"normalization_reference_{prefix}"] = effective_normalization.reference_fit_name or ""
+            rows.append(base)
+        return pd.DataFrame(rows)
+
+    def export_values_by_normalization_table(
+        self,
+        df: pd.DataFrame,
+        stem: str,
+        *,
+        caption: str,
+        label: str,
+        value_columns: tuple[tuple[str, str], ...],
+    ) -> tuple[Path, Path]:
+        csv_path = self.predictions_dir / f"{stem}.csv"
+        tex_path = self.tables_dir / f"{stem}.tex"
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(csv_path, index=False)
+        export_values_by_normalization_table(
+            df,
+            tex_path,
+            caption=caption,
+            label=label,
+            value_columns=value_columns,
+        )
+        return csv_path, tex_path
+
+    def run_values_by_normalization(
+        self,
+        points: list[PredictionPoint],
+        stem: str,
+        *,
+        normalizations: dict[str, NormalizationConfig],
+        column_headings: dict[str, str],
+        caption: str,
+        label: str,
+    ) -> pd.DataFrame:
+        df = self.build_values_by_normalization_table(points, normalizations=normalizations)
+        value_columns = tuple((f"value_{prefix}", column_headings.get(prefix, prefix)) for prefix in normalizations)
+        csv_path, tex_path = self.export_values_by_normalization_table(
+            df,
+            stem,
+            caption=caption,
+            label=label,
+            value_columns=value_columns,
+        )
+        print(f"[primary_predictions] tabla sin errores CSV: {csv_path}")
+        print(f"[primary_predictions] tabla sin errores TeX: {tex_path}")
+        return df
+
     def run_normalization_comparison_points(
         self,
         points: list[PredictionPoint],
@@ -241,6 +330,124 @@ class PredictionRunner:
         )
         print(f"[primary_predictions] tabla comparación CSV: {csv_path}")
         print(f"[primary_predictions] tabla comparación TeX: {tex_path}")
+        return df
+
+    def build_pure_ar_model_average_table(
+        self,
+        df: pd.DataFrame,
+        *,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> pd.DataFrame:
+        """Collapse Ar--CF4/Ar--N2 pure-Ar rows into a gas-agnostic mean.
+
+        The input is the diagnostic table produced by
+        ``run_normalization_comparison_points``.  For each pressure, this method
+        returns one neutral pure-Ar prediction.  The central value is the
+        arithmetic mean of the two mixture-model extrapolations; the model
+        uncertainty is the half spread between them.
+        """
+
+        required_fits = {"ArCF4_IR_primary", "ArN2_IR_primary"}
+        rows: list[dict[str, object]] = []
+
+        for pressure_bar, group in df.groupby("pressure_bar", sort=True):
+            by_fit = {str(row["fit_name"]): row for _, row in group.iterrows()}
+            if not required_fits.issubset(by_fit):
+                continue
+
+            arcf4_row = by_fit["ArCF4_IR_primary"]
+            arn2_row = by_fit["ArN2_IR_primary"]
+            pressure_mbar = float(pressure_bar) * 1.0e3
+
+            out_row: dict[str, object] = {
+                "id": f"Ar_IR_model_average_{str(pressure_mbar).replace('.', 'p')}mbar",
+                "label": rf"$Y^{{\mathrm{{mean}}}}_{{\mathrm{{Ar,IR}}}}(100\%\,\mathrm{{Ar}},\,{pressure_mbar:g}\,\mathrm{{mbar}})$",
+                "tex_label": rf"$Y^{{\mathrm{{mean}}}}_{{\mathrm{{Ar,IR}}}}(100\%\,\mathrm{{Ar}},\,{pressure_mbar:g}\,\mathrm{{mbar}})$",
+                "gas": "Ar",
+                "channel": "ir",
+                "pressure_bar": float(pressure_bar),
+                "pressure_mbar": pressure_mbar,
+                "unit": arcf4_row.get("unit", "ph/MeV"),
+                "note": "Arithmetic mean of the ArCF4_IR_primary and ArN2_IR_primary pure-Ar extrapolations; model_half_spread is half their difference.",
+            }
+
+            for prefix in (left_prefix, right_prefix):
+                v_arcf4 = float(arcf4_row[f"value_{prefix}"])
+                v_arn2 = float(arn2_row[f"value_{prefix}"])
+                mean = 0.5 * (v_arcf4 + v_arn2)
+                half_spread = 0.5 * abs(v_arcf4 - v_arn2)
+
+                out_row[f"value_arcf4_fit_{prefix}"] = v_arcf4
+                out_row[f"value_arn2_fit_{prefix}"] = v_arn2
+                out_row[f"value_mean_{prefix}"] = mean
+                out_row[f"model_half_spread_{prefix}"] = half_spread
+                out_row[f"model_relative_half_spread_{prefix}"] = half_spread / mean if mean else np.nan
+
+                for side in ("minus", "plus"):
+                    stat_arcf4 = float(arcf4_row.get(f"stat_{side}_{prefix}", np.nan))
+                    stat_arn2 = float(arn2_row.get(f"stat_{side}_{prefix}", np.nan))
+                    syst_arcf4 = float(arcf4_row.get(f"syst_{side}_{prefix}", np.nan))
+                    syst_arn2 = float(arn2_row.get(f"syst_{side}_{prefix}", np.nan))
+                    stat_mean = 0.5 * np.sqrt(np.nan_to_num(stat_arcf4) ** 2 + np.nan_to_num(stat_arn2) ** 2)
+                    syst_mean = 0.5 * np.sqrt(np.nan_to_num(syst_arcf4) ** 2 + np.nan_to_num(syst_arn2) ** 2)
+                    out_row[f"stat_{side}_mean_{prefix}"] = stat_mean
+                    out_row[f"syst_{side}_mean_{prefix}"] = syst_mean
+                    out_row[f"total_{side}_mean_{prefix}"] = float(np.sqrt(stat_mean**2 + syst_mean**2 + half_spread**2))
+
+            rows.append(out_row)
+
+        return pd.DataFrame(rows).sort_values("pressure_bar").reset_index(drop=True)
+
+    def export_pure_ar_model_average_table(
+        self,
+        df: pd.DataFrame,
+        stem: str,
+        *,
+        caption: str,
+        label: str,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> tuple[Path, Path]:
+        csv_path = self.predictions_dir / f"{stem}.csv"
+        tex_path = self.tables_dir / f"{stem}.tex"
+        csv_path.parent.mkdir(parents=True, exist_ok=True)
+        df.to_csv(csv_path, index=False)
+        export_pure_ar_model_average_table(
+            df,
+            tex_path,
+            caption=caption,
+            label=label,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        return csv_path, tex_path
+
+    def run_pure_ar_model_average_table(
+        self,
+        diagnostic_df: pd.DataFrame,
+        stem: str,
+        *,
+        caption: str,
+        label: str,
+        left_prefix: str = "arcf4_norm",
+        right_prefix: str = "arn2_norm",
+    ) -> pd.DataFrame:
+        df = self.build_pure_ar_model_average_table(
+            diagnostic_df,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        csv_path, tex_path = self.export_pure_ar_model_average_table(
+            df,
+            stem,
+            caption=caption,
+            label=label,
+            left_prefix=left_prefix,
+            right_prefix=right_prefix,
+        )
+        print(f"[primary_predictions] tabla media Ar puro CSV: {csv_path}")
+        print(f"[primary_predictions] tabla media Ar puro TeX: {tex_path}")
         return df
 
     def evaluate_curve(self, config: BandPlotConfig, params: np.ndarray) -> np.ndarray:
@@ -288,7 +495,7 @@ class PredictionRunner:
             plot_band(df, config, output=plot_path, overlays=self.overlays)
         return csv_path, plot_path if make_plot else None
 
-    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph/MeV]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
+    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
         return curve.as_band_plot_config(
             title=title,
             xlabel=xlabel,
@@ -300,7 +507,7 @@ class PredictionRunner:
             output=None,
         )
 
-    def build_or_load_curve_band(self, curve: BandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph/MeV]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
+    def build_or_load_curve_band(self, curve: BandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
         band_config = self._curve_to_band_config(curve, title=title, xlabel=xlabel, ylabel=ylabel, xscale=xscale, yscale=yscale, xlim=xlim, ylim=ylim)
         csv_path = self.predictions_dir / "Bands" / f"{curve.id}.csv"
         if csv_path.exists() and not overwrite:
