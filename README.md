@@ -52,6 +52,7 @@ The corresponding PDFs remain in their native folders, for example `primary_pred
 .
 ├── cross_sections/              # Magboltz/cross-section inspection and plots
 ├── data/                        # Experimental data, Degrad/Garfield inputs, parameters, tables
+│   ├── run_analysis.py           # Raw-input preparation runner: pickle/TXT/ROOT -> curated CSV
 │   ├── Experimental/            # Experimental yields and spectra
 │   ├── Primary_DegradData/      # Primary population tables from Degrad
 │   ├── Secondary_GarfieldData/  # Secondary/avalanche population tables from Garfield++
@@ -94,9 +95,16 @@ Run the complete default workflow:
 bash run_all.sh
 ```
 
+`run_all.sh` rebuilds the curated input CSVs first by calling `data/run_analysis.py`. If the raw pickles/TXT/ROOT files have already been converted and you want to reuse the existing CSVs, run:
+
+```bash
+RUN_DATA_ANALYSIS=0 bash run_all.sh
+```
+
 Or run each stage explicitly:
 
 ```bash
+python data/run_analysis.py
 python primary_fits/run_primary_fits.py
 python primary_predictions/run_primary_predictions.py
 python secondary_predictions/run_secondary_predictions.py
@@ -119,6 +127,167 @@ The project is deliberately config-driven. In normal use you should edit the con
 | Change raw/generated spectra settings | `spectra/config.py` |
 | Change Gaussian/hardcut integral comparisons | `integral_comparations/run_integral_comparisons.py` |
 | Change Ar second-continuum parameters | `data/Parameters/Ar2nd_continium.csv` and `models/Ar2nd_continium.py` |
+| Change raw-input conversion from pickles/TXT/ROOT | `data/run_analysis.py`, `data/Analysis_experimental.py`, `data/Analysis_spectra.py`, `data/Analysis_primary_degrad.py`, `data/Analysis_secondary_garfield.py` |
+
+## Data preparation and allowed input formats
+
+The analysis code does not require the original raw inputs at plotting time. The first stage converts all raw inputs into flat CSV files under `data/`, and all later modules read those curated CSVs. This stage is controlled by:
+
+```bash
+python data/run_analysis.py
+```
+
+Available sub-steps are:
+
+```bash
+python data/run_analysis.py --list
+python data/run_analysis.py --only experimental spectra
+python data/run_analysis.py --skip secondary-garfield
+```
+
+The runner currently prepares four input families:
+
+| Step | Raw input | Curated output |
+|---|---|---|
+| `experimental` | experimental yield pickles | `data/Experimental/<Mixture>/csv/*.csv` |
+| `spectra` | raw-spectrum pickles | `data/Spectra/<Mixture>_raw_spectra.csv` |
+| `primary-degrad` | Degrad TXT summaries | `data/Primary_DegradData/<Mixture>.csv` |
+| `secondary-garfield` | Garfield++ ROOT files | `data/Secondary_GarfieldData/<Mixture>/populations/*.csv` |
+
+### Experimental-yield pickles
+
+Experimental yield pickles must load to a `pandas.DataFrame`. Each row should correspond to one mixture condition, normally one concentration and one pressure. The reader accepts several historical column names.
+
+Required metadata columns:
+
+| Quantity | Accepted column names | Convention |
+|---|---|---|
+| concentration | `concentracion`, `concentraciones`, `N2 concentration (%)`, `CF4 concentration (%)`, `concentration_N2`, `concentration_CF4`, `concentration`, `fN2`, `fCF4` | percent for names containing `%`/`concentracion`; fraction for explicit `fN2`/`fCF4` |
+| pressure | `presion`, `presiones`, `P (bar)`, `pressure`, `Pressure` | bar |
+
+Accepted yield schemas:
+
+| Schema | Required columns | Meaning |
+|---|---|---|
+| old zone schema | `yields_zonas`, `u_yields_zonas`, `u_yields_zonas_stat`, `u_yields_zonas_sis` | dictionaries containing entries such as `UV`, `vis` and nested `ir` line yields |
+| peak schema | `yields_picos`, `u_yields_picos`, `u_yields_estadistico`, `u_yields_sistematico` | dictionaries keyed by peak/band name, e.g. `696`, `727`, `UV`, `vis` |
+| N$_2$ total schema | `yield_N2`, `u_yield_n2_combined`, `u_yield_n2_estadistico`, `u_yield_n2_sistematico` | scalar N$_2$ UV yield and uncertainties |
+
+The exported CSVs use one concentration column, one column per pressure, and uncertainty columns following the pattern:
+
+```text
+fCF4, 1bar, Err 1bar, ErrStat 1bar, ErrSyst 1bar, 2bar, ...
+```
+
+or equivalently `fN2` for Ar--N$_2$.
+
+### Raw-spectrum pickles
+
+Raw-spectrum pickles must also load to a `pandas.DataFrame`. They use the same concentration/pressure metadata conventions as the experimental-yield pickles. Spectrum information can be stored in any of the following columns:
+
+```text
+mean_spectrum, C1_spectrum, C2_spectrum, C1, C2, spectrum_new_cal, spectrum_old_cal, data(norm)
+```
+
+Each spectrum cell may be either:
+
+```python
+{"wavelength": wavelength_nm_array, "intensity": raw_intensity_array}
+```
+
+with aliases `lambda`/`wavelength_nm` for wavelength and `raw`/`counts` for intensity, or a two-array tuple/list:
+
+```python
+(wavelength_nm_array, raw_intensity_array)
+```
+
+The exported long CSV has the mandatory columns:
+
+```text
+gas_mixture, source_pickle, source_row, spectrum_name, spectrum_column,
+concentration_percent, concentration_fraction, pressure_bar, point_index,
+wavelength_nm, intensity_raw
+```
+
+This long format is also allowed as a direct input if you do not want to use pickles: place it as `data/Spectra/<Mixture>_raw_spectra.csv` and make sure the spectra configuration points to it.
+
+### Primary Degrad inputs
+
+The default primary input is the original Degrad TXT output. Files are read from:
+
+```text
+data/Primary_DegradData/ArCF4/txt/*.txt
+data/Primary_DegradData/ArN2/txt/*.txt
+```
+
+The concentration is parsed from the filename. Accepted examples include:
+
+```text
+output_95Ar_5CF4.txt      -> CF4 concentration = 0.05
+output_PureCF4.txt        -> CF4 concentration = 1.00
+output_100.0N2_*.txt      -> N2 concentration = 1.00
+```
+
+The TXT file must contain the Degrad block `NUMBER OF COLLISIONS PER EVENT FOR EACH GAS`, with gas sub-blocks and rows containing process name, optional energy loss/level, event count and percentage error. The converter selects the populations requested in `data/Analysis_primary_degrad.py` and exports flat population tables.
+
+You may bypass the TXT parser by providing the curated CSV directly:
+
+```text
+data/Primary_DegradData/<Mixture>.csv
+```
+
+Required columns are:
+
+```text
+concentration, <population_1>, Err<population_1>, <population_2>, Err<population_2>, ...
+```
+
+where `concentration` is the additive fraction in the range 0--1. Population column names must match the names consumed by the kinetic model and prediction adapters, for example `CF4`, `CF3`, `Ar_dbleStar`, `Ar_meta`, `Ar_res`, `N2_star`, `Ar_2nd_precursor` or the IR line columns `Ar_696`, `Ar_727`, etc.
+
+### Secondary Garfield++ inputs
+
+The default secondary input is a set of Garfield++ ROOT files. File names are parsed for mixture composition and operating conditions. A typical name can contain tokens such as:
+
+```text
+Ar_0.95_CF4_0.05_50kvcm_1bar_0.05mm_100npe.root
+```
+
+Accepted metadata tokens are:
+
+| Token | Meaning |
+|---|---|
+| `<gas>_<fraction>` | gas fraction, e.g. `Ar_0.95_CF4_0.05` |
+| `<value>kvcm` | electric field in kV/cm |
+| `<value>bar` | pressure in bar |
+| `<value>mm` | amplification gap/thickness in mm |
+| `<value>npe` | primary electrons used in the simulation |
+
+Each ROOT file should contain:
+
+| Object | Required? | Use |
+|---|---|---|
+| `hLevels` histogram | yes | level/channel population counts |
+| `dataPerPrimaryElectron` tree with `nElectrons`, `nIons` | optional but recommended | electron/ion gain summary |
+
+The level catalogue is mapped with:
+
+```text
+data/Secondary_GarfieldData/levels/<Mixture>_level_data.csv
+```
+
+with at least these columns:
+
+```text
+level, gas, state_name
+```
+
+Additional useful columns are `type` and `energy_eV`. You may bypass the ROOT parser by providing:
+
+```text
+data/Secondary_GarfieldData/<Mixture>/populations/<Mixture>_secondary.csv
+```
+
+with metadata columns such as `concentration`, `pressure`, `electric_field`, `gap_mm`, `npe`, `ne`, `ni`, and population columns matching the secondary prediction configuration.
 
 ## Primary model workflow
 

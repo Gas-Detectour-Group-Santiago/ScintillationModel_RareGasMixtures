@@ -30,6 +30,16 @@ run_step() {
   )
 }
 
+# Rebuild curated CSV inputs from raw pickles/TXT/ROOT files unless explicitly skipped.
+# Use RUN_DATA_ANALYSIS=0 bash run_all.sh to reuse already exported CSVs.
+if [[ "${RUN_DATA_ANALYSIS:-1}" != "0" ]]; then
+  run_step data run_analysis.py
+fi
+
+# Fits must run before predictions when a fully fresh analysis is requested.
+# These are the slowest/noisiest outputs; PRIMARY_FIT_N_TOYS defaults to 300 above.
+run_step primary_fits run_primary_fits.py
+
 run_step primary_predictions run_primary_predictions.py
 run_step secondary_predictions run_secondary_predictions.py
 run_step spectra run_all_spectra.py
@@ -37,8 +47,6 @@ run_step integral_comparations run_integral_comparisons.py
 run_step cross_sections plot_cross_section.py
 run_step populations_histograms run_population_histograms.py
 
-# Leave primary fits for the end: these are the slowest/noisiest outputs and
-# PRIMARY_FIT_N_TOYS defaults to 300 above.
-run_step primary_fits run_primary_fits.py
-
-printf '\n[done] full plotting pipeline finished. PRIMARY_FIT_N_TOYS=%s\n' "$PRIMARY_FIT_N_TOYS"
+printf '
+[done] full analysis pipeline finished. PRIMARY_FIT_N_TOYS=%s RUN_DATA_ANALYSIS=%s
+' "$PRIMARY_FIT_N_TOYS" "${RUN_DATA_ANALYSIS:-1}"
