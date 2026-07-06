@@ -17,6 +17,7 @@ from .fit_exports import (
     export_vector,
     plot_parameter_correlation,
     toy_covariance_correlation,
+    mask_independent_ir_line_blocks,
 )
 from .fit_io import ensure_project_paths, load_dataset_triplet, project_root_from_file, write_json
 from .fit_toys import make_stat_toy, make_syst_toy, summarize_toys
@@ -254,6 +255,8 @@ class PrimaryFitRunner:
         metadata: dict[str, dict[str, int | str]] = {}
 
         cov, corr, n_valid = toy_covariance_correlation(stat_toys, names)
+        if self.config.is_infrared:
+            cov, corr = mask_independent_ir_line_blocks(cov, corr, names)
 
         cov_path = fit_prefix.with_name(f"{self.config.name}_toy_covariance_stat.csv")
         corr_path = fit_prefix.with_name(f"{self.config.name}_toy_correlation_stat.csv")

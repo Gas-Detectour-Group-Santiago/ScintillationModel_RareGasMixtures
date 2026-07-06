@@ -57,8 +57,31 @@ def _read_ar2nd_parameters() -> dict[str, float]:
     return read_ar2nd_parameters(_ar2nd_parameter_csv())
 
 
+def _ar2nd_degrad_csv(gas_mixture: str) -> Path:
+    gas_key = gas_mixture.replace("-", "")
+    if gas_key not in {"ArCF4", "ArN2"}:
+        raise ValueError(f"Degrad Ar2nd no definido para {gas_mixture!r}")
+    return PROJECT_ROOT / "data" / "Primary_DegradData" / f"{gas_key}_Ar2nd.csv"
+
+
+def _read_ar2nd_degrad(gas_mixture: str):
+    import pandas as pd
+
+    path = _ar2nd_degrad_csv(gas_mixture)
+    if not path.exists():
+        raise FileNotFoundError(f"No encuentro el CSV dedicado al segundo continuo: {path}")
+    return pd.read_csv(path)
+
+
 def _ar2nd_reference_component(kind: str):
-    """Pure-Ar second-continuum value from the current kinetic model."""
+    """Pure-Ar second-continuum value from the dedicated Ar2nd Degrad table.
+
+    Do not use the ordinary Ar--CF4 primary CSV here: that table stores only the
+    optical Ar_dbleStar component used in the UV fit and misses part of the
+    Ar(4s/1s)+upper-state precursor population needed for the Ar second
+    continuum.  The dedicated *_Ar2nd.csv files contain Ar_meta + Ar_res +
+    Ar_dbleStar consistently with the extended spectra.
+    """
 
     def component(params, degrad, concentration, pressure):
         from Ar2nd_continium import theory_yield_ar2nd_continium
@@ -73,7 +96,7 @@ def _ar2nd_reference_component(kind: str):
             raise ValueError(f"Referencia Ar2nd desconocida: {kind!r}")
         return theory_yield_ar2nd_continium(
             ar2,
-            degrad,
+            _read_ar2nd_degrad("ArCF4"),
             concentration,
             pressure,
             gas_mixture="ArCF4",
@@ -114,7 +137,7 @@ def _ar2nd_component(gas_mixture: str, energy_xray_kev: float):
         ar2_params["triplet_weight"] = 1.0
         return theory_yield_ar2nd_continium(
             ar2_params,
-            degrad,
+            _read_ar2nd_degrad(gas_mixture),
             concentration,
             pressure,
             gas_mixture=gas_mixture,
@@ -221,7 +244,7 @@ def selected_primary_points(
     """
 
     arcf4_ir_norm = normalization if force_common_normalization else ARCF4_PRIMARY_NORM
-    arn2_ir_norm = normalization if force_common_normalization else ARN2_PRIMARY_NORM
+    arn2_ir_norm = ARCF4_PRIMARY_NORM if not force_common_normalization else normalization
 
     return [
         PredictionPoint(
@@ -326,7 +349,7 @@ def vuv_primary_points(normalization: NormalizationConfig = OWN_NORM) -> list[Pr
             concentration=1.0e-5,
             pressure=1.0,
             normalization=NO_NORM_MEV,
-            note="Total singlet+triplet Ar second-continuum value; this is the value plotted in the extended spectra.",
+            note="Total singlet+triplet Ar second-continuum value at 1 bar, using the dedicated Ar2nd precursor table; this matches the extended spectra at 1 bar.",
         ),
         PredictionPoint(
             id="CF4_D_to_X_VUV_CF4",
@@ -378,8 +401,8 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             component="uv",
             pressure=1.0,
             x_grid=np.logspace(-4, 0, 700),
-            normalization=normalization,
-            title=r"Primary Ar--N$_2$ UV prediction",
+            normalization=ARCF4_PRIMARY_NORM,
+            title=r"Primary Ar--N$_2$ UV prediction, Ar--CF$_4$ norm.",
             xlabel=r"N$_2$ concentration [\%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-2, 110),
@@ -404,8 +427,8 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             component="total",
             pressure=1.0,
             x_grid=np.logspace(-4, 0, 700),
-            normalization=ARN2_PRIMARY_NORM,
-            title=r"Primary Ar--N$_2$ IR prediction",
+            normalization=ARCF4_PRIMARY_NORM,
+            title=r"Primary Ar--N$_2$ IR prediction, Ar--CF$_4$ norm.",
             xlabel=r"N$_2$ concentration [\%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-2, 20),
@@ -432,7 +455,7 @@ def primary_ir_low_pressure_band_plots(
         for pressure_mbar in pressures_mbar:
             pressure_bar = float(pressure_mbar) * 1e-3
             tag = str(pressure_mbar).replace(".", "p")
-            norm_for_plot = ARCF4_PRIMARY_NORM if gas == "ArCF4" else ARN2_PRIMARY_NORM
+            norm_for_plot = ARCF4_PRIMARY_NORM
             configs.append(
                 BandPlotConfig(
                     id=f"{gas}_IR_primary_total_{tag}mbar",
@@ -586,8 +609,8 @@ def arcf4_ir_multiband_plots() -> list[MultiBandPlotConfig]:
     outdir = PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "multibar_ir"
     one_to_five_bar = MultiBandPlotConfig(
         id="ArCF4_IR_primary_total_1to5bar_overlay",
-        title=r"Primary Ar--CF$_4$ IR prediction, 1--5 bar",
-        curves=[_arcf4_ir_curve_for_bar(p) for p in (1.0, 2.0, 3.0, 4.0, 5.0)],
+        title=r"Primary Ar--CF$_4$ IR prediction, 1--3 bar",
+        curves=[_arcf4_ir_curve_for_bar(p) for p in (1.0, 2.0, 3.0)],
         xlabel=r"CF$_4$ concentration [\%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-3, 110),
@@ -623,8 +646,8 @@ def arn2_ir_multiband_plots_arcf4_norm() -> list[MultiBandPlotConfig]:
     outdir = PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "multibar_ir"
     one_to_five_bar = MultiBandPlotConfig(
         id="ArN2_IR_primary_total_arcf4norm_1to5bar_overlay",
-        title=r"Primary Ar--N$_2$ IR prediction, 1--5 bar, Ar--CF$_4$ norm.",
-        curves=[_arn2_ir_curve_for_bar_arcf4_norm(p) for p in (1.0, 2.0, 3.0, 4.0, 5.0)],
+        title=r"Primary Ar--N$_2$ IR prediction, 1--3 bar, Ar--CF$_4$ norm.",
+        curves=[_arn2_ir_curve_for_bar_arcf4_norm(p) for p in (1.0, 2.0, 3.0)],
         xlabel=r"N$_2$ concentration [\%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-2, 110),

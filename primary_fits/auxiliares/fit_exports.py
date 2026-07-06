@@ -9,7 +9,7 @@ import pandas as pd
 def _fmt_num(x: float) -> str:
     if x is None or not np.isfinite(x):
         return r"--"
-    return rf"\num{{{float(x):.3g}}}"
+    return rf"\num{{{float(x):.2g}}}"
 
 
 def _fmt_asym(m: float, p: float) -> str:
@@ -101,6 +101,42 @@ def export_vector(path: Path, names: list[str], values: np.ndarray) -> None:
 def export_matrix(path: Path, names: list[str], matrix: np.ndarray) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(matrix, index=names, columns=names).to_csv(path)
+
+def _ir_line_group(parameter_name: str) -> str:
+    """Return the independent IR-line block encoded in a parameter name."""
+    name = str(parameter_name)
+    for suffix in ("696", "727", "750", "763", "764", "772", "794"):
+        if name.endswith("_" + suffix):
+            return suffix
+    return "__global__"
+
+
+def mask_independent_ir_line_blocks(
+    cov: pd.DataFrame,
+    corr: pd.DataFrame,
+    names: list[str],
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Remove artificial correlations between independent IR emission lines.
+
+    The IR models fit one independent parameter block per Ar line.  Numerical
+    toy fluctuations, especially with small toy ensembles, can create apparent
+    off-block correlations.  Those off-block entries are not physically used,
+    so they are exported as NaN and masked in the heat map.
+    """
+    groups = [_ir_line_group(name) for name in names]
+    cov_out = cov.copy()
+    corr_out = corr.copy()
+    for i, gi in enumerate(groups):
+        for j, gj in enumerate(groups):
+            if i == j:
+                continue
+            if "__global__" in {gi, gj}:
+                continue
+            if gi != gj:
+                cov_out.iat[i, j] = np.nan
+                corr_out.iat[i, j] = np.nan
+    return cov_out, corr_out
+
 
 def toy_covariance_correlation(toys: np.ndarray, names: list[str]) -> tuple[pd.DataFrame, pd.DataFrame, int]:
     """Compute empirical covariance and correlation matrices from toy-fit parameters.

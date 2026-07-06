@@ -52,7 +52,7 @@ def _sum_line_dicts(values: dict[int, float], errors: dict[int, float]) -> tuple
 
 # -----------------------------------------------------------------------------
 # Experimental points taken from the latest LIP comparison scripts.
-# Hollow marker = direct measurement; filled marker = indirect measurement.
+# Coimbra points are drawn as hollow markers; Florian points as filled markers.
 # -----------------------------------------------------------------------------
 FLORIAN_INDIRECT_SCALE_GROUP = "florian_indirect"
 
@@ -160,7 +160,7 @@ def _exp_series(
         linestyle="none",
         color_from_curve_id=curve_id,
         markerfacecolor="white" if direct else None,
-        markeredgewidth=1.35,
+        markeredgewidth=1.55 if direct else 1.35,
         markersize=6.8,
         capsize=3.4,
         scale_group=None if direct else FLORIAN_INDIRECT_SCALE_GROUP,
@@ -343,9 +343,9 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             legend_ncol=1,
             legend_loc="lower left",
             experimental_series=(
-                _exp_series(curve_id=ar_vis_curves[0].id, x=_ARCF4_VIS_DIRECT_X, y=_ARCF4_VIS_DIRECT_Y, yerr=_ARCF4_VIS_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
-                _exp_series(curve_id=ar_vis_curves[1].id, x=_ARCF4_VIS_INDIRECT_1BAR_X, y=_ARCF4_VIS_INDIRECT_1BAR_Y, yerr=_ARCF4_VIS_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s", scale_anchor=True, scale_anchor_x=20.0),
-                _exp_series(curve_id=ar_vis_curves[2].id, x=_ARCF4_VIS_INDIRECT_50MBAR_X, y=_ARCF4_VIS_INDIRECT_50MBAR_Y, yerr=_ARCF4_VIS_INDIRECT_50MBAR_ERR, label="Indirect exp., TH-GEM 0.05 bar", direct=False, marker="^"),
+                _exp_series(curve_id=ar_vis_curves[0].id, x=_ARCF4_VIS_DIRECT_X, y=_ARCF4_VIS_DIRECT_Y, yerr=_ARCF4_VIS_DIRECT_ERR, label="GEM Coimbra, 1 bar", direct=True, marker="o"),
+                _exp_series(curve_id=ar_vis_curves[1].id, x=_ARCF4_VIS_INDIRECT_1BAR_X, y=_ARCF4_VIS_INDIRECT_1BAR_Y, yerr=_ARCF4_VIS_INDIRECT_1BAR_ERR, label="TH-GEM Florian, 1 bar", direct=False, marker="s", scale_anchor=True, scale_anchor_x=20.0),
+                _exp_series(curve_id=ar_vis_curves[2].id, x=_ARCF4_VIS_INDIRECT_50MBAR_X, y=_ARCF4_VIS_INDIRECT_50MBAR_Y, yerr=_ARCF4_VIS_INDIRECT_50MBAR_ERR, label="TH-GEM Florian, 0.05 bar", direct=False, marker="^"),
             ),
         ),
         MultiBandPlotConfig(
@@ -363,9 +363,9 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             legend_loc="upper left",
             legend_fontsize=8.8,
             experimental_series=(
-                _exp_series(curve_id=he_vis_curves[0].id, x=_HECF4_VIS_DIRECT_X, y=_HECF4_VIS_DIRECT_Y, yerr=_HECF4_VIS_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
-                _exp_series(curve_id=he_vis_curves[1].id, x=_HECF4_VIS_INDIRECT_1BAR_X, y=_HECF4_VIS_INDIRECT_1BAR_Y, yerr=_HECF4_VIS_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s"),
-                _exp_series(curve_id=he_vis_curves[2].id, x=_HECF4_VIS_INDIRECT_300MBAR_X, y=_HECF4_VIS_INDIRECT_300MBAR_Y, yerr=_HECF4_VIS_INDIRECT_300MBAR_ERR, label="Indirect exp., TH-GEM 0.3 bar", direct=False, marker="^"),
+                _exp_series(curve_id=he_vis_curves[0].id, x=_HECF4_VIS_DIRECT_X, y=_HECF4_VIS_DIRECT_Y, yerr=_HECF4_VIS_DIRECT_ERR, label="GEM Coimbra, 1 bar", direct=True, marker="o"),
+                _exp_series(curve_id=he_vis_curves[1].id, x=_HECF4_VIS_INDIRECT_1BAR_X, y=_HECF4_VIS_INDIRECT_1BAR_Y, yerr=_HECF4_VIS_INDIRECT_1BAR_ERR, label="TH-GEM Florian, 1 bar", direct=False, marker="s"),
+                _exp_series(curve_id=he_vis_curves[2].id, x=_HECF4_VIS_INDIRECT_300MBAR_X, y=_HECF4_VIS_INDIRECT_300MBAR_Y, yerr=_HECF4_VIS_INDIRECT_300MBAR_ERR, label="TH-GEM Florian, 0.3 bar", direct=False, marker="^"),
             ),
         ),
         MultiBandPlotConfig(
@@ -382,8 +382,8 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             legend_ncol=1,
             legend_loc="lower left",
             experimental_series=(
-                _exp_series(curve_id=uv_curves[0].id, x=_ARCF4_UV_DIRECT_X, y=_ARCF4_UV_DIRECT_Y, yerr=_ARCF4_UV_DIRECT_ERR, label="Direct exp., Ar--CF$_4$", direct=True, marker="s"),
-                _exp_series(curve_id=uv_curves[1].id, x=_HECF4_UV_DIRECT_X, y=_HECF4_UV_DIRECT_Y, yerr=_HECF4_UV_DIRECT_ERR, label="Direct exp., He--CF$_4$", direct=True, marker="D"),
+                _exp_series(curve_id=uv_curves[0].id, x=_ARCF4_UV_DIRECT_X, y=_ARCF4_UV_DIRECT_Y, yerr=_ARCF4_UV_DIRECT_ERR, label=r"Ar--CF$_4$ GEM Coimbra, 1 bar", direct=True, marker="s"),
+                _exp_series(curve_id=uv_curves[1].id, x=_HECF4_UV_DIRECT_X, y=_HECF4_UV_DIRECT_Y, yerr=_HECF4_UV_DIRECT_ERR, label=r"He--CF$_4$ GEM Coimbra, 1 bar", direct=True, marker="D"),
             ),
         ),
         MultiBandPlotConfig(
@@ -402,9 +402,9 @@ def multiband_plots() -> list[MultiBandPlotConfig]:
             legend_fontsize=9.2,
             hide_ocw_legend=True,
             experimental_series=(
-                _exp_series(curve_id=ir_curves[0].id, x=_ARCF4_IR_DIRECT_X, y=_ARCF4_IR_DIRECT_Y, yerr=_ARCF4_IR_DIRECT_ERR, label="Direct exp., GEM 1 bar", direct=True, marker="o"),
-                _exp_series(curve_id=ir_curves[1].id, x=_ARCF4_IR_INDIRECT_1BAR_X, y=_ARCF4_IR_INDIRECT_1BAR_Y, yerr=_ARCF4_IR_INDIRECT_1BAR_ERR, label="Indirect exp., TH-GEM 1 bar", direct=False, marker="s"),
-                _exp_series(curve_id=ir_curves[2].id, x=_ARCF4_IR_INDIRECT_50MBAR_X, y=_ARCF4_IR_INDIRECT_50MBAR_Y, yerr=_ARCF4_IR_INDIRECT_50MBAR_ERR, label="Indirect exp., TH-GEM 0.05 bar", direct=False, marker="^"),
+                _exp_series(curve_id=ir_curves[0].id, x=_ARCF4_IR_DIRECT_X, y=_ARCF4_IR_DIRECT_Y, yerr=_ARCF4_IR_DIRECT_ERR, label="GEM Coimbra, 1 bar", direct=True, marker="o"),
+                _exp_series(curve_id=ir_curves[1].id, x=_ARCF4_IR_INDIRECT_1BAR_X, y=_ARCF4_IR_INDIRECT_1BAR_Y, yerr=_ARCF4_IR_INDIRECT_1BAR_ERR, label="TH-GEM Florian, 1 bar", direct=False, marker="s"),
+                _exp_series(curve_id=ir_curves[2].id, x=_ARCF4_IR_INDIRECT_50MBAR_X, y=_ARCF4_IR_INDIRECT_50MBAR_Y, yerr=_ARCF4_IR_INDIRECT_50MBAR_ERR, label="TH-GEM Florian, 0.05 bar", direct=False, marker="^"),
             ),
         ),
     ]
@@ -414,9 +414,18 @@ def metadata_plots() -> list:
     return []
 
 
-def _format_pm(value: float, minus: float, plus: float, precision: int = 3) -> str:
-    fmt = f"{{:.{precision}f}}"
-    return rf"${fmt.format(value)}^{{+{fmt.format(plus)}}}_{{-{fmt.format(minus)}}}$"
+def _num2(value: float) -> str:
+    if value is None or not np.isfinite(float(value)):
+        return r"--"
+    return rf"\num{{{float(value):.2g}}}"
+
+
+def _format_pm(value: float, minus: float, plus: float, precision: int = 2) -> str:
+    if not np.isfinite(float(minus)) or not np.isfinite(float(plus)):
+        return r"--"
+    if np.isclose(float(minus), 0.0, rtol=0.0, atol=1e-15) and np.isclose(float(plus), 0.0, rtol=0.0, atol=1e-15):
+        return r"--"
+    return rf"$^{{+{_num2(plus)}}}_{{-{_num2(minus)}}}$"
 
 
 def export_comparation_tables(band_outputs: dict[str, dict[str, pd.DataFrame]]) -> dict[str, Path]:
@@ -489,11 +498,11 @@ def export_comparation_tables(band_outputs: dict[str, dict[str, pd.DataFrame]]) 
     for row in rows:
         tex_lines.append(
             f"{row['device']} & "
-            f"{row['yield_ph_per_e']:.3f} & "
+            f"{_num2(row['yield_ph_per_e'])} & "
             f"{_format_pm(0.0, row['stat_minus'], row['stat_plus'])} & "
             f"{_format_pm(0.0, row['syst_minus'], row['syst_plus'])} & "
             f"{_format_pm(0.0, row['ocw_minus'], row['ocw_plus'])} & "
-            f"{_format_pm(0.0, row['total_minus'], row['total_plus'])} \\")
+            f"{_format_pm(0.0, row['total_minus'], row['total_plus'])} " + r"\\")
     tex_lines += [r"\bottomrule", r"\end{tabular}", r"\end{table}"]
     tex_path = TABLES_DIR / "secondary_comparation_pure_cf4_gain100.tex"
     tex_path.write_text("\n".join(tex_lines))

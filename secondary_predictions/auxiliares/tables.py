@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-def fmt_num(x: float, sig: int = 3) -> str:
+def fmt_num(x: float, sig: int = 2) -> str:
     if x is None or not np.isfinite(x):
         return r"--"
     return rf"\num{{{float(x):.{sig}g}}}"
@@ -132,7 +132,7 @@ def export_prediction_table(
 # Secondary parameter tables
 # -----------------------------------------------------------------------------
 
-def _fmt_latex_cell(x: float | None, sig: int = 3) -> str:
+def _fmt_latex_cell(x: float | None, sig: int = 2) -> str:
     return fmt_num(float(x), sig=sig) if x is not None and np.isfinite(float(x)) else r"--"
 
 

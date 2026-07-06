@@ -88,6 +88,14 @@ def _panel_title(concentration: float) -> str:
     return f"{float(concentration):g}% additive"
 
 
+def _raw_suptitle(gas: str) -> str:
+    titles = {
+        "ArCF4": r"Experimental raw spectra of Ar--CF$_4$ mixtures",
+        "ArN2": r"Experimental raw spectra of Ar--N$_2$ mixtures",
+    }
+    return titles.get(gas, rf"Experimental raw spectra of {gas}")
+
+
 def _figure_legend(
     fig,
     axs,
@@ -167,16 +175,6 @@ def plot_raw_mosaic(outdir: Path, gas: str, raw_out: pd.DataFrame, reference_raw
         sub_c = raw_out[match_float(raw_out["concentration_percent"], concentration)]
         ymax = 0.0
 
-        for color, pressure in zip(line_colors, cfg.RAW_PRESSURES_BAR, strict=False):
-            sub = sub_c[match_float(sub_c["pressure_bar"], pressure)].sort_values("wavelength_nm")
-            if sub.empty:
-                continue
-            y = sub["intensity_raw"].to_numpy(dtype=float)
-            finite = y[np.isfinite(y)]
-            if finite.size:
-                ymax = max(ymax, float(np.nanmax(np.clip(finite, 0, None))))
-            ax.plot(sub["wavelength_nm"], y, color=color, lw=1.1, label=rf"{pressure:g} bar", zorder=3)
-
         if reference_raw is not None and not reference_raw.empty:
             ref = reference_raw.sort_values("wavelength_nm")
             ref_x = ref["wavelength_nm"].to_numpy(dtype=float)
@@ -190,17 +188,27 @@ def plot_raw_mosaic(outdir: Path, gas: str, raw_out: pd.DataFrame, reference_raw
                 ref_y,
                 color=cfg.RAW_REFERENCE_COLOR,
                 alpha=float(cfg.RAW_REFERENCE_ALPHA),
-                zorder=4,
+                zorder=0,
                 label=rf"Ar--CF$_4$ 95/5, {cfg.RAW_REFERENCE_PRESSURE_BAR:g} bar",
             )
             ax.plot(
                 ref_x,
                 ref_y,
                 color=cfg.RAW_REFERENCE_COLOR,
-                lw=1.2,
-                alpha=0.95,
-                zorder=5,
+                lw=0.9,
+                alpha=0.55,
+                zorder=1,
             )
+
+        for color, pressure in zip(line_colors, cfg.RAW_PRESSURES_BAR, strict=False):
+            sub = sub_c[match_float(sub_c["pressure_bar"], pressure)].sort_values("wavelength_nm")
+            if sub.empty:
+                continue
+            y = sub["intensity_raw"].to_numpy(dtype=float)
+            finite = y[np.isfinite(y)]
+            if finite.size:
+                ymax = max(ymax, float(np.nanmax(np.clip(finite, 0, None))))
+            ax.plot(sub["wavelength_nm"], y, color=color, lw=1.1, label=rf"{pressure:g} bar", zorder=3)
 
         ax.set_title(_panel_title(concentration))
         ax.set_xlim(*cfg.WAVELENGTH_RANGE_RAW_NM)
@@ -210,7 +218,7 @@ def plot_raw_mosaic(outdir: Path, gas: str, raw_out: pd.DataFrame, reference_raw
         if idx % ncols == 0:
             ax.set_ylabel("raw intensity")
 
-    fig.suptitle(rf"{gas} raw {cfg.RAW_PLOT_SPECTRUM_COLUMN}", y=0.972)
+    fig.suptitle(_raw_suptitle(gas), y=0.972)
     _figure_legend(fig, axs, ncol=3, y=0.952, fontsize=14.0)
     fig.subplots_adjust(left=0.065, right=0.99, bottom=0.075, top=0.865, wspace=0.17, hspace=0.27)
     pdf_path = outdir / "plots" / f"{gas}_raw_{cfg.RAW_PLOT_SPECTRUM_COLUMN}_mosaic_3x3.pdf"

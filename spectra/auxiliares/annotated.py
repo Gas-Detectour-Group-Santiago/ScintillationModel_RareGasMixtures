@@ -53,12 +53,12 @@ CF4_PRIMARY_ANNOTATIONS = [
     {"x_guess_nm": 235.0, "label": r"CF$_4^{+*}$(C) $\rightarrow$ CF$_4^{+}$(X)", "dx_nm": -5.0, "dy_frac": 0.52, "window_nm": 12.0},
     {"x_guess_nm": 290.0, "label": r"CF$_4^{+*}$(C) $\rightarrow$ CF$_4^{+*}$(A)", "dx_nm": 5.0, "dy_frac": 0.15, "window_nm": 16.0},
     {"x_guess_nm": 400.0, "label": r"CF$_4^{+*}$(D) $\rightarrow$ CF$_4^{+*}$(C)", "dx_nm": 18.0, "dy_frac": 0.23, "window_nm": 16.0},
-    {"x_guess_nm": 615.0, "label": r"CF$_3^*$ (2A$_2$'') $\rightarrow$ CF$_3^*$(1A$_2$'')", "dx_nm": -50.0, "dy_frac": 0.21, "window_nm": 10.0},
+    {"x_guess_nm": 615.0, "label": r"CF$_3^*$ (2A$_2$'') $\rightarrow$ CF$_3^*$(1A$_1$')", "dx_nm": -50.0, "dy_frac": 0.21, "window_nm": 10.0},
 ]
 
 CF4_SECONDARY_ANNOTATIONS = [
     {"x_guess_nm": 260.0, "label": r"CF$_3^{*}$(2A$_2$'') $\rightarrow$ CF$_3^*$(1A$_2$'')", "dx_nm": -35.0, "dy_frac": 0.32, "window_nm": 12.0},
-    {"x_guess_nm": 615.0, "label": r"CF$_3^*$ (2A$_2$'') $\rightarrow$ CF$_3^*$(1A$_2$'')", "dx_nm": -50.0, "dy_frac": 0.21, "window_nm": 10.0},
+    {"x_guess_nm": 615.0, "label": r"CF$_3^*$ (2A$_2$'') $\rightarrow$ CF$_3^*$(1A$_1$')", "dx_nm": -50.0, "dy_frac": 0.21, "window_nm": 10.0},
 ]
 
 ARCF4_SECONDARY_ANNOTATIONS = [

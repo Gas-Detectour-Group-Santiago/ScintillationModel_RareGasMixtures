@@ -258,7 +258,7 @@ def plot_multi_band(
                 color=color,
                 alpha=0.18,
                 linewidth=0,
-                label="_nolegend_" if hide_ocw_legend else f"{curve.label} OCW",
+                label="_nolegend_",
             )
 
         if use_sys_stat and curve.show_total and {"total_low", "total_high"}.issubset(df.columns):
@@ -269,7 +269,7 @@ def plot_multi_band(
                 color=color,
                 alpha=0.14,
                 linewidth=0,
-                label=rf"{curve.label} stat. $\oplus$ syst.",
+                label="_nolegend_",
             )
         if use_sys_stat and curve.show_syst and {"syst_low", "syst_high"}.issubset(df.columns):
             ax.fill_between(
@@ -279,7 +279,7 @@ def plot_multi_band(
                 color=color,
                 alpha=0.18,
                 linewidth=0,
-                label=f"{curve.label} OCW",
+                label="_nolegend_",
             )
         if use_sys_stat and curve.show_stat and {"stat_low", "stat_high"}.issubset(df.columns):
             ax.fill_between(
@@ -293,7 +293,7 @@ def plot_multi_band(
             )
 
         line_y = df["ocw_optimum"].to_numpy(dtype=float) if use_ocw else y
-        line_label = curve.label if (use_ocw and hide_ocw_legend) else (f"{curve.label} (OCW)" if use_ocw else curve.label)
+        line_label = curve.label
         ax.plot(x, line_y, color=color, lw=2.0, label=line_label)
         curve_colors[curve.id] = color
 

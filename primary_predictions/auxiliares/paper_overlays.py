@@ -326,8 +326,8 @@ def get_primary_paper_overlay_series(config: BandPlotConfig, output: Path) -> li
         )
         if xy:
             x, y, yerr = xy
-            mask = (x != 100) & (x != 150)
-            series.append(dict(x=x[mask], y=y[mask], yerr=yerr[mask], label=f"X-ray {config.pressure:g} bar", marker="o", ms=4))
+            finite = np.isfinite(x) & np.isfinite(y) & np.isfinite(yerr)
+            series.append(dict(x=x[finite], y=y[finite], yerr=yerr[finite], label=f"X-ray {config.pressure:g} bar", marker="o", ms=4))
         series.append(dict(x=np.array([100.0]), y=np.array([94.0]), yerr=np.array([94 * 14e-2]), label="MacFly Collaboration", marker="v", ms=5))
         series.append(dict(x=np.array([100.0]), y=np.array([145.0]), yerr=np.array([2.0]), label=r"$\alpha$ Morii", marker="o", ms=5))
         series.append(dict(x=np.array([100.0]), y=np.array([96.0]), yerr=np.array([40.0]), label=r"$\alpha$ Lehaut", marker="s", ms=5))

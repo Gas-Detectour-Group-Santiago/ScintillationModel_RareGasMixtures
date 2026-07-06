@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 
 
-def fmt_num(x: float, sig: int = 3) -> str:
+def fmt_num(x: float, sig: int = 2) -> str:
     if x is None or not np.isfinite(x):
         return r"--"
     return rf"\num{{{float(x):.{sig}g}}}"
