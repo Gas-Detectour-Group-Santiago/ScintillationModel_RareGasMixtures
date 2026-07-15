@@ -79,8 +79,7 @@ def _ar2nd_reference_component(kind: str):
     Do not use the ordinary Ar--CF4 primary CSV here: that table stores only the
     optical Ar_dbleStar component used in the UV fit and misses part of the
     Ar(4s/1s)+upper-state precursor population needed for the Ar second
-    continuum.  The dedicated *_Ar2nd.csv files contain Ar_meta + Ar_res +
-    Ar_dbleStar consistently with the extended spectra.
+    continuum.  The dedicated *_Ar2nd.csv files contain Ar(1s4,1s5) + Ar(1s2,1s3) + Ar** consistently with the extended spectra.
     """
 
     def component(params, degrad, concentration, pressure):
@@ -333,7 +332,7 @@ def vuv_primary_points(normalization: NormalizationConfig = OWN_NORM) -> list[Pr
     """Pure VUV primary predictions exported without toy uncertainties.
 
     The Ar second continuum is reported from the current kinetic model, without
-    forcing it to the fixed 2e4 ph/MeV pure-Ar reference. CF4(D->X) is evaluated
+    applying any pure-Ar absolute anchor. CF4(D->X) is evaluated
     with the own Ar--CF4 normalisation only; the VUV table does not compare it
     against the Ar--N2 primary normalisation.
     """
@@ -375,7 +374,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             x_grid=np.logspace(-5, 0, 700),
             normalization=normalization,
             title=r"Primary Ar--CF$_4$ UV prediction",
-            xlabel=r"CF$_4$ concentration [\%]",
+            xlabel=r"CF$_4$ concentration [%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-3, 110),
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArCF4_primary_uv_bands.pdf",
@@ -388,7 +387,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             x_grid=np.logspace(-5, 0, 700),
             normalization=normalization,
             title=r"Primary Ar--CF$_4$ visible prediction",
-            xlabel=r"CF$_4$ concentration [\%]",
+            xlabel=r"CF$_4$ concentration [%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(8e-2, 110),
             ylim=(6e1, 4e3),
@@ -403,7 +402,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             x_grid=np.logspace(-4, 0, 700),
             normalization=ARCF4_PRIMARY_NORM,
             title=r"Primary Ar--N$_2$ UV prediction, Ar--CF$_4$ norm.",
-            xlabel=r"N$_2$ concentration [\%]",
+            xlabel=r"N$_2$ concentration [%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-2, 110),
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArN2_primary_uv_bands.pdf",
@@ -416,7 +415,7 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             x_grid=np.logspace(-5, 0, 700),
             normalization=ARCF4_PRIMARY_NORM,
             title=r"Primary Ar--CF$_4$ IR prediction",
-            xlabel=r"CF$_4$ concentration [\%]",
+            xlabel=r"CF$_4$ concentration [%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-3, 110),
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArCF4_IR_primary_total_bands.pdf",
@@ -429,12 +428,28 @@ def primary_band_plots(normalization: NormalizationConfig = OWN_NORM) -> list[Ba
             x_grid=np.logspace(-4, 0, 700),
             normalization=ARCF4_PRIMARY_NORM,
             title=r"Primary Ar--N$_2$ IR prediction, Ar--CF$_4$ norm.",
-            xlabel=r"N$_2$ concentration [\%]",
+            xlabel=r"N$_2$ concentration [%]",
             ylabel=r"Yield [ph/MeV]",
             xlim=(1e-2, 20),
             output=PROJECT_ROOT / "primary_predictions" / "plots" / "primary_bands" / "ArN2_IR_primary_total_bands.pdf",
         ),
     ]
+
+
+# Numerical pure-Ar proxies used by both the low-pressure plots and tables.
+# Keeping them in one place prevents the tabulated values from being evaluated
+# at a concentration different from the visible left edge of each plot.
+IR_LOW_PRESSURE_PURE_AR_PROXY = {
+    "ArCF4_IR_primary": 1.0e-5,  # 0.001% CF4
+    "ArN2_IR_primary": 1.0e-4,   # 0.01% N2
+}
+
+
+def _low_pressure_proxy_concentration(fit_name: str) -> float:
+    try:
+        return float(IR_LOW_PRESSURE_PURE_AR_PROXY[fit_name])
+    except KeyError as exc:
+        raise KeyError(f"No hay concentración proxy de Ar puro para {fit_name!r}.") from exc
 
 
 def primary_ir_low_pressure_band_plots(
@@ -448,10 +463,12 @@ def primary_ir_low_pressure_band_plots(
     """
 
     configs: list[BandPlotConfig] = []
-    for gas, fit_name, xlabel, xmin, grid_min in (
-        ("ArCF4", "ArCF4_IR_primary", r"CF$_4$ concentration [\%]", 1e-3, 1e-5),
-        ("ArN2", "ArN2_IR_primary", r"N$_2$ concentration [\%]", 1e-2, 1e-4),
+    for gas, fit_name, xlabel in (
+        ("ArCF4", "ArCF4_IR_primary", r"CF$_4$ concentration [%]"),
+        ("ArN2", "ArN2_IR_primary", r"N$_2$ concentration [%]"),
     ):
+        grid_min = _low_pressure_proxy_concentration(fit_name)
+        xmin = 100.0 * grid_min
         for pressure_mbar in pressures_mbar:
             pressure_bar = float(pressure_mbar) * 1e-3
             tag = str(pressure_mbar).replace(".", "p")
@@ -468,6 +485,9 @@ def primary_ir_low_pressure_band_plots(
                     xlabel=xlabel,
                     ylabel=r"Yield [ph/MeV]",
                     xlim=(xmin, 110),
+                    show_stat=False,
+                    show_syst=False,
+                    show_total=False,
                     output=PROJECT_ROOT
                     / "primary_predictions"
                     / "plots"
@@ -496,6 +516,7 @@ def pure_ar_low_pressure_ir_points(
         ("ArCF4", "ArCF4_IR_primary", r"ArCF_4"),
         ("ArN2", "ArN2_IR_primary", r"ArN_2"),
     ):
+        concentration_proxy = _low_pressure_proxy_concentration(fit_name)
         for pressure_mbar in pressures_mbar:
             pressure_bar = float(pressure_mbar) * 1e-3
             tag = str(pressure_mbar).replace(".", "p")
@@ -510,10 +531,13 @@ def pure_ar_low_pressure_ir_points(
                     channel="ir",
                     fit_name=fit_name,
                     component="total",
-                    concentration=1.0e-5,
+                    concentration=concentration_proxy,
                     pressure=pressure_bar,
                     normalization=normalization,
-                    note="Pure-Ar low-pressure IR extrapolation point.",
+                    note=(
+                        "Pure-Ar low-pressure IR proxy evaluated at the same "
+                        "minimum additive fraction shown in the corresponding plot."
+                    ),
                 )
             )
     return points
@@ -528,6 +552,7 @@ def _ir_multiband_curve(
     normalization: NormalizationConfig,
     id_suffix: str = "",
     paper_overlay_id: str | None = None,
+    show_total: bool = True,
 ) -> BandCurveConfig:
     if pressure_unit == "bar":
         pressure_bar = float(pressure)
@@ -550,7 +575,7 @@ def _ir_multiband_curve(
         normalization=normalization,
         show_stat=False,
         show_syst=False,
-        show_total=True,
+        show_total=show_total,
         paper_overlay_id=paper_overlay_id,
     )
 
@@ -573,9 +598,10 @@ def _arcf4_ir_curve_for_mbar(pressure_mbar: float) -> BandCurveConfig:
         fit_name="ArCF4_IR_primary",
         pressure=pressure_mbar,
         pressure_unit="mbar",
-        x_grid_min=1e-5,
+        x_grid_min=_low_pressure_proxy_concentration("ArCF4_IR_primary"),
         normalization=ARCF4_PRIMARY_NORM,
         paper_overlay_id="ArCF4_IR_primary_total",
+        show_total=False,
     )
 
 
@@ -598,10 +624,11 @@ def _arn2_ir_curve_for_mbar_arcf4_norm(pressure_mbar: float) -> BandCurveConfig:
         fit_name="ArN2_IR_primary",
         pressure=pressure_mbar,
         pressure_unit="mbar",
-        x_grid_min=1e-4,
+        x_grid_min=_low_pressure_proxy_concentration("ArN2_IR_primary"),
         normalization=ARCF4_PRIMARY_NORM,
         id_suffix="_arcf4norm",
         paper_overlay_id="ArN2_IR_primary_total",
+        show_total=False,
     )
 
 
@@ -611,7 +638,7 @@ def arcf4_ir_multiband_plots() -> list[MultiBandPlotConfig]:
         id="ArCF4_IR_primary_total_1to5bar_overlay",
         title=r"Primary Ar--CF$_4$ IR prediction, 1--3 bar",
         curves=[_arcf4_ir_curve_for_bar(p) for p in (1.0, 2.0, 3.0)],
-        xlabel=r"CF$_4$ concentration [\%]",
+        xlabel=r"CF$_4$ concentration [%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-3, 110),
         ylim=(5e0, 2e3),
@@ -623,14 +650,14 @@ def arcf4_ir_multiband_plots() -> list[MultiBandPlotConfig]:
         id="ArCF4_IR_primary_total_0p1to1000mbar_overlay",
         title=r"Primary Ar--CF$_4$ IR prediction, 0.1 mbar--1 bar",
         curves=[_arcf4_ir_curve_for_mbar(p) for p in (0.1, 1.0, 10.0, 50.0, 100.0, 1000.0)],
-        xlabel=r"CF$_4$ concentration [\%]",
+        xlabel=r"CF$_4$ concentration [%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-3, 110),
-        ylim=(8e1, 8e4),
+        ylim=(5e2, 3e4),
         output=outdir / "ArCF4_IR_primary_total_0p1to1000mbar_overlay.pdf",
-        legend_ncol=2,
-        legend_loc="best",
-        legend_fontsize=12.0,
+        legend_ncol=3,
+        legend_loc="upper right",
+        legend_fontsize=10.0,
     )
     return [one_to_five_bar, low_pressure]
 
@@ -648,7 +675,7 @@ def arn2_ir_multiband_plots_arcf4_norm() -> list[MultiBandPlotConfig]:
         id="ArN2_IR_primary_total_arcf4norm_1to5bar_overlay",
         title=r"Primary Ar--N$_2$ IR prediction, 1--3 bar, Ar--CF$_4$ norm.",
         curves=[_arn2_ir_curve_for_bar_arcf4_norm(p) for p in (1.0, 2.0, 3.0)],
-        xlabel=r"N$_2$ concentration [\%]",
+        xlabel=r"N$_2$ concentration [%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-2, 110),
         ylim=(5e0, 2e3),
@@ -660,13 +687,13 @@ def arn2_ir_multiband_plots_arcf4_norm() -> list[MultiBandPlotConfig]:
         id="ArN2_IR_primary_total_arcf4norm_0p1to1000mbar_overlay",
         title=r"Primary Ar--N$_2$ IR prediction, 0.1 mbar--1 bar, Ar--CF$_4$ norm.",
         curves=[_arn2_ir_curve_for_mbar_arcf4_norm(p) for p in (0.1, 1.0, 10.0, 50.0, 100.0, 1000.0)],
-        xlabel=r"N$_2$ concentration [\%]",
+        xlabel=r"N$_2$ concentration [%]",
         ylabel=r"Yield [ph/MeV]",
         xlim=(1e-2, 110),
-        ylim=(8e1, 8e4),
+        ylim=(5e2, 3e4),
         output=outdir / "ArN2_IR_primary_total_arcf4norm_0p1to1000mbar_overlay.pdf",
-        legend_ncol=2,
-        legend_loc="best",
-        legend_fontsize=12.0,
+        legend_ncol=3,
+        legend_loc="upper right",
+        legend_fontsize=10.0,
     )
     return [one_to_five_bar, low_pressure]

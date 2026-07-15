@@ -67,7 +67,7 @@ class BandPlotConfig:
     pressure: float
     x_grid: Any
     normalization: NormalizationConfig = field(default_factory=NormalizationConfig)
-    xlabel: str = r"Concentration [\%]"
+    xlabel: str = r"Concentration [%]"
     ylabel: str = r"Yield [ph/MeV]"
     x_plot_factor: float = 100.0
     xscale: str = "log"
@@ -110,7 +110,7 @@ class BandCurveConfig:
         self,
         *,
         title: str = "",
-        xlabel: str = r"Concentration [\%]",
+        xlabel: str = r"Concentration [%]",
         ylabel: str = r"Yield [ph/MeV]",
         xscale: str = "log",
         yscale: str = "log",
@@ -147,7 +147,7 @@ class MultiBandPlotConfig:
     id: str
     title: str
     curves: Sequence[BandCurveConfig]
-    xlabel: str = r"Concentration [\%]"
+    xlabel: str = r"Concentration [%]"
     ylabel: str = r"Yield [ph/MeV]"
     xscale: str = "log"
     yscale: str = "log"

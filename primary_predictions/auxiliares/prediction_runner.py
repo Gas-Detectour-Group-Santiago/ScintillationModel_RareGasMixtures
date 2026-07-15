@@ -495,7 +495,7 @@ class PredictionRunner:
             plot_band(df, config, output=plot_path, overlays=self.overlays)
         return csv_path, plot_path if make_plot else None
 
-    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
+    def _curve_to_band_config(self, curve: BandCurveConfig, *, title: str = "", xlabel: str = r"Concentration [%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> BandPlotConfig:
         return curve.as_band_plot_config(
             title=title,
             xlabel=xlabel,
@@ -507,7 +507,7 @@ class PredictionRunner:
             output=None,
         )
 
-    def build_or_load_curve_band(self, curve: BandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [\%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
+    def build_or_load_curve_band(self, curve: BandCurveConfig, *, overwrite: bool = False, title: str = "", xlabel: str = r"Concentration [%]", ylabel: str = r"Yield [ph MeV$^{-1}$]", xscale: str = "log", yscale: str = "log", xlim=None, ylim=None) -> pd.DataFrame:
         band_config = self._curve_to_band_config(curve, title=title, xlabel=xlabel, ylabel=ylabel, xscale=xscale, yscale=yscale, xlim=xlim, ylim=ylim)
         csv_path = self.predictions_dir / "Bands" / f"{curve.id}.csv"
         if csv_path.exists() and not overwrite:

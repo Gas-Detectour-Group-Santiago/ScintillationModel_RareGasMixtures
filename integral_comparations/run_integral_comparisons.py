@@ -71,6 +71,7 @@ from integral_comparations.aux.primary_prediction_tables import (
     build_absolute_prediction_table,
     write_absolute_prediction_latex,
 )
+from integral_comparations.aux.n2_pure_gaussian_table import export_n2_pure_gaussian_mean_spectrum_table
 from integral_comparations.aux.spectra_io import SCAN, SpectrumProvider, SpectrumSelector
 
 # =============================================================================
@@ -143,6 +144,16 @@ ABSOLUTE_PREDICTION_TABLE_CAPTION = (
 )
 ABSOLUTE_PREDICTION_TABLE_LABEL = "tab:arn2_six_cases_scaled_to_n2_mean_hardcut_primary_norms"
 ABSOLUTE_PREDICTION_INCLUDE_RATIO_COLUMN = False
+
+WRITE_N2_PURE_GAUSSIAN_MEAN_TABLE = True
+N2_PURE_PRIMARY_PREDICTION_CSV = ROOT_DIR / "data" / "Predictions" / "N2_pure_predictions_by_incident_type.csv"
+N2_PURE_GAUSSIAN_CSV_NAME = "N2_pure_predictions_gaussian_mean_spectrum.csv"
+N2_PURE_GAUSSIAN_TEX_NAME = "N2_pure_predictions_gaussian_mean_spectrum.tex"
+N2_PURE_GAUSSIAN_TABLE_CAPTION = (
+    r"Predicciones de N$_2$ puro para distintas entradas de Degrad tras aplicar "
+    r"la corrección integral gaussiana del espectro medio."
+)
+N2_PURE_GAUSSIAN_TABLE_LABEL = "tab:n2_pure_predictions_gaussian_mean_spectrum"
 
 WRITE_GAUSSIAN_DIAGNOSTICS = True
 
@@ -795,6 +806,29 @@ def main() -> None:
         else:
             print("\nNo absolute prediction table was written: empty table after filtering.")
 
+    n2_pure_gaussian_csv_path: Path | None = None
+    n2_pure_gaussian_tex_path: Path | None = None
+    if WRITE_N2_PURE_GAUSSIAN_MEAN_TABLE and not summary.empty:
+        try:
+            gaussian_n2_pure = export_n2_pure_gaussian_mean_spectrum_table(
+                primary_prediction_csv=N2_PURE_PRIMARY_PREDICTION_CSV,
+                summary_ratio_csv=summary_csv_path,
+                output_csv=CSV_DIR / N2_PURE_GAUSSIAN_CSV_NAME,
+                output_tex=TABLE_DIR / N2_PURE_GAUSSIAN_TEX_NAME,
+                caption=N2_PURE_GAUSSIAN_TABLE_CAPTION,
+                label=N2_PURE_GAUSSIAN_TABLE_LABEL,
+            )
+            n2_pure_gaussian_csv_path = CSV_DIR / N2_PURE_GAUSSIAN_CSV_NAME
+            n2_pure_gaussian_tex_path = TABLE_DIR / N2_PURE_GAUSSIAN_TEX_NAME
+            print("\nN2 pure predictions with mean-spectrum Gaussian correction:")
+            print(
+                gaussian_n2_pure[
+                    ["id", "gaussian_over_hardcut_scale", "value_arcf4_norm", "value_arn2_norm"]
+                ].to_string(index=False)
+            )
+        except Exception as exc:
+            print(f"\nNo N2 pure gaussian table was written: {exc}")
+
     if ok.empty:
         print(f"\nSaved CSV: {csv_path.relative_to(ROOT_DIR)}")
         print(f"Saved summary CSV: {summary_csv_path.relative_to(ROOT_DIR)}")
@@ -802,6 +836,10 @@ def main() -> None:
             print(f"Saved absolute prediction CSV: {absolute_csv_path.relative_to(ROOT_DIR)}")
         if absolute_tex_path is not None:
             print(f"Saved absolute prediction table: {absolute_tex_path.relative_to(ROOT_DIR)}")
+        if n2_pure_gaussian_csv_path is not None:
+            print(f"Saved N2 pure gaussian CSV: {n2_pure_gaussian_csv_path.relative_to(ROOT_DIR)}")
+        if n2_pure_gaussian_tex_path is not None:
+            print(f"Saved N2 pure gaussian table: {n2_pure_gaussian_tex_path.relative_to(ROOT_DIR)}")
         return
 
     plotter = RatioPlotter(use_science_style=True, use_grid=False)
@@ -839,6 +877,10 @@ def main() -> None:
         print(f"Saved absolute prediction CSV: {absolute_csv_path.relative_to(ROOT_DIR)}")
     if absolute_tex_path is not None:
         print(f"Saved absolute prediction table: {absolute_tex_path.relative_to(ROOT_DIR)}")
+    if n2_pure_gaussian_csv_path is not None:
+        print(f"Saved N2 pure gaussian CSV: {n2_pure_gaussian_csv_path.relative_to(ROOT_DIR)}")
+    if n2_pure_gaussian_tex_path is not None:
+        print(f"Saved N2 pure gaussian table: {n2_pure_gaussian_tex_path.relative_to(ROOT_DIR)}")
     print(f"Saved figure: {fig_path.relative_to(ROOT_DIR)}")
     if WRITE_GAUSSIAN_DIAGNOSTICS and gaussian_integral_is_used(ratios):
         print(f"Saved gaussian diagnostics under: {GAUSSIAN_PLOT_DIR.relative_to(ROOT_DIR)}")

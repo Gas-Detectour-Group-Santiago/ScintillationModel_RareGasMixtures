@@ -37,7 +37,7 @@ SAVE_LEVEL_CSVS = True
 NORMALIZED_BY: str | None = None # "ne"  # None, "ne" o "ni"
 USE_POISSON_ERROR = True
 
-E_TH_AR_CF4 = 12.9
+E_TH_AR_CF4 = 12.0
 E_TH_CF3 = 12.9
 E_TH_AR_N2 = 11.7
 
@@ -51,6 +51,11 @@ def config_arcf4_secondary() -> pd.DataFrame:
     return pd.DataFrame(
         {
             "CF4": [["ION CF3 +"], "CF4", 15.0, 100.0, "CF4"],
+            # Disjoint Ar excitation bins used by the second-continuum model.
+            # Keep the intervals half-open to avoid counting any level twice:
+            # [11.5, 11.7), [11.7, 12.0), [12.0, 100.0).
+            "Ar(1s4,1s5)": [["EXC"], "Ar", 11.50, 11.70, "Ar_1s4_1s5"],
+            "Ar(1s2,1s3)": [["EXC"], "Ar", 11.70, 12.00, "Ar_1s2_1s3"],
             "Ar**": [["EXC"], "Ar", E_TH_AR_CF4, 100.0, "Ar_dbleStar"],
             "CF3": [["NEUTRAL DISS"], "CF4", E_TH_CF3, 100.0, "CF3"],
             "Ar3rd": [["CHARGE STATE ="], "Ar", 40.0, 100.0, "Ar_3rd"],
@@ -433,7 +438,7 @@ def select_population(df: pd.DataFrame, name_tokens, gas: str, energy_low: float
         mask &= df_gas["state_name"].fillna("").str.contains(str(token), case=False, regex=False)
 
     energy = pd.to_numeric(df_gas["energy_eV"], errors="coerce")
-    mask &= energy.gt(float(energy_low)) & energy.lt(float(energy_up))
+    mask &= energy.ge(float(energy_low)) & energy.lt(float(energy_up))
 
     return float(df_gas.loc[mask, "n_events"].fillna(0).sum())
 

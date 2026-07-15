@@ -38,6 +38,7 @@ fi
 
 # Fits must run before predictions when a fully fresh analysis is requested.
 # These are the slowest/noisiest outputs; PRIMARY_FIT_N_TOYS defaults to 300 above.
+run_step data run_analysis.py
 run_step primary_fits run_primary_fits.py
 
 run_step primary_predictions run_primary_predictions.py

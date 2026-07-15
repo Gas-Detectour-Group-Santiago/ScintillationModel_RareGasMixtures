@@ -1,16 +1,16 @@
 {
   "name": "ArN2_IR_primary",
   "model_name": "ArN2_infrarred",
-  "chi2": 1868.4752559957935,
-  "dof": 210,
-  "chi2_red": 8.897501219027589,
+  "chi2": 654.1383804085543,
+  "dof": 120,
+  "chi2_red": 5.451153170071286,
   "success": true,
   "message": "`ftol` termination condition is satisfied.",
-  "n_stat_toys": 300,
-  "n_syst_toys": 300,
+  "n_stat_toys": 5,
+  "n_syst_toys": 5,
   "toy_correlations": {
     "stat": {
-      "n_valid_toys": 300,
+      "n_valid_toys": 5,
       "covariance_csv": "data/FitResults/ArN2_IR_primary_toy_covariance_stat.csv",
       "correlation_csv": "data/FitResults/ArN2_IR_primary_toy_correlation_stat.csv",
       "correlation_pdf": "data/FitResults/ArN2_IR_primary_toy_correlation_stat.pdf"

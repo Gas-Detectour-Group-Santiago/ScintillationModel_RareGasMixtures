@@ -233,7 +233,16 @@ def plot_multi_band(
 
     configure_matplotlib(plt)
     fig, ax = plt.subplots(figsize=(7.2, 5.0))
-    colors = plt.get_cmap("viridis")(np.linspace(0.12, 0.88, max(len(config.curves), 2)))
+
+    # Default behaviour remains one color per curve.  A plot may optionally
+    # group curves by color_group (e.g. same pressure, different VUV branch).
+    color_keys: list[str] = []
+    for curve in config.curves:
+        key = str(getattr(curve, "color_group", None) or curve.id)
+        if key not in color_keys:
+            color_keys.append(key)
+    palette = plt.get_cmap("viridis")(np.linspace(0.12, 0.88, max(len(color_keys), 2)))
+    color_by_key = {key: palette[idx] for idx, key in enumerate(color_keys)}
 
     curve_colors: dict[str, object] = {}
 
@@ -241,7 +250,8 @@ def plot_multi_band(
         if curve.id not in band_dfs:
             continue
         df = band_dfs[curve.id]
-        color = colors[idx]
+        color_key = str(getattr(curve, "color_group", None) or curve.id)
+        color = color_by_key[color_key]
         x_plot_factor = curve.x_plot_factor if curve.x_plot_factor is not None else 100.0
         x = _x_values(df, x_plot_factor)
         y = df["central"].to_numpy(dtype=float)
@@ -294,7 +304,14 @@ def plot_multi_band(
 
         line_y = df["ocw_optimum"].to_numpy(dtype=float) if use_ocw else y
         line_label = curve.label
-        ax.plot(x, line_y, color=color, lw=2.0, label=line_label)
+        ax.plot(
+            x,
+            line_y,
+            color=color,
+            linestyle=str(getattr(curve, "linestyle", "-")),
+            lw=float(getattr(curve, "linewidth", 2.0)),
+            label=line_label,
+        )
         curve_colors[curve.id] = color
 
         if curve.paper_overlay_id and isinstance(curve, BandCurveConfig):

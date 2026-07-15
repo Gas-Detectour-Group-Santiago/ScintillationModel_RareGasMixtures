@@ -49,15 +49,15 @@ TAUS = {"696": 28.3, "727": 28.3, "750": 21.7, "763": 29.4, "772": 28.3}
 # No se regeneran parámetros aquí: cambiar este archivo solo afecta a futuros
 # fits si se ejecutan de nuevo.
 IR_SELECTION_MODE = os.environ.get("ARN2_IR_SELECTION_MODE", "none").strip().lower()
-IR_FIT_PRESSURES = (1.0, 2.0, 3.0, 4, 5)
-IR_DEFAULT_MAX_CONCENTRATION_PERCENT = 50.0
-IR_DISCARDED_CONCENTRATIONS_PERCENT = (10.0, 20.0, 50.0, 100.0)
+IR_FIT_PRESSURES = (1.0, 2.0, 3.0)
+IR_DEFAULT_MAX_CONCENTRATION_PERCENT = 100.0
+IR_DISCARDED_CONCENTRATIONS_PERCENT = (20.0, 50.0, 100.0)
 IR_PURE_ARGON_DISPLAY_PERCENT = 0.0
 IR_PLOT_MAX_CONCENTRATION_PERCENT = 100.0
 IR_FIRST_POINT_ANCHOR_ENABLED = os.environ.get(
     "ARN2_IR_FIRST_POINT_ANCHOR_ENABLED", "1"
 ).strip().lower() not in {"0", "false", "no", "off"}
-IR_FIRST_POINT_ANCHOR_WEIGHT = float(os.environ.get("ARN2_IR_FIRST_POINT_ANCHOR_WEIGHT", "25.0"))
+IR_FIRST_POINT_ANCHOR_WEIGHT = float(os.environ.get("ARN2_IR_FIRST_POINT_ANCHOR_WEIGHT", "1.0"))
 if not IR_FIRST_POINT_ANCHOR_ENABLED:
     IR_FIRST_POINT_ANCHOR_WEIGHT = 1.0
 
@@ -172,7 +172,34 @@ def make_legacy_ir_selector(selection_mode: str = IR_SELECTION_MODE):
     return preprocess
 
 
+
+def cf4_primary_norm_upper_bound() -> float:
+    """Use the fitted Ar--CF4 Nnorm as the physical ceiling for every IR W."""
+
+    candidates = (
+        DATA_DIR / "FitResults" / "ArCF4_primary_central.csv",
+        DATA_DIR / "Parameters" / "ArCF4_primary.csv",
+    )
+    for path in candidates:
+        if not path.exists():
+            continue
+        table = pd.read_csv(path)
+        if "name" not in table.columns:
+            continue
+        rows = table.loc[table["name"].astype(str) == "Nnorm"]
+        if rows.empty:
+            continue
+        for column in ("value",):
+            if column in rows.columns:
+                value = float(rows.iloc[0][column])
+                if np.isfinite(value) and value > 0.0:
+                    return value
+    raise FileNotFoundError(
+        "No se pudo leer Nnorm del ajuste ArCF4_primary; ejecuta primero el fit primario Ar--CF4."
+    )
+
 def ir_parameters():
+    w_max = cf4_primary_norm_upper_bound()
     params = []
     for line in IR_LINES:
         tau = TAUS[line]
@@ -182,9 +209,9 @@ def ir_parameters():
                 Parameter(
                     f"PAr_star_{display}",
                     rf"$\mathcal{{W}}_{{\mathrm{{Ar}}^{{**}},{display}\,\mathrm{{nm}}}}$",
-                    0.0159,
+                    min(0.0159, 0.8 * w_max),
                     0.0,
-                    0.02,
+                    w_max,
                 ),
                 Parameter(
                     f"tau_N2_{display}",
@@ -254,7 +281,7 @@ def build_plots(selection_mode: str = IR_SELECTION_MODE, *, output_subdir: str =
             pressures=IR_FIT_PRESSURES,
             concentration_grid=grid,
             title=rf"Ar--N$_2$ primary IR fit, {line} nm",
-            xlabel=r"N$_2$ concentration [$\%$]",
+            xlabel=r"N$_2$ concentration [%]",
             ylabel=r"Yield [arb. units]",
             x_col="fN2",
             min_positive_x=IR_PURE_ARGON_DISPLAY_PERCENT,

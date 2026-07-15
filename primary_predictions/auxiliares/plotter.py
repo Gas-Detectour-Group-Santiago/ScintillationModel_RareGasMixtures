@@ -41,6 +41,14 @@ def configure_matplotlib(plt) -> None:
     )
 
 
+def _clean_axis_label(label: str) -> str:
+    """Avoid displaying LaTeX escape characters when ``no-latex`` is active."""
+    text = str(label)
+    while r"\%" in text:
+        text = text.replace(r"\%", "%")
+    return text.replace("$%$", "%")
+
+
 def _load_overlay(overlay: ExperimentalOverlay) -> pd.DataFrame:
     df = pd.read_csv(overlay.csv_path)
     for col, expected in overlay.conditions.items():
@@ -149,8 +157,8 @@ def plot_band(
         plot_primary_paper_overlays(ax, config, output, plt)
 
     ax.set_title(config.title)
-    ax.set_xlabel(config.xlabel)
-    ax.set_ylabel(config.ylabel)
+    ax.set_xlabel(_clean_axis_label(config.xlabel))
+    ax.set_ylabel(_clean_axis_label(config.ylabel))
     ax.set_xscale(config.xscale)
     ax.set_yscale(config.yscale)
     if config.xlim:
@@ -241,8 +249,8 @@ def plot_multi_band(
                 )
 
     ax.set_title(config.title)
-    ax.set_xlabel(config.xlabel)
-    ax.set_ylabel(config.ylabel)
+    ax.set_xlabel(_clean_axis_label(config.xlabel))
+    ax.set_ylabel(_clean_axis_label(config.ylabel))
     ax.set_xscale(config.xscale)
     ax.set_yscale(config.yscale)
     if config.xlim:

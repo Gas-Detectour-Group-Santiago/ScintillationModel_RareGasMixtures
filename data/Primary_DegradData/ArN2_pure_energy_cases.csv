@@ -1,0 +1,4 @@
+id,tex_label,particle,energy_kev,electric_field_v_cm,pressure_bar,concentration,source_txt,Ar_meta,ErrAr_meta,Ar_res,ErrAr_res,Ar_dbleStar,ErrAr_dbleStar,N2_star,ErrN2_star
+N2_pure_xray_12keV,X-ray 12 keV,xray,12.0,0.0,1.0,1.0,Primary_DegradData/ArN2/txt/output_100.0N2_E_0.0Vcmbar_P_1bar_12keV.txt,0.0,0.0,0.0,0.0,0.0,0.0,17.5609,0.04190557567
+N2_pure_electron_1p5MeV_0Vcm,"$e^-\,1.5\,\mathrm{MeV}$, 0.0 V/cm",electron,1500.0,0.0,1.0,1.0,Primary_DegradData/ArN2/txt/Outupt_1.5MeV_0.0Vcm.txt,0.0,0.0,0.0,0.0,0.0,0.0,2198.9553,0.46903716548999996
+N2_pure_electron_1p5MeV_50Vcm,"$e^-\,1.5\,\mathrm{MeV}$, 50.0 V/cm",electron,1500.0,50.0,1.0,1.0,Primary_DegradData/ArN2/txt/Outupt_1.5MeV_50.0Vcm.txt,0.0,0.0,0.0,0.0,0.0,0.0,2184.133,0.46740446199999997

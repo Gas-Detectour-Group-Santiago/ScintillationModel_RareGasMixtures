@@ -36,6 +36,7 @@ PRIMARY_DIR = ROOT_DIR / "Primary_DegradData"
 # 11.6--11.7 eV.
 E_TH_AR_CF4 = 12.9
 E_TH_AR_N2 = 11.7
+E_TH_AR2ND_UPPER = 12.9
 E_TH_CF3 = 12.9
 
 
@@ -64,18 +65,18 @@ def degrad_config_arn2() -> pd.DataFrame:
 
 
 def degrad_config_ar2nd() -> pd.DataFrame:
-    """Selection used only by the Ar second-continuum model.
+    """Selections required by the second-continuum cascade in Sec. 10.1.3.
 
-    It deliberately does not replace the historical ``Ar_dbleStar`` column used
-    by the Ar--CF4 UV/VIS fit.  The second continuum needs the full atomic
-    precursor family, so it stores Ar_meta, Ar_res, Ar_dbleStar and their sum in
-    dedicated ``*_Ar2nd.csv`` files.
+    The four 4s levels are separated by energy into the two groups used by the
+    TFM model: the lower excimer precursors Ar(1s4,1s5), and the upper 4s states
+    Ar(1s2,1s3) that first need an Ar collision to feed those precursors.  Upper
+    Ar** states remain the excitations above 12.9 eV.
     """
     return pd.DataFrame(
         {
-            "Ar Meta": [["EXC"], "ARGON", 0.0, 11.6, "Ar_meta"],
-            "Ar Res": [["EXC"], "ARGON", 11.6, 11.7, "Ar_res"],
-            "Ar**": [["EXC"], "ARGON", E_TH_AR_N2, 100.0, "Ar_dbleStar"],
+            "Ar(1s4,1s5)": [["EXC"], "ARGON", 11.50, 11.70, "Ar_1s4_1s5"],
+            "Ar(1s2,1s3)": [["EXC"], "ARGON", 11.70, 12.00, "Ar_1s2_1s3"],
+            "Ar**": [["EXC"], "ARGON", E_TH_AR2ND_UPPER, 100.0, "Ar_dbleStar"],
         },
         index=["name principal", "gas", "energy low", "energy up", "name output"],
     )
@@ -176,6 +177,59 @@ RUNS: tuple[DegradRunConfig, ...] = (
         output_general_csv=PRIMARY_DIR / "ArN2_IR.csv",
     ),
 )
+
+
+@dataclass(frozen=True)
+class PureN2EnergyCaseConfig:
+    id: str
+    filename: str
+    tex_label: str
+    particle: str
+    energy_kev: float
+    electric_field_v_cm: float
+    pressure_bar: float = 1.0
+    concentration: float = 1.0
+
+
+PURE_N2_ENERGY_CASES: tuple[PureN2EnergyCaseConfig, ...] = (
+    PureN2EnergyCaseConfig(
+        id="N2_pure_xray_12keV",
+        filename="output_100.0N2_E_0.0Vcmbar_P_1bar_12keV.txt",
+        tex_label=r"X-ray 12 keV",
+        particle="xray",
+        energy_kev=12.0,
+        electric_field_v_cm=0.0,
+    ),
+    PureN2EnergyCaseConfig(
+        id="N2_pure_electron_1p5MeV_0Vcm",
+        filename="Outupt_1.5MeV_0.0Vcm.txt",
+        tex_label=r"$e^-\,1.5\,\mathrm{MeV}$, 0.0 V/cm",
+        particle="electron",
+        energy_kev=1500.0,
+        electric_field_v_cm=0.0,
+    ),
+    PureN2EnergyCaseConfig(
+        id="N2_pure_electron_1p5MeV_50Vcm",
+        filename="Outupt_1.5MeV_50.0Vcm.txt",
+        tex_label=r"$e^-\,1.5\,\mathrm{MeV}$, 50.0 V/cm",
+        particle="electron",
+        energy_kev=1500.0,
+        electric_field_v_cm=50.0,
+    ),
+)
+
+PURE_N2_ENERGY_OUTPUT_CSV = PRIMARY_DIR / "ArN2_pure_energy_cases.csv"
+
+
+def is_auxiliary_pure_n2_energy_file(path: Path) -> bool:
+    """Files used only in the dedicated energy table, not in concentration scans.
+
+    The 12 keV pure-N2 file is still part of the ordinary Ar--N2 concentration
+    scan.  Only the 1.5 MeV electron files are excluded, because otherwise the
+    scan would contain several rows at 100% N2 with different incident energies.
+    """
+    stem = path.stem.lower()
+    return "1.5mev" in stem and "vcm" in stem
 
 
 # =============================================================================
@@ -346,11 +400,11 @@ def select_population(df: pd.DataFrame, name_tokens, gas: str, energy_low: float
     return float(value), float(err)
 
 
-AR2ND_PRECURSOR_COLUMNS = ("Ar_meta", "Ar_res", "Ar_dbleStar")
+AR2ND_PRECURSOR_COLUMNS = ("Ar_1s4_1s5", "Ar_1s2_1s3", "Ar_dbleStar")
 
 
 def add_ar2nd_precursor_sum(df: pd.DataFrame) -> pd.DataFrame:
-    """Add the explicit precursor population used by the Ar second continuum."""
+    """Add the full Ar(4s)+Ar** population entering the second-continuum cascade."""
     out = df.copy()
     if not all(col in out.columns for col in AR2ND_PRECURSOR_COLUMNS):
         return out
@@ -366,9 +420,10 @@ def analyse_degrad_run(config: DegradRunConfig) -> pd.DataFrame:
     if not config.txt_dir.is_dir():
         raise NotADirectoryError(f"No existe la carpeta TXT: {config.txt_dir}")
 
-    txt_files = sorted(config.txt_dir.glob("*.txt"))
+    txt_files_all = sorted(config.txt_dir.glob("*.txt"))
+    txt_files = [txt for txt in txt_files_all if not is_auxiliary_pure_n2_energy_file(txt)]
     if not txt_files:
-        raise FileNotFoundError(f"No hay TXT de Degrad en {config.txt_dir}")
+        raise FileNotFoundError(f"No hay TXT de Degrad de scan en {config.txt_dir}")
 
     rows = []
 
@@ -413,9 +468,75 @@ def analyse_degrad_run(config: DegradRunConfig) -> pd.DataFrame:
     return population_gen
 
 
+
+def _find_case_txt(txt_dir: Path, filename: str) -> Path | None:
+    candidates = [txt_dir / filename, ROOT_DIR / filename]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return None
+
+
+def analyse_n2_pure_energy_cases() -> pd.DataFrame:
+    """Build a dedicated pure-N2 table for 12 keV X-rays and 1.5 MeV electrons.
+
+    The 1.5 MeV electron files are intentionally excluded from the normal
+    Ar--N2 concentration scan because they have the same concentration as the
+    12 keV pure-N2 point but a different incident-particle energy.  They are
+    saved in their own CSV so prediction scripts can divide by the correct
+    deposited energy.
+    """
+    txt_dir = PRIMARY_DIR / "ArN2" / "txt"
+    rows: list[dict[str, object]] = []
+    selection = degrad_config_arn2()
+
+    for case in PURE_N2_ENERGY_CASES:
+        txt_path = _find_case_txt(txt_dir, case.filename)
+        if txt_path is None:
+            print(f"⚠️  N2 pure energy case skipped, missing: {txt_dir / case.filename}")
+            continue
+
+        df = read_degrad_txt(txt_path)
+        row: dict[str, object] = {
+            "id": case.id,
+            "tex_label": case.tex_label,
+            "particle": case.particle,
+            "energy_kev": case.energy_kev,
+            "electric_field_v_cm": case.electric_field_v_cm,
+            "pressure_bar": case.pressure_bar,
+            "concentration": case.concentration,
+            "source_txt": str(txt_path.relative_to(ROOT_DIR)),
+        }
+        for col in selection.columns:
+            name_tokens = selection.loc["name principal", col]
+            gas = selection.loc["gas", col]
+            energy_low = selection.loc["energy low", col]
+            energy_up = selection.loc["energy up", col]
+            out_name = selection.loc["name output", col]
+            value, err = select_population(df, name_tokens, gas, energy_low, energy_up)
+            row[out_name] = value
+            row[f"Err{out_name}"] = err
+        rows.append(row)
+
+    if not rows:
+        raise FileNotFoundError(
+            "No se encontró ningún TXT para la tabla dedicada ArN2_pure_energy_cases.csv"
+        )
+
+    out = pd.DataFrame(rows)
+    order = {case.id: idx for idx, case in enumerate(PURE_N2_ENERGY_CASES)}
+    out["_order"] = out["id"].map(order).fillna(len(order)).astype(int)
+    out = out.sort_values("_order").drop(columns="_order").reset_index(drop=True)
+    PURE_N2_ENERGY_OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(PURE_N2_ENERGY_OUTPUT_CSV, index=False)
+    print(f"✅ ArN2_pure_energy_cases: {PURE_N2_ENERGY_OUTPUT_CSV.relative_to(ROOT_DIR)}")
+    return out
+
+
 def main() -> None:
     for config in RUNS:
         analyse_degrad_run(config)
+    analyse_n2_pure_energy_cases()
 
 
 if __name__ == "__main__":

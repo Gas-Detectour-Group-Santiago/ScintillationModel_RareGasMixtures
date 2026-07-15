@@ -49,7 +49,7 @@ class GeneratedBuilder:
 
         The 0% additive panel is pure Ar independently of the scan label.  The
         dedicated Ar2nd tables use the same precursor definition
-        Ar_meta + Ar_res + Ar_dbleStar, so any remaining difference is explicit:
+        Ar(1s4,1s5) + Ar(1s2,1s3) + Ar**, so any remaining difference is explicit:
         X-ray energy and the selected singlet/triplet partition.
         """
         if self._ar2nd_pure_reference_cache is not None:

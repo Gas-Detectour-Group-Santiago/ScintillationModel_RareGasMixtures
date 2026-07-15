@@ -8,20 +8,27 @@ import pandas as pd
 from scipy.interpolate import PchipInterpolator
 
 
-AR_1S_CANDIDATES: tuple[str, ...] = (
-    "Ar_1s",
-    "Ar_4s",
-    "Ar_meta",
-    "Ar_res",
-    "Ar_star_1s",
-    "Ar_star_4s",
-)
+# Loschmidt number used in the TFM (ideal gas at the reference state).
+LOSCHMIDT_M3 = 2.6868e25
+SECONDS_PER_NANOSECOND = 1.0e-9
+
+
 AR_UPPER_CANDIDATES: tuple[str, ...] = (
     "Ar_dbleStar",
     "Ar_dblestar",
     "Ar_doubleStar",
     "Ar_dblStar",
     "Ar_upper",
+)
+AR_HIGH_4S_CANDIDATES: tuple[str, ...] = (
+    "Ar_1s2_1s3",
+    "Ar_4s_upper",
+    "Ar_high_4s",
+)
+AR_EXCIMER_PRECURSOR_CANDIDATES: tuple[str, ...] = (
+    "Ar_1s4_1s5",
+    "Ar_excimer_precursor",
+    "Ar_4s_precursor",
 )
 AR_2ND_PRECURSOR_CANDIDATES: tuple[str, ...] = (
     "Ar_2nd_precursor",
@@ -31,55 +38,37 @@ AR_2ND_PRECURSOR_CANDIDATES: tuple[str, ...] = (
 
 
 DEFAULT_PARAMETERS: dict[str, float] = {
-    # Overall optical weight from upper Ar states into the 4s/1s precursor family.
+    # Reference density and literature coefficients from Table 19 of the TFM.
+    "loschmidt_m3": LOSCHMIDT_M3,
     "W_Ar_dbleStar_to_1s": 1.0,
-    # Optional global scale. Keep at 1 unless the VUV branch is externally calibrated.
+    "tau_Ar_dbleStar_ns": 30.0,
+    "k_Ar_dbleStar_Q_Ar_m3_s": 1.63e-17,
+    "k_Ar_dbleStar_Q_CF4_m3_s": 1.80e-16,
+    "k_Ar_dbleStar_Q_N2_m3_s": 1.58e-16,
+    "k_Ar_4s_Q_CF4_m3_s": 3.00e-17,
+    "k_Ar_4s_Q_N2_m3_s": 3.60e-17,
+    "k_Ar_4s_Q_2Ar_m6_s": 1.00e-44,
+    "k_Ar2star_Q_CF4_m3_s": 3.00e-17,
+    "k_Ar2star_Q_N2_m3_s": 2.50e-17,
+    "tau_S_ns": 11.3,
+    "tau_T_ns": 3140.0,
+    "f_1Sigma": 0.1,
+    "f_3Sigma": 0.9,
+    # Selector used by the existing plotting/table interface. The kinetic model
+    # always computes both components; the nominal output returns fast + slow.
+    "triplet_weight": 1.0,
     "scale_Ar2nd": 1.0,
-    # Keep the direct kinetic output by default; do not force the band to 2e4 ph/MeV.
+    # Disabled in the nominal TFM model: the absolute prediction comes directly
+    # from Degrad populations and literature kinetics, not from Nnorm or an anchor.
     "anchor_Ar2nd_to_pure_argon": 0.0,
-    "Y_Ar2nd_pure_ph_MeV": 2.0e4,
-    "reference_pressure_bar": 1.0,
+    "Y_Ar2nd_pure_ph_MeV": 1.47e4,
+    "reference_pressure_bar": 1.1,
     "reference_additive_fraction": 1.0e-5,
-    # Kinetic competition for Ar(4s/1s) -> Ar2* formation. Units follow the rest
-    # of the project convention: pressure-normalised rates in ns^-1 at n = p / 1 bar.
-    "K_Ar_star_Q_2Ar": 1.586e-2,
-    "K_Ar_star_Q_Ar": 0.0,
-    "K_Ar_star_Q_CF4": 0.0,
-    # Effective N2 competition rate from the existing Ar--N2 primary model:
-    # K_ArMeta_Q_N2c + K_ArMeta_Q_N2b.
-    "K_Ar_star_Q_N2": 8.43085976942e-1,
-    # Finite effective lifetime/loss of the Ar(4s/1s) precursor.  Keeping it
-    # infinite makes P_form saturated and removes the pressure dependence.
-    "tau_Ar_star_ns": 30.0,
-    # Fast/slow excimer parameters. f_S corresponds to NT/NS = 5.5.
-    # The default prediction keeps only the prompt singlet contribution for
-    # photon-feedback studies; the triplet can be restored with triplet_weight=1.
-    "tau_S_ns": 4.2,
-    "tau_T_ns": 3200.0,
-    "f_S": 1.0 / 6.5,
-    # Gas-dependent singlet/fast fractions used by the second-continuum branch.
-    # ``f_S`` above remains as the backwards-compatible fallback.
-    "f_S_CF4": 0.154,
-    "f_S_ArCF4": 0.154,
-    "f_S_N2": 0.635,
-    "f_S_ArN2": 0.635,
-    "triplet_weight": 0.0,
-    # Excimer quenching. Unknown additive channels can be left at zero, giving an
-    # upper-limit prediction as described in the text.
-    "K_Ar2starS_Q_Ar": 0.0,
-    "K_Ar2starT_Q_Ar": 0.0,
-    "K_Ar2starS_Q_CF4": 0.0,
-    "K_Ar2starT_Q_CF4": 0.0,
-    "K_Ar2starS_Q_N2": 0.0,
-    # Effective triplet quenching by N2, kept configurable.  The singlet channel
-    # is left at zero because the slow component is the one most affected.
-    "K_Ar2starT_Q_N2": 1.0e-1,
-    # Shape of the Ar second-continuum band.  The CSV exposes FWHM because that
-    # is the usual experimental width; sigma is computed at read time.
+    "pure_argon_fraction_threshold": 0.0,
+    # Spectral shapes.
     "lambda_Ar2nd_nm": 128.0,
     "fwhm_Ar2nd_nm": 10.0,
     "sigma_Ar2nd_nm": 10.0 / 2.354820045,
-    # Phenomenological CF4+*(D)->CF4+(X) VUV branch around 150--155 nm.
     "Br_CF4_D_to_X": 0.1,
     "lambda_CF4_D_to_X_nm": 155.0,
     "fwhm_CF4_D_to_X_nm": 10.0,
@@ -87,12 +76,70 @@ DEFAULT_PARAMETERS: dict[str, float] = {
 }
 
 
-def read_ar2nd_parameters(path: str | Path) -> dict[str, float]:
-    """Read the Ar second-continuum parameter CSV.
+def _two_body_to_ns_inv(k_m3_s: float, loschmidt_m3: float) -> float:
+    """Convert k [m3 s-1] to the pressure-normalised rate [ns-1]."""
+    return float(k_m3_s) * float(loschmidt_m3) * SECONDS_PER_NANOSECOND
 
-    The file is intentionally name-based, so parameters can be reordered without
-    breaking the kinetic model. Missing parameters fall back to DEFAULT_PARAMETERS.
+
+def _three_body_to_ns_inv(k_m6_s: float, loschmidt_m3: float) -> float:
+    """Convert k [m6 s-1] to the pressure-normalised rate [ns-1]."""
+    return float(k_m6_s) * float(loschmidt_m3) ** 2 * SECONDS_PER_NANOSECOND
+
+
+def _finalise_parameters(params: dict[str, float]) -> dict[str, float]:
+    """Derive pressure-normalised rates and Gaussian widths.
+
+    With n = p/(1 bar), a two-body term is n f K and a three-body term is
+    n^2 f_Ar^2 K. The K values below are obtained from the SI coefficients in
+    the parameter CSV using the Loschmidt number stored in that same file.
     """
+    loschmidt = max(float(params.get("loschmidt_m3", LOSCHMIDT_M3)), 0.0)
+
+    params["K_Ar_dbleStar_Q_Ar"] = _two_body_to_ns_inv(
+        params["k_Ar_dbleStar_Q_Ar_m3_s"], loschmidt
+    )
+    params["K_Ar_dbleStar_Q_CF4"] = _two_body_to_ns_inv(
+        params["k_Ar_dbleStar_Q_CF4_m3_s"], loschmidt
+    )
+    params["K_Ar_dbleStar_Q_N2"] = _two_body_to_ns_inv(
+        params["k_Ar_dbleStar_Q_N2_m3_s"], loschmidt
+    )
+    params["K_Ar_4s_Q_CF4"] = _two_body_to_ns_inv(params["k_Ar_4s_Q_CF4_m3_s"], loschmidt)
+    params["K_Ar_4s_Q_N2"] = _two_body_to_ns_inv(params["k_Ar_4s_Q_N2_m3_s"], loschmidt)
+    params["K_Ar_4s_Q_2Ar"] = _three_body_to_ns_inv(params["k_Ar_4s_Q_2Ar_m6_s"], loschmidt)
+    params["K_Ar2star_Q_CF4"] = _two_body_to_ns_inv(params["k_Ar2star_Q_CF4_m3_s"], loschmidt)
+    params["K_Ar2star_Q_N2"] = _two_body_to_ns_inv(params["k_Ar2star_Q_N2_m3_s"], loschmidt)
+
+    # Table 19 does not quote a separate bimolecular 4s+Ar coefficient. In the
+    # compact TFM hypothesis, use the tabulated Ar**+Ar mean for the 4s cascade
+    # step as well. This only fixes the competition against the additive.
+    params["K_Ar_4s_Q_Ar"] = params["K_Ar_dbleStar_Q_Ar"]
+
+    f1 = float(np.clip(float(params.get("f_1Sigma", 0.1)), 0.0, 1.0))
+    f3 = float(np.clip(float(params.get("f_3Sigma", 1.0 - f1)), 0.0, 1.0))
+    norm = f1 + f3
+    if norm <= 0.0:
+        f1, f3 = 0.1, 0.9
+    else:
+        f1, f3 = f1 / norm, f3 / norm
+    params["f_1Sigma"] = f1
+    params["f_3Sigma"] = f3
+    # Backwards-compatible aliases used by old table helpers.
+    params["f_S"] = f1
+    params["f_S_Ar"] = f1
+    params["f_S_CF4"] = f1
+    params["f_S_ArCF4"] = f1
+    params["f_S_N2"] = f1
+    params["f_S_ArN2"] = f1
+
+    fwhm_to_sigma = 1.0 / 2.354820045
+    params["sigma_Ar2nd_nm"] = max(float(params["fwhm_Ar2nd_nm"]), 1.0e-12) * fwhm_to_sigma
+    params["sigma_CF4_D_to_X_nm"] = max(float(params["fwhm_CF4_D_to_X_nm"]), 1.0e-12) * fwhm_to_sigma
+    return params
+
+
+def read_ar2nd_parameters(path: str | Path) -> dict[str, float]:
+    """Read the name-based second-continuum parameter CSV."""
     params = dict(DEFAULT_PARAMETERS)
     path = Path(path)
     if not path.exists():
@@ -108,76 +155,112 @@ def read_ar2nd_parameters(path: str | Path) -> dict[str, float]:
         value_col = str(numeric.columns[0])
     for _, row in df.iterrows():
         name = str(row["name"]).strip()
-        if not name:
-            continue
         value = row[value_col]
-        if pd.isna(value):
-            continue
-        params[name] = float(value)
+        if name and pd.notna(value):
+            params[name] = float(value)
     return _finalise_parameters(params)
 
 
-def _finalise_parameters(params: dict[str, float]) -> dict[str, float]:
-    """Derive Gaussian sigma values from FWHM when present in the CSV."""
-    fwhm_to_sigma = 1.0 / 2.354820045
-    if "fwhm_Ar2nd_nm" in params:
-        params["sigma_Ar2nd_nm"] = max(float(params["fwhm_Ar2nd_nm"]), 1.0e-12) * fwhm_to_sigma
-    if "fwhm_CF4_D_to_X_nm" in params:
-        params["sigma_CF4_D_to_X_nm"] = max(float(params["fwhm_CF4_D_to_X_nm"]), 1.0e-12) * fwhm_to_sigma
-    return params
-
-
 def _parameter_dict(params: Mapping[str, float] | pd.DataFrame | None) -> dict[str, float]:
+    out = dict(DEFAULT_PARAMETERS)
     if params is None:
-        return _finalise_parameters(dict(DEFAULT_PARAMETERS))
+        return _finalise_parameters(out)
     if isinstance(params, pd.DataFrame):
-        out = dict(DEFAULT_PARAMETERS)
         if "name" not in params.columns:
             raise ValueError("El DataFrame de parámetros debe contener una columna 'name'")
-        value_col = "value" if "value" in params.columns else params.select_dtypes(include=["number"]).columns[0]
+        numeric_cols = list(params.select_dtypes(include=["number"]).columns)
+        value_col = "value" if "value" in params.columns else numeric_cols[0]
         for _, row in params.iterrows():
-            value = row[value_col]
-            if pd.notna(value):
-                out[str(row["name"]).strip()] = float(value)
-        return _finalise_parameters(out)
-    out = dict(DEFAULT_PARAMETERS)
-    out.update({str(k): float(v) for k, v in params.items()})
+            if pd.notna(row[value_col]):
+                out[str(row["name"]).strip()] = float(row[value_col])
+    else:
+        out.update({str(k): float(v) for k, v in params.items()})
     return _finalise_parameters(out)
 
 
 def _prepare_fraction(f_additive):
     scalar_input = np.isscalar(f_additive) or np.asarray(f_additive).ndim == 0
     f = np.atleast_1d(np.asarray(f_additive, dtype=float))
-    return f, scalar_input
+    return np.clip(f, 0.0, 1.0), scalar_input
+
+
+def _interp_values(degrad_data: pd.DataFrame, f_additive: np.ndarray, values: np.ndarray) -> np.ndarray:
+    concentration = np.asarray(degrad_data["concentration"], dtype=float)
+    idx = np.argsort(concentration)
+    conc_sorted = concentration[idx]
+    values_sorted = np.asarray(values, dtype=float)[idx]
+    conc_unique, unique_idx = np.unique(conc_sorted, return_index=True)
+    values_unique = values_sorted[unique_idx]
+    if len(conc_unique) == 1:
+        return np.repeat(values_unique[0], len(f_additive))
+
+    # Outside the simulated Garfield concentration range, keep the nearest
+    # simulated population fixed.  In particular, below the 0.1% CF4 point
+    # this isolates the kinetic quenching extrapolation from an unsupported
+    # extrapolation of the avalanche excitation populations.
+    f_eval = np.clip(np.asarray(f_additive, dtype=float), conc_unique[0], conc_unique[-1])
+    return np.asarray(
+        PchipInterpolator(conc_unique, values_unique, extrapolate=False)(f_eval),
+        dtype=float,
+    )
 
 
 def _interp_column(degrad_data: pd.DataFrame, f_additive: np.ndarray, candidates: tuple[str, ...]) -> np.ndarray:
-    existing = [col for col in candidates if col in degrad_data.columns]
+    """Interpolate the first available alias, never sum aliases.
+
+    The candidate tuples contain alternative names for the same physical
+    population.  In particular, ``Ar_2nd_precursor`` is a legacy aggregate
+    and can coexist with the three resolved bins.  Summing all candidates
+    would therefore count the same excitations twice.
+    """
+    existing = next((col for col in candidates if col in degrad_data.columns), None)
+    if existing is None:
+        return np.zeros_like(f_additive, dtype=float)
+    return _interp_values(
+        degrad_data,
+        f_additive,
+        np.asarray(degrad_data[existing], dtype=float),
+    )
+
+
+def _interp_sum_columns(degrad_data: pd.DataFrame, f_additive: np.ndarray, columns: tuple[str, ...]) -> np.ndarray:
+    existing = [col for col in columns if col in degrad_data.columns]
     if not existing:
         return np.zeros_like(f_additive, dtype=float)
-
-    concentration = np.asarray(degrad_data["concentration"], dtype=float)
     values = np.zeros(len(degrad_data), dtype=float)
     for col in existing:
         values += np.asarray(degrad_data[col], dtype=float)
-
-    idx = np.argsort(concentration)
-    conc_sorted = concentration[idx]
-    values_sorted = values[idx]
-    conc_unique, unique_idx = np.unique(conc_sorted, return_index=True)
-    values_unique = values_sorted[unique_idx]
-
-    if len(conc_unique) == 1:
-        return np.repeat(values_unique[0], len(f_additive))
-    interp = PchipInterpolator(conc_unique, values_unique, extrapolate=True)
-    return np.asarray(interp(f_additive), dtype=float)
+    return _interp_values(degrad_data, f_additive, values)
 
 
 def _positive_rate(value: float) -> float:
     value = float(value)
-    if not np.isfinite(value):
-        return 0.0
-    return max(value, 0.0)
+    return max(value, 0.0) if np.isfinite(value) else 0.0
+
+
+def _population_components(
+    params: Mapping[str, float],
+    degrad_data: pd.DataFrame,
+    f_additive: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Return N_Ar**, N_Ar(1s2,1s3), N_Ar(1s4,1s5)."""
+    n_upper = np.clip(_interp_column(degrad_data, f_additive, AR_UPPER_CANDIDATES), 0.0, None)
+    n_upper *= float(params.get("W_Ar_dbleStar_to_1s", 1.0))
+
+    n_high_4s = np.clip(_interp_column(degrad_data, f_additive, AR_HIGH_4S_CANDIDATES), 0.0, None)
+    n_precursor = np.clip(
+        _interp_column(degrad_data, f_additive, AR_EXCIMER_PRECURSOR_CANDIDATES), 0.0, None
+    )
+
+    # Backwards compatibility with the previous dedicated tables: Ar_meta and
+    # Ar_res were exactly the 1s5 and 1s4 bins, respectively.
+    if not any(col in degrad_data.columns for col in AR_EXCIMER_PRECURSOR_CANDIDATES):
+        n_precursor = np.clip(
+            _interp_sum_columns(degrad_data, f_additive, ("Ar_meta", "Ar_res")),
+            0.0,
+            None,
+        )
+    return n_upper, n_high_4s, n_precursor
 
 
 def _effective_ar_4s_population(
@@ -185,82 +268,90 @@ def _effective_ar_4s_population(
     degrad_data: pd.DataFrame,
     f_additive: np.ndarray,
 ) -> np.ndarray:
-    """Effective Ar precursor population for Ar2* formation.
+    """Raw population entering the compact second-continuum cascade."""
+    n_upper, n_high_4s, n_precursor = _population_components(params, degrad_data, f_additive)
+    return n_upper + n_high_4s + n_precursor
 
-    New ``*_Ar2nd.csv`` files carry an explicit ``Ar_2nd_precursor`` column
-    equal to Ar_meta + Ar_res + Ar_dbleStar.  When present, use it directly to
-    avoid double counting.  Older tables remain supported through the historical
-    fallback N_1s + W_Ar**->1s N_Ar**.
-    """
-    if any(col in degrad_data.columns for col in AR_2ND_PRECURSOR_CANDIDATES):
-        return np.clip(_interp_column(degrad_data, f_additive, AR_2ND_PRECURSOR_CANDIDATES), 0.0, None)
 
-    n_1s = _interp_column(degrad_data, f_additive, AR_1S_CANDIDATES)
-    n_upper = _interp_column(degrad_data, f_additive, AR_UPPER_CANDIDATES)
-    return np.clip(n_1s + n_upper * params["W_Ar_dbleStar_to_1s"], 0.0, None)
+def _effective_ar_4s_components(
+    params: Mapping[str, float],
+    degrad_data: pd.DataFrame,
+    f_additive: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Compatibility helper returning precursor, upper-4s and Ar** populations."""
+    n_upper, n_high_4s, n_precursor = _population_components(params, degrad_data, f_additive)
+    return n_precursor, n_high_4s, n_upper
 
 
 def _singlet_fraction(params: Mapping[str, float], gas_mixture: str) -> float:
-    gas_key = gas_mixture.upper().replace("-", "")
-    if "CF4" in gas_key:
-        value = params.get("f_S_CF4", params.get("f_S_ArCF4", params.get("f_S", 1.0 / 6.5)))
-    elif "N2" in gas_key:
-        value = params.get("f_S_N2", params.get("f_S_ArN2", params.get("f_S", 1.0 / 6.5)))
-    else:
-        value = params.get("f_S", 1.0 / 6.5)
-    return float(np.clip(float(value), 0.0, 1.0))
+    del gas_mixture
+    return float(np.clip(float(params.get("f_1Sigma", 0.1)), 0.0, 1.0))
+
+
+def _singlet_fraction_for_additive(
+    params: Mapping[str, float], gas_mixture: str, f_additive: np.ndarray
+) -> np.ndarray:
+    return np.full_like(np.asarray(f_additive, dtype=float), _singlet_fraction(params, gas_mixture))
 
 
 def _additive_rates(params: Mapping[str, float], gas_mixture: str) -> tuple[float, float, float]:
+    """Return Ar**, Ar(4s), and Ar2* additive rates [ns-1 at n=1]."""
     gas_key = gas_mixture.upper().replace("-", "")
     if "CF4" in gas_key:
         return (
-            _positive_rate(params["K_Ar_star_Q_CF4"]),
-            _positive_rate(params["K_Ar2starS_Q_CF4"]),
-            _positive_rate(params["K_Ar2starT_Q_CF4"]),
+            _positive_rate(params["K_Ar_dbleStar_Q_CF4"]),
+            _positive_rate(params["K_Ar_4s_Q_CF4"]),
+            _positive_rate(params["K_Ar2star_Q_CF4"]),
         )
     if "N2" in gas_key:
         return (
-            _positive_rate(params["K_Ar_star_Q_N2"]),
-            _positive_rate(params["K_Ar2starS_Q_N2"]),
-            _positive_rate(params["K_Ar2starT_Q_N2"]),
+            _positive_rate(params["K_Ar_dbleStar_Q_N2"]),
+            _positive_rate(params["K_Ar_4s_Q_N2"]),
+            _positive_rate(params["K_Ar2star_Q_N2"]),
         )
     return 0.0, 0.0, 0.0
 
 
-def _formation_probability(params: Mapping[str, float], f_additive: np.ndarray, n: float, k_add: float) -> np.ndarray:
-    f_ar = np.clip(1.0 - f_additive, 0.0, 1.0)
-    k_form = _positive_rate(params["K_Ar_star_Q_2Ar"])
-    k_ar = _positive_rate(params["K_Ar_star_Q_Ar"])
-    tau_ar_star = max(float(params["tau_Ar_star_ns"]), 1.0e-30)
-    inv_tau_ar_star = 1.0 / tau_ar_star
+def _upper_cascade_probability(
+    params: Mapping[str, float], f_additive: np.ndarray, n: float, k_add: float
+) -> np.ndarray:
+    f_ar = 1.0 - f_additive
+    gamma = 1.0 / max(float(params["tau_Ar_dbleStar_ns"]), 1.0e-30)
+    k_ar = _positive_rate(params["K_Ar_dbleStar_Q_Ar"])
+    productive = gamma + n * f_ar * k_ar
+    denominator = productive + n * f_additive * k_add
+    return np.divide(productive, denominator, out=np.zeros_like(productive), where=denominator > 0.0)
 
-    form_num = (n**2) * (f_ar**2) * k_form
-    form_den = form_num + n * f_ar * k_ar + n * f_additive * k_add + inv_tau_ar_star
-    return np.divide(form_num, form_den, out=np.zeros_like(form_num), where=form_den > 0.0)
+
+def _high_4s_transfer_probability(
+    params: Mapping[str, float], f_additive: np.ndarray, n: float, k_add: float
+) -> np.ndarray:
+    f_ar = 1.0 - f_additive
+    productive = n * f_ar * _positive_rate(params["K_Ar_4s_Q_Ar"])
+    denominator = productive + n * f_additive * k_add
+    return np.divide(productive, denominator, out=np.zeros_like(productive), where=denominator > 0.0)
+
+
+def _formation_probability(
+    params: Mapping[str, float], f_additive: np.ndarray, n: float, k_add: float
+) -> np.ndarray:
+    f_ar = 1.0 - f_additive
+    productive = (n**2) * (f_ar**2) * _positive_rate(params["K_Ar_4s_Q_2Ar"])
+    denominator = productive + n * f_additive * k_add
+    return np.divide(productive, denominator, out=np.zeros_like(productive), where=denominator > 0.0)
 
 
 def _radiative_survival(
-    params: Mapping[str, float],
-    f_additive: np.ndarray,
-    n: float,
-    k_s_add: float,
-    k_t_add: float,
+    params: Mapping[str, float], f_additive: np.ndarray, n: float, k_add: float
 ) -> tuple[np.ndarray, np.ndarray]:
-    f_ar = np.clip(1.0 - f_additive, 0.0, 1.0)
-    tau_s = max(float(params["tau_S_ns"]), 1.0e-30)
-    tau_t = max(float(params["tau_T_ns"]), 1.0e-30)
-    inv_tau_s = 1.0 / tau_s
-    inv_tau_t = 1.0 / tau_t
-
-    k_s_ar = _positive_rate(params["K_Ar2starS_Q_Ar"])
-    k_t_ar = _positive_rate(params["K_Ar2starT_Q_Ar"])
-
-    den_s = inv_tau_s + n * f_ar * k_s_ar + n * f_additive * k_s_add
-    den_t = inv_tau_t + n * f_ar * k_t_ar + n * f_additive * k_t_add
-    p_rad_s = np.divide(inv_tau_s, den_s, out=np.zeros_like(f_additive), where=den_s > 0.0)
-    p_rad_t = np.divide(inv_tau_t, den_t, out=np.zeros_like(f_additive), where=den_t > 0.0)
-    return p_rad_s, p_rad_t
+    inv_tau_s = 1.0 / max(float(params["tau_S_ns"]), 1.0e-30)
+    inv_tau_t = 1.0 / max(float(params["tau_T_ns"]), 1.0e-30)
+    collisional = n * f_additive * k_add
+    den_s = inv_tau_s + collisional
+    den_t = inv_tau_t + collisional
+    p_s = np.divide(inv_tau_s, den_s, out=np.zeros_like(f_additive), where=den_s > 0.0)
+    p_t = np.divide(inv_tau_t, den_t, out=np.zeros_like(f_additive), where=den_t > 0.0)
+    return p_s, p_t
 
 
 def _base_yield_per_keV(
@@ -272,24 +363,24 @@ def _base_yield_per_keV(
     gas_mixture: str,
     energy_xray_kev: float,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Singlet/triplet second-continuum yields per keV.
+    """Fast and slow second-continuum yields per keV from the TFM equation."""
+    k_upper_add, k_4s_add, k_excimer_add = _additive_rates(params, gas_mixture)
+    # Use the actual additive fraction continuously.  Pure argon is obtained
+    # only at f_additive = 0; no numerical switch is applied near zero, which
+    # avoids an artificial discontinuity in the 99.9--99.999% Ar extrapolation.
+    f_kinetic = np.asarray(f_additive, dtype=float)
 
-    This branch is not tied to the fitted primary optical normalisation Nnorm.
-    The absolute scale comes from the degradation populations, kinetic
-    probabilities, and the X-ray energy used to express the result per unit
-    deposited energy.
-    """
-    k_add, k_s_add, k_t_add = _additive_rates(params, gas_mixture)
-    n_eff = _effective_ar_4s_population(params, degrad_data, f_additive)
-    p_form = _formation_probability(params, f_additive, n, k_add)
-    p_rad_s, p_rad_t = _radiative_survival(params, f_additive, n, k_s_add, k_t_add)
+    n_upper, n_high_4s, n_precursor = _population_components(params, degrad_data, f_additive)
+    p_upper = _upper_cascade_probability(params, f_kinetic, n, k_upper_add)
+    p_high_4s = _high_4s_transfer_probability(params, f_kinetic, n, k_4s_add)
+    p_form = _formation_probability(params, f_kinetic, n, k_4s_add)
+    p_rad_s, p_rad_t = _radiative_survival(params, f_kinetic, n, k_excimer_add)
 
-    f_s = _singlet_fraction(params, gas_mixture)
-    f_t = 1.0 - f_s
-    energy_xray_kev = max(float(energy_xray_kev), 1.0e-30)
-
-    singlet = n_eff * p_form * f_s * p_rad_s / energy_xray_kev
-    triplet = n_eff * p_form * f_t * p_rad_t / energy_xray_kev
+    n_fed = n_upper * p_upper + n_high_4s * p_high_4s + n_precursor
+    n_excimer = n_fed * p_form
+    energy = max(float(energy_xray_kev), 1.0e-30)
+    singlet = n_excimer * float(params["f_1Sigma"]) * p_rad_s / energy
+    triplet = n_excimer * float(params["f_3Sigma"]) * p_rad_t / energy
     return singlet, triplet
 
 
@@ -304,24 +395,15 @@ def theory_yield_ar2nd_continium(
     energy_xray_ev: float = 1.0,
     activate_components: bool = False,
 ):
-    """Ar second-continuum yield using the compact model in the TFM text.
+    """Ar second-continuum yield using the compact model in Sec. 10.1.3.
 
-    The argument name ``energy_xray_ev`` is kept for compatibility with the
-    existing primary models, but the project convention is actually keV:
-    ``energy_X_ray_N2 = 12`` and ``energy_X_ray_CF4 = 15``.  The generated
-    spectra then multiply by ``1e3`` to obtain ph MeV^-1 nm^-1.
-
-    By default the Ar second-continuum channel is the direct kinetic output,
-    without rescaling to a fixed pure-Ar reference.  If ``triplet_weight=0`` the
-    returned component is prompt/singlet only; if ``triplet_weight=1`` it is the
-    singlet+triplet total.  Internally the returned value stays in the same
-    X-ray-energy convention as the existing primary models: the generated builder
-    applies only the keV-to-MeV factor, without any division by a primary Nnorm.
+    ``n`` is p/(1 bar). ``energy_xray_ev`` keeps the historical argument name,
+    but its value is in keV in this project. Nnorm is intentionally ignored.
     """
+    del n_norm
     p = _parameter_dict(params)
     f, scalar_input = _prepare_fraction(f_additive)
-    n = float(n)
-    energy_xray_kev = float(energy_xray_ev)
+    n = max(float(n), 0.0)
 
     singlet_base, triplet_base = _base_yield_per_keV(
         p,
@@ -329,53 +411,36 @@ def theory_yield_ar2nd_continium(
         f,
         n,
         gas_mixture=gas_mixture,
-        energy_xray_kev=energy_xray_kev,
+        energy_xray_kev=float(energy_xray_ev),
     )
-
     scale = float(p.get("scale_Ar2nd", 1.0))
-    triplet_weight = np.clip(float(p.get("triplet_weight", 0.0)), 0.0, 1.0)
-
     singlet = singlet_base * scale
     triplet = triplet_base * scale
+    triplet_weight = float(np.clip(float(p.get("triplet_weight", 0.0)), 0.0, 1.0))
     total = singlet + triplet_weight * triplet
 
+    # Legacy optional anchor retained only for explicit sensitivity studies.
     if float(p.get("anchor_Ar2nd_to_pure_argon", 0.0)) > 0.5:
-        # Anchor the reported Ar second-continuum channel to a single pure-Ar
-        # absolute reference.  This removes artificial dependence on the
-        # primary optical normalisation and also cancels differences between
-        # the Ar--CF4 and Ar--N2 degradation tables in the pure-Ar limit.
-        ref_f = np.asarray([float(p.get("reference_additive_fraction", 1.0e-5))], dtype=float)
-        ref_pressure = float(p.get("reference_pressure_bar", 1.0))
-        ref_singlet_base, ref_triplet_base = _base_yield_per_keV(
+        ref_f = np.asarray([float(p.get("reference_additive_fraction", 1.0e-5))])
+        ref_s, ref_t = _base_yield_per_keV(
             p,
             degrad_data,
             ref_f,
-            ref_pressure,
+            float(p.get("reference_pressure_bar", 1.0)),
             gas_mixture=gas_mixture,
-            energy_xray_kev=energy_xray_kev,
+            energy_xray_kev=float(energy_xray_ev),
         )
-        ref_singlet = ref_singlet_base * scale
-        ref_triplet = ref_triplet_base * scale
-        ref_total = ref_singlet + triplet_weight * ref_triplet
-
-        # Y_Ar2nd_pure_ph_MeV is the total pure-Ar reference.  The reported
-        # component can deliberately be prompt-only, so anchor to the same
-        # singlet/triplet fraction selected by triplet_weight.
-        f_s_anchor = _singlet_fraction(p, gas_mixture)
-        component_fraction = f_s_anchor + triplet_weight * (1.0 - f_s_anchor)
-        target_ph_mev = float(p.get("Y_Ar2nd_pure_ph_MeV", 2.0e4)) * component_fraction
-        target_raw = target_ph_mev / 1.0e3
-        ref_value = float(np.ravel(ref_total)[0]) if np.size(ref_total) else 0.0
-        if np.isfinite(ref_value) and ref_value > 0.0:
-            anchor_factor = target_raw / ref_value
-            singlet = singlet * anchor_factor
-            triplet = triplet * anchor_factor
-            total = total * anchor_factor
+        ref = float((ref_s + triplet_weight * ref_t)[0] * scale)
+        component_fraction = float(p["f_1Sigma"] + triplet_weight * p["f_3Sigma"])
+        target_raw = float(p.get("Y_Ar2nd_pure_ph_MeV", 1.47e4)) * component_fraction / 1.0e3
+        if np.isfinite(ref) and ref > 0.0:
+            factor = target_raw / ref
+            singlet *= factor
+            triplet *= factor
+            total *= factor
 
     if activate_components:
         if scalar_input:
             return total.item(), singlet.item(), triplet.item()
         return total, singlet, triplet
-    if scalar_input:
-        return total.item()
-    return total
+    return total.item() if scalar_input else total

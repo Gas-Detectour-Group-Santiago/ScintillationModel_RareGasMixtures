@@ -359,10 +359,23 @@ class SecondaryModelAdapter:
         work = selected.copy()
         conc_raw = pd.to_numeric(work["concentration"], errors="coerce").to_numpy(dtype=float)
         all_conc_raw = pd.to_numeric(source_df["concentration"], errors="coerce").to_numpy(dtype=float)
-        # The ArCF4/ArN2/HeCF4 Garfield summaries store concentration in percent.
-        # Use the full CSV, not only the selected subset, so a 1% fixed selection
-        # is not accidentally interpreted as fraction=1.
-        percent_like = np.nanmax(all_conc_raw) > 1.5
+        # The Garfield summaries store gas fractions in percent.  A fixed 1%
+        # scan can have concentration.max()==1, so that column alone is
+        # ambiguous.  Use the explicit gas-fraction metadata as the stronger
+        # signal (e.g. 99 + 1), falling back to the concentration range.
+        fraction_meta = []
+        for meta_col in ("concentration_gas_1", "concentration_gas_2"):
+            if meta_col in source_df.columns:
+                fraction_meta.append(
+                    pd.to_numeric(source_df[meta_col], errors="coerce").to_numpy(dtype=float)
+                )
+        max_fraction_meta = max(
+            (float(np.nanmax(values)) for values in fraction_meta if np.any(np.isfinite(values))),
+            default=float("nan"),
+        )
+        percent_like = np.nanmax(all_conc_raw) > 1.5 or (
+            np.isfinite(max_fraction_meta) and max_fraction_meta > 1.5
+        )
         work["concentration_percent"] = conc_raw if percent_like else conc_raw * 100.0
         work["concentration"] = conc_raw / 100.0 if percent_like else conc_raw
 

@@ -12,12 +12,62 @@ except Exception:
 plt.rcParams.update(
     {
         "axes.grid": False,
+        "image.cmap": "viridis",
+        "xtick.direction": "in",
+        "ytick.direction": "in",
+        "xtick.major.size": 6.0,
+        "ytick.major.size": 6.0,
+        "xtick.minor.size": 3.5,
+        "ytick.minor.size": 3.5,
+        "xtick.major.width": 1.0,
+        "ytick.major.width": 1.0,
+        "xtick.minor.width": 0.8,
+        "ytick.minor.width": 0.8,
         "legend.frameon": True,
         "legend.fancybox": True,
         "legend.edgecolor": "0.50",
         "legend.framealpha": 0.78,
     }
 )
+
+
+def _clean_axis_label(label):
+    """Return labels safe for the ``no-latex`` Matplotlib style."""
+    if label is None:
+        return None
+    text = str(label)
+    while r"\%" in text:
+        text = text.replace(r"\%", "%")
+    return text.replace("$%$", "%")
+
+
+def _apply_visible_ticks(ax):
+    """Keep major and minor tick marks visible regardless of the active style."""
+    ax.minorticks_on()
+    ax.tick_params(
+        axis="both",
+        which="major",
+        direction="in",
+        length=6.0,
+        width=1.0,
+        bottom=True,
+        top=True,
+        left=True,
+        right=True,
+        labeltop=False,
+        labelright=False,
+    )
+    ax.tick_params(
+        axis="both",
+        which="minor",
+        direction="in",
+        length=3.5,
+        width=0.8,
+        bottom=True,
+        top=True,
+        left=True,
+        right=True,
+    )
 
 
 def darken_color(color, factor=0.65):
@@ -543,7 +593,7 @@ def plot_fit_vs_experiment_by_pressure(
                 f"Ninguna de las presiones pedidas {pressures} está en los datos."
             )
 
-    cmap_obj = plt.get_cmap(cmap)
+    cmap_obj = plt.get_cmap(cmap or "viridis")
     colors = cmap_obj(np.linspace(0.15, 0.85, len(pressure_cols)))
 
     linestyles = [
@@ -562,7 +612,7 @@ def plot_fit_vs_experiment_by_pressure(
     exp_point_sets = []
 
     for (p, col), color in zip(pressure_cols, colors):
-        point_color = darken_color(color, factor=darken_factor)
+        point_color = color
 
         y_fit = np.asarray(
             theory_func(
@@ -577,7 +627,8 @@ def plot_fit_vs_experiment_by_pressure(
 
         if activate_components:
             for i, y in enumerate(y_fit):
-                curve_color = darken_color(colors[i % len(colors)], 0.3)
+                component_colors = cmap_obj(np.linspace(0.12, 0.88, max(len(y_fit), 2)))
+                curve_color = component_colors[i]
 
                 use_label = None
                 if label_mode == "legend" and i < len(line_label_fmt):
@@ -610,7 +661,7 @@ def plot_fit_vs_experiment_by_pressure(
                         label=use_label
                     )
         else:
-            curve_color = darken_color(color, 0.3)
+            curve_color = color
             use_label = line_label_fmt[0].format(p=p) if label_mode == "legend" else None
 
             ax.plot(
@@ -697,14 +748,14 @@ def plot_fit_vs_experiment_by_pressure(
         secax.set_ylabel(secondary_yaxis_label)
         secax.tick_params(axis="y", which="both", right=True, labelright=True)
     else:
-        ax.tick_params(axis="y", which="both", right=False, labelright=False)
+        ax.tick_params(axis="y", which="both", right=True, labelright=False)
 
     if title is not None:
         ax.set_title(title)
     if xlabel is not None:
-        ax.set_xlabel(xlabel)
+        ax.set_xlabel(_clean_axis_label(xlabel))
     if ylabel is not None:
-        ax.set_ylabel(ylabel)
+        ax.set_ylabel(_clean_axis_label(ylabel))
 
     if xscale is not None:
         ax.set_xscale(xscale)
@@ -715,6 +766,12 @@ def plot_fit_vs_experiment_by_pressure(
         ax.set_xlim(*xlim)
     if ylim is not None:
         ax.set_ylim(*ylim)
+
+    _apply_visible_ticks(ax)
+    if show_secondary_yaxis:
+        secax.minorticks_on()
+        secax.tick_params(axis="y", which="major", direction="in", length=6.0, width=1.0, right=True, labelright=True)
+        secax.tick_params(axis="y", which="minor", direction="in", length=3.5, width=0.8, right=True)
 
     if label_mode == "annotate" and len(annotate_curve_infos) > 0:
         _place_curve_labels_optimally(

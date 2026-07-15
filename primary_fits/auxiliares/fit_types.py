@@ -74,7 +74,7 @@ class PlotSpec:
     ylim: tuple[float, float] | None = None
     xscale: str = "log"
     yscale: str = "log"
-    cmap: str | None = None
+    cmap: str | None = "viridis"
     darken_factor: float = -0.15
     legend_kwargs: dict | None = None
     label_mode: str = "legend"

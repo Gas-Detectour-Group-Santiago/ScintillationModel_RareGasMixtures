@@ -214,6 +214,11 @@ class BandCurveConfig:
     band_mode: str = "sys_stat"
     ocw_config: OCWBandConfig | None = None
     paper_overlay_id: str | None = None
+    # Optional multi-curve styling. Curves that share color_group use the same
+    # color, while linestyle/linewidth can distinguish physical components.
+    color_group: str | None = None
+    linestyle: str = "-"
+    linewidth: float = 2.0
 
     @property
     def grid(self) -> np.ndarray:
@@ -280,6 +285,9 @@ class CombinedBandCurveConfig:
     band_mode: str = "sys_stat"
     ocw_config: OCWBandConfig | None = None
     paper_overlay_id: str | None = None
+    color_group: str | None = None
+    linestyle: str = "-"
+    linewidth: float = 2.0
 
     @property
     def grid(self) -> np.ndarray:

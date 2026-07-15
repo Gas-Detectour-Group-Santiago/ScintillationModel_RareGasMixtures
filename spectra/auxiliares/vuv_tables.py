@@ -76,13 +76,10 @@ def _energy_for_gas(gas: str) -> float:
     raise ValueError(f"Gas no soportado para energia X-ray: {gas}")
 
 
-def _singlet_fraction(params: dict[str, float], gas: str) -> float:
-    if gas == "ArCF4":
-        value = params.get("f_S_CF4", params.get("f_S_ArCF4", params.get("f_S", 1.0 / 6.5)))
-    elif gas == "ArN2":
-        value = params.get("f_S_N2", params.get("f_S_ArN2", params.get("f_S", 1.0 / 6.5)))
-    else:
-        value = params.get("f_S", 1.0 / 6.5)
+def _singlet_fraction(params: dict[str, float], gas: str, f_additive: float | None = None) -> float:
+    """Singlet fraction of the common Ar2* branch used by the TFM model."""
+    del gas, f_additive
+    value = params.get("f_1Sigma", params.get("f_S", 0.1))
     return float(np.clip(float(value), 0.0, 1.0))
 
 
@@ -145,7 +142,7 @@ def _ar2nd_prediction_row(
         * 1.0e3
     )
     n_eff = float(_effective_ar_4s_population(params, degrad, f)[0])
-    f_s = _singlet_fraction(params, gas_mixture_for_rates)
+    f_s = _singlet_fraction(params, gas_mixture_for_rates, float(concentration_fraction))
     sigma = float(params["sigma_Ar2nd_nm"])
     return {
         "id": row_id,
@@ -195,7 +192,7 @@ def build_ar2nd_pure_argon_table(project_root: Path) -> pd.DataFrame:
                 used_in_generated_amplied=True,
                 note=(
                     "Value used in the 0% additive extended spectrum. "
-                    "The dedicated Ar2nd CSV contains Ar_meta + Ar_res + Ar_dbleStar."
+                    "The dedicated Ar2nd CSV contains Ar(1s4,1s5) + Ar(1s2,1s3) + Ar**."
                 ),
             )
         )

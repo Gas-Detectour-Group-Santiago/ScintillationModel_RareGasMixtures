@@ -171,7 +171,34 @@ def make_legacy_ir_selector(selection_mode: str = IR_SELECTION_MODE):
     return preprocess
 
 
+
+def cf4_primary_norm_upper_bound() -> float:
+    """Use the fitted Ar--CF4 Nnorm as the physical ceiling for every IR W."""
+
+    candidates = (
+        DATA_DIR / "FitResults" / "ArCF4_primary_central.csv",
+        DATA_DIR / "Parameters" / "ArCF4_primary.csv",
+    )
+    for path in candidates:
+        if not path.exists():
+            continue
+        table = pd.read_csv(path)
+        if "name" not in table.columns:
+            continue
+        rows = table.loc[table["name"].astype(str) == "Nnorm"]
+        if rows.empty:
+            continue
+        for column in ("value",):
+            if column in rows.columns:
+                value = float(rows.iloc[0][column])
+                if np.isfinite(value) and value > 0.0:
+                    return value
+    raise FileNotFoundError(
+        "No se pudo leer Nnorm del ajuste ArCF4_primary; ejecuta primero el fit primario Ar--CF4."
+    )
+
 def ir_parameters():
+    w_max = cf4_primary_norm_upper_bound()
     params = []
     for line in IR_LINES:
         tau = TAUS[line]
@@ -181,9 +208,9 @@ def ir_parameters():
                 Parameter(
                     f"PAr_star_{display}",
                     rf"$\mathcal{{W}}_{{\mathrm{{Ar}}^{{**}},{display}\,\mathrm{{nm}}}}$",
-                    0.02,
+                    min(0.02, 0.8 * w_max),
                     0.0,
-                    0.02,
+                    w_max,
                 ),
                 Parameter(
                     f"tau_CF4_{display}",
@@ -249,7 +276,7 @@ def build_plots(selection_mode: str = IR_SELECTION_MODE, *, output_subdir: str =
             pressures=IR_FIT_PRESSURES,
             concentration_grid=np.logspace(-5, 0, 1000),
             title=rf"Ar--CF$_4$ primary IR fit, {line} nm",
-            xlabel=r"CF$_4$ concentration [$\%$]",
+            xlabel=r"CF$_4$ concentration [%]",
             ylabel=r"Yield [arb. units]",
             x_col="fCF4",
             min_positive_x=IR_PURE_ARGON_DISPLAY_PERCENT,

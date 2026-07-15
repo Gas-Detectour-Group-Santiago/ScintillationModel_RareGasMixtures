@@ -142,7 +142,12 @@ def theory_yield_uv(x, degrad_data, fCF4, n, activate_components=False):
         comp_arDbleStar = N * (tercer_continuo * frac4 * P_Ar_3rd) / energy_X_ray_CF4
         comp_cf3 = p_CF3_uv*(theory_yield_vis(x, degrad_data, fCF4, n, activate_components=False)) / energy_X_ray_CF4
         if scalar_input:
-            return total.item(), comp_cf3.item()
+            return (
+                total.item(),
+                comp_cf4.item(),
+                comp_arDbleStar.item(),
+                comp_cf3.item(),
+            )
         return total, comp_cf4, comp_arDbleStar, comp_cf3
 
     if scalar_input:

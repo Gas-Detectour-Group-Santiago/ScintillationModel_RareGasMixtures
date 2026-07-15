@@ -20,6 +20,9 @@ from primary_predictions.configs import (  # noqa: E402
     selected_primary_points,
     vuv_primary_points,
 )
+from primary_predictions.auxiliares.n2_pure_energy_tables import (  # noqa: E402
+    export_n2_pure_energy_prediction_table,
+)
 
 
 def main(
@@ -65,6 +68,19 @@ def main(
             label="tab:primary_selected_yields_arcf4_vs_arn2_norm",
         )
 
+        export_n2_pure_energy_prediction_table(
+            PROJECT_ROOT,
+            "N2_pure_predictions_by_incident_type",
+            left_normalization=COMMON_ARCF4_NORM,
+            right_normalization=COMMON_ARN2_NORM,
+            caption=(
+                r"Predicciones de N$_2$ puro para distintas entradas de Degrad: "
+                r"rayos X de 12 keV y electrones de 1.5 MeV a 0 y 50 V/cm. "
+                r"Las poblaciones de 1.5 MeV se dividen por 1500 keV antes de "
+                r"convertir a ph/MeV."
+            ),
+            label="tab:n2_pure_predictions_by_incident_type",
+        )
 
         runner.run_values_by_normalization(
             vuv_primary_points(OWN_NORM),
@@ -91,7 +107,9 @@ def main(
             caption=(
                 r"Predicciones IR primarias en el límite de argón puro para la "
                 r"extrapolación a baja presión, evaluadas con normalización de "
-                r"Ar--CF$_4$ y de Ar--N$_2$."
+                r"Ar--CF$_4$ y de Ar--N$_2$. El límite se aproxima con la "
+                r"menor fracción mostrada en cada extrapolación: 0.001\% de "
+                r"CF$_4$ y 0.01\% de N$_2$."
             ),
             label="tab:primary_low_pressure_pure_ar_ir_arcf4_vs_arn2_norm",
         )
@@ -103,7 +121,9 @@ def main(
                 r"Predicción IR primaria media en el límite de argón puro para la "
                 r"extrapolación a baja presión. La columna media es el promedio "
                 r"aritmético de las extrapolaciones Ar--CF$_4$ y Ar--N$_2$; "
-                r"$\Delta_{\mathrm{modelo}}$ es la semidiferencia entre ambas."
+                r"$\Delta_{\mathrm{modelo}}$ es la semidiferencia entre ambas. "
+                r"Cada modelo se evalúa en la menor fracción mostrada en su "
+                r"gráfica de baja presión."
             ),
             label="tab:primary_low_pressure_pure_ar_ir_model_average",
         )

@@ -8,10 +8,33 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
 from secondary_predictions.auxiliares import PredictionRunner  # noqa: E402
-from secondary_predictions.configs import PARAM_SECONDARY_FIT_NAMES, SECONDARY_ADAPTERS  # noqa: E402
+from secondary_predictions.configs import (  # noqa: E402
+    PARAM_SECONDARY_FIT_NAMES,
+    SECONDARY_ADAPTERS,
+)
 from secondary_predictions.auxiliares.tables import export_secondary_parameter_tables  # noqa: E402
+from secondary_predictions.auxiliares.ar2nd_population_upgrade import ensure_secondary_ar2nd_populations  # noqa: E402
 from secondary_predictions import config_comparation, config_paper  # noqa: E402
 
+
+
+def _cleanup_obsolete_vuv_outputs() -> None:
+    plot_dir = PROJECT_ROOT / "secondary_predictions" / "plots" / "secondary_vuv"
+    band_dir = PROJECT_ROOT / "data" / "Predictions" / "Secondary" / "Bands"
+    patterns = (
+        "*CF4ionic*",
+        "*_Monteiro_reference*",
+        "Monteiro_reference_points.csv",
+        "*cf4_ionic_vuv*",
+        "*_monteiro_ref.csv",
+    )
+    for base in (plot_dir, band_dir):
+        if not base.exists():
+            continue
+        for pattern in patterns:
+            for path in base.glob(pattern):
+                if path.is_file():
+                    path.unlink()
 
 def main(
     *,
@@ -42,6 +65,22 @@ def main(
         overwrite_paper_metadata = overwrite_metadata
     if overwrite_comparation is not None:
         overwrite_comparation_bands = overwrite_comparation
+
+    if make_config_paper and make_paper_multibands:
+        _cleanup_obsolete_vuv_outputs()
+
+    upgrade_reports = ensure_secondary_ar2nd_populations(PROJECT_ROOT)
+    for report in upgrade_reports:
+        if report.updated_rows:
+            print(
+                f"[secondary_predictions] Ar2nd populations actualizadas: "
+                f"{report.population_csv} ({report.updated_rows} filas)"
+            )
+        if report.missing_level_csvs:
+            print(
+                f"[secondary_predictions] aviso: faltan {len(report.missing_level_csvs)} "
+                f"tablas de niveles para {report.population_csv}"
+            )
 
     runner = PredictionRunner(
         PROJECT_ROOT,
