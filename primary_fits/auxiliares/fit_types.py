@@ -94,6 +94,11 @@ class FitConfig:
     parameters: Sequence[Parameter]
     plots: Sequence[PlotSpec] = field(default_factory=tuple)
     is_infrared: bool = False
+    # When enabled, each model is evaluated at the concentrations stored in
+    # its experimental dataset instead of assuming that the experimental and
+    # Degrad rows have the same ordering/length. Kept opt-in to avoid changing
+    # legacy fits silently.
+    fit_on_experimental_concentrations: bool = False
     first_point_anchor_weight: float = 1.0
     toy_spec: ToySpec = field(default_factory=ToySpec)
     table_caption: str = ""

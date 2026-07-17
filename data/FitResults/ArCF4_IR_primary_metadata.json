@@ -6,11 +6,19 @@
   "chi2_red": 3.511673028076015,
   "success": true,
   "message": "`ftol` termination condition is satisfied.",
-  "n_stat_toys": 5,
-  "n_syst_toys": 5,
+  "fit_on_experimental_concentrations": false,
+  "concentration_columns": {
+    "696": "fCF4",
+    "727": "fCF4",
+    "750": "fCF4",
+    "763": "fCF4",
+    "772": "fCF4"
+  },
+  "n_stat_toys": 300,
+  "n_syst_toys": 300,
   "toy_correlations": {
     "stat": {
-      "n_valid_toys": 5,
+      "n_valid_toys": 300,
       "covariance_csv": "data/FitResults/ArCF4_IR_primary_toy_covariance_stat.csv",
       "correlation_csv": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.csv",
       "correlation_pdf": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.pdf"

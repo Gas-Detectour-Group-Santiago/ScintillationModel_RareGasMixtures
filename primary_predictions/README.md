@@ -112,3 +112,33 @@ are displayed with the same Ar--CF4 normalization.
 The secondary prediction machinery should use the same runner/band/table layer.
 Its Garfield-specific choices should be expressed with `SecondarySelection`:
 pressure/gap/electric-field/npe cuts live in config objects, not in plotting code.
+
+Joint Ar--CF4 / Ar--N2 infrared fit
+----------------------------------
+
+The optional joint IR path is intentionally separate from the legacy fits. It
+shares the Ar optical weights and Ar self-quenching coefficients between both
+mixtures, while keeping CF4 and N2 quenching independent. It evaluates the
+model at the exact experimental concentrations and applies no first-point
+anchor.
+
+```bash
+# 300 toys by default; reduce only for quick tests.
+python primary_fits/ArJoint_IR_fit.py
+python primary_predictions/run_joint_ir_predictions.py
+```
+
+Useful environment controls:
+
+```bash
+JOINT_IR_N_TOYS=50 python primary_fits/ArJoint_IR_fit.py
+JOINT_IR_MAX_CONCENTRATION_PERCENT=20 python primary_fits/ArJoint_IR_fit.py
+```
+
+Main extra products:
+
+- `data/Parameters/ArJoint_IR_primary.csv`
+- `data/Tables/ArJoint_IR_primary_param_stat_syst.tex`
+- `data/Predictions/ArJoint_IR_primary_low_pressure_pure_ar.csv`
+- `data/Tables/ArJoint_IR_primary_low_pressure_pure_ar.tex`
+- `primary_predictions/plots/primary_bands/joint_ir/*.pdf`

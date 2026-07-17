@@ -15,7 +15,7 @@ from primary_predictions.configs import (  # noqa: E402
 )
 
 
-def main(*, make_plots: bool = True, overwrite_bands: bool = False):
+def main(*, make_plots: bool = True, overwrite_bands: bool = True):
     runner = PredictionRunner(PROJECT_ROOT, PRIMARY_ADAPTERS)
     runner.run_bands(
         primary_ir_low_pressure_band_plots(OWN_NORM),

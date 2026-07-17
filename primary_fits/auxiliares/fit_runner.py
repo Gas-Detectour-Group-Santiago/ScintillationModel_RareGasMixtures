@@ -90,6 +90,8 @@ class PrimaryFitRunner:
             x0=x0_use,
             bounds=self.config.bounds,
             is_infrared=self.config.is_infrared,
+            fit_on_experimental_concentrations=self.config.fit_on_experimental_concentrations,
+            concentration_columns={spec.key: spec.x_col for spec in self.config.datasets},
             first_point_anchor_weight=self.config.first_point_anchor_weight,
             fixed_idx=fixed_idx,
             fixed_values=fixed_values,
@@ -234,6 +236,12 @@ class PrimaryFitRunner:
                 "chi2_red": float(getattr(central, "chi2_red", np.nan)),
                 "success": bool(getattr(central, "success", False)),
                 "message": str(getattr(central, "message", "")),
+                "fit_on_experimental_concentrations": bool(
+                    self.config.fit_on_experimental_concentrations
+                ),
+                "concentration_columns": {
+                    spec.key: spec.x_col for spec in self.config.datasets
+                },
                 "n_stat_toys": int(len(stat_toys)),
                 "n_syst_toys": int(len(syst_toys)),
                 "toy_correlations": toy_corr_metadata,

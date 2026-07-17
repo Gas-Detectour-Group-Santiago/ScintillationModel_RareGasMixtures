@@ -12,6 +12,8 @@ def fitParameters(
     x0,
     bounds,
     is_infrared=False,
+    fit_on_experimental_concentrations=False,
+    concentration_columns=None,
     first_point_anchor_weight=1.0,
     fixed_idx=None,
     fixed_values=None,
@@ -23,6 +25,12 @@ def fitParameters(
 
     Parámetros
     ----------
+    fit_on_experimental_concentrations : bool
+        Si es True, evalúa cada modelo en la columna x de su dataset
+        experimental. Evita asociar puntos por posición o recortar arrays.
+    concentration_columns : dict[str, str] o None
+        Mapa dataset -> columna de concentración, usado cuando
+        fit_on_experimental_concentrations=True.
     fixed_idx : list[int] o None
         Índices de los parámetros que se quieren fijar.
     fixed_values : list[float] o None
@@ -45,7 +53,8 @@ def fitParameters(
         - result.n_full
     """
 
-    concentration = degrad_data["concentration"]
+    degrad_concentration = np.asarray(degrad_data["concentration"], dtype=float)
+    concentration_columns = {} if concentration_columns is None else dict(concentration_columns)
 
     first_point_anchor_weight = float(first_point_anchor_weight)
     if not np.isfinite(first_point_anchor_weight) or first_point_anchor_weight < 1.0:
@@ -105,6 +114,24 @@ def fitParameters(
         for key, theory_yield in equations.items():
             exp_data = experimental_data[key]
 
+            if fit_on_experimental_concentrations:
+                x_col = concentration_columns.get(key)
+                if x_col is None:
+                    raise KeyError(
+                        f"No se definió la columna de concentración para el dataset {key!r}."
+                    )
+                if x_col not in exp_data.columns:
+                    raise KeyError(
+                        f"El dataset {key!r} no contiene su columna de concentración {x_col!r}."
+                    )
+                # Experimental CSVs store additive concentration in percent,
+                # while the kinetic models use fractions in [0, 1].
+                concentration_eval = (
+                    np.asarray(exp_data[x_col], dtype=float) * 0.01
+                )
+            else:
+                concentration_eval = degrad_concentration
+
             cols_phys = [
                 c for c in exp_data.columns
                 if not str(c).startswith("Err")
@@ -136,18 +163,29 @@ def fitParameters(
                 except Exception:
                     continue
 
-                y_th = theory_yield(x, degrad_data, concentration, n_val)
+                y_th = theory_yield(x, degrad_data, concentration_eval, n_val)
 
-                if (len(y_th) > len(y_exp)) and (not is_infrared):
-                    n = len(y_th) - len(y_exp)
-                    y_th = y_th[n:]
-                elif (len(y_th) > len(y_exp)) and is_infrared:
-                    n = len(y_th) - len(y_exp)
-                    y_th = y_th[:-n]
-                elif len(y_exp) > len(y_th):
-                    n = len(y_exp) - len(y_th)
-                    y_exp = y_exp[n:]
-                    s_exp_eff = s_exp_eff[n:]
+                if fit_on_experimental_concentrations:
+                    if np.shape(y_th) != np.shape(y_exp):
+                        raise RuntimeError(
+                            f"Dimensiones incompatibles en {key!r}, {col!r}: "
+                            f"teoría={np.shape(y_th)}, datos={np.shape(y_exp)}. "
+                            "No se recortan arrays cuando se ajusta en las "
+                            "concentraciones experimentales."
+                        )
+                else:
+                    # Legacy behaviour retained for fits that have not opted
+                    # into exact experimental-concentration evaluation.
+                    if (len(y_th) > len(y_exp)) and (not is_infrared):
+                        n = len(y_th) - len(y_exp)
+                        y_th = y_th[n:]
+                    elif (len(y_th) > len(y_exp)) and is_infrared:
+                        n = len(y_th) - len(y_exp)
+                        y_th = y_th[:-n]
+                    elif len(y_exp) > len(y_th):
+                        n = len(y_exp) - len(y_th)
+                        y_exp = y_exp[n:]
+                        s_exp_eff = s_exp_eff[n:]
 
                 y_th = np.asarray(y_th, dtype=float)
                 y_exp = np.asarray(y_exp, dtype=float)

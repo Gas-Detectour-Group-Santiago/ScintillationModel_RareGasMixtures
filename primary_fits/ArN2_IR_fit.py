@@ -30,36 +30,93 @@ IR_LINES = ("696", "727", "750", "763", "772")
 TAUS = {"696": 28.3, "727": 28.3, "750": 21.7, "763": 29.4, "772": 28.3}
 
 # ---------------------------------------------------------------------------
-# Selección IR opcional, análoga a ArCF4
+# Configuración del ajuste IR Ar--N2
 # ---------------------------------------------------------------------------
-# Por defecto se deja el fit exactamente con el criterio anterior:
-#   - presiones 1, 2, 3 bar;
-#   - concentraciones de N2 estrictamente menores que 10 %.
+# El ajuste se evalúa en las concentraciones experimentales exactas. El punto
+# de 0 % N2 se excluye por defecto porque está contaminado, pero esta decisión
+# queda configurable sin tocar los CSV.
 #
-# Para activar el mismo criterio legacy-floor usado en ArCF4:
+# Ejemplos:
+#   ARN2_IR_FIT_PRESSURES=1,2,3 python3 primary_fits/ArN2_IR_fit.py
+#   ARN2_IR_FIT_PRESSURES=1-5 python3 primary_fits/ArN2_IR_fit.py
+#   ARN2_IR_MAX_CONCENTRATION_PERCENT=10 python3 primary_fits/ArN2_IR_fit.py
+#   ARN2_IR_EXCLUDE_ZERO=0 python3 primary_fits/ArN2_IR_fit.py
 #
-#     ARN2_IR_SELECTION_MODE=legacy_floor python3 primary_fits/ArN2_IR_fit.py
-#
-# Ese modo:
-#   1) mueve el punto de argón puro fN2=0 a x=0.001 % para escala log;
-#   2) descarta 20 %, 50 % y 100 % N2;
-#   3) calcula floor = min_p max(Y_20,Y_50,Y_100) con p=1,2,3 bar;
-#   4) elimina, solo para 1,2,3 bar, cualquier punto con Y < floor.
-#
-# No se regeneran parámetros aquí: cambiar este archivo solo afecta a futuros
-# fits si se ejecutan de nuevo.
+# El máximo de concentración es inclusivo: MAX=10 conserva el punto de 10 %.
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    raw = os.environ.get(name)
+    if raw is None:
+        return bool(default)
+    return raw.strip().lower() not in {"0", "false", "no", "off"}
+
+
+def _parse_pressures(raw: str) -> tuple[float, ...]:
+    """Parse comma lists and integer ranges such as ``1,2,3`` or ``1-5``."""
+
+    values: list[float] = []
+    for token in raw.replace(";", ",").split(","):
+        token = token.strip()
+        if not token:
+            continue
+        if "-" in token[1:]:
+            left, right = token.split("-", 1)
+            lo = float(left)
+            hi = float(right)
+            if not lo.is_integer() or not hi.is_integer():
+                raise ValueError(
+                    "Los rangos de ARN2_IR_FIT_PRESSURES deben usar enteros, "
+                    f"recibido {token!r}."
+                )
+            step = 1 if hi >= lo else -1
+            values.extend(float(v) for v in range(int(lo), int(hi) + step, step))
+        else:
+            values.append(float(token))
+
+    pressures = tuple(dict.fromkeys(values))
+    if not pressures:
+        raise ValueError("ARN2_IR_FIT_PRESSURES no puede estar vacío.")
+    if any((not np.isfinite(p)) or p <= 0.0 for p in pressures):
+        raise ValueError(f"Presiones no válidas: {pressures}")
+    return pressures
+
+
 IR_SELECTION_MODE = os.environ.get("ARN2_IR_SELECTION_MODE", "none").strip().lower()
-IR_FIT_PRESSURES = (1.0, 2.0, 3.0)
-IR_DEFAULT_MAX_CONCENTRATION_PERCENT = 100.0
+IR_FIT_PRESSURES = _parse_pressures(os.environ.get("ARN2_IR_FIT_PRESSURES", "1,2,3"))
+IR_MIN_CONCENTRATION_PERCENT = float(
+    os.environ.get("ARN2_IR_MIN_CONCENTRATION_PERCENT", "0.0")
+)
+IR_MAX_CONCENTRATION_PERCENT = float(
+    os.environ.get("ARN2_IR_MAX_CONCENTRATION_PERCENT", "100.0")
+)
+IR_EXCLUDE_ZERO = _env_bool("ARN2_IR_EXCLUDE_ZERO", True)
 IR_DISCARDED_CONCENTRATIONS_PERCENT = (20.0, 50.0, 100.0)
-IR_PURE_ARGON_DISPLAY_PERCENT = 0.0
-IR_PLOT_MAX_CONCENTRATION_PERCENT = 100.0
-IR_FIRST_POINT_ANCHOR_ENABLED = os.environ.get(
-    "ARN2_IR_FIRST_POINT_ANCHOR_ENABLED", "1"
-).strip().lower() not in {"0", "false", "no", "off"}
-IR_FIRST_POINT_ANCHOR_WEIGHT = float(os.environ.get("ARN2_IR_FIRST_POINT_ANCHOR_WEIGHT", "1.0"))
+IR_PLOT_MIN_CONCENTRATION_PERCENT = float(
+    os.environ.get("ARN2_IR_PLOT_MIN_CONCENTRATION_PERCENT", "0.1")
+)
+IR_PLOT_MAX_CONCENTRATION_PERCENT = float(
+    os.environ.get(
+        "ARN2_IR_PLOT_MAX_CONCENTRATION_PERCENT",
+        str(IR_MAX_CONCENTRATION_PERCENT),
+    )
+)
+IR_FIRST_POINT_ANCHOR_ENABLED = _env_bool("ARN2_IR_FIRST_POINT_ANCHOR_ENABLED", True)
+IR_FIRST_POINT_ANCHOR_WEIGHT = float(
+    os.environ.get("ARN2_IR_FIRST_POINT_ANCHOR_WEIGHT", "25.0")
+)
 if not IR_FIRST_POINT_ANCHOR_ENABLED:
     IR_FIRST_POINT_ANCHOR_WEIGHT = 1.0
+
+if not np.isfinite(IR_MIN_CONCENTRATION_PERCENT):
+    raise ValueError("ARN2_IR_MIN_CONCENTRATION_PERCENT debe ser finito.")
+if not np.isfinite(IR_MAX_CONCENTRATION_PERCENT):
+    raise ValueError("ARN2_IR_MAX_CONCENTRATION_PERCENT debe ser finito.")
+if IR_MAX_CONCENTRATION_PERCENT < IR_MIN_CONCENTRATION_PERCENT:
+    raise ValueError(
+        "ARN2_IR_MAX_CONCENTRATION_PERCENT debe ser >= "
+        "ARN2_IR_MIN_CONCENTRATION_PERCENT."
+    )
 
 
 def _arn2_ir_csv_path(line: str) -> Path:
@@ -79,16 +136,21 @@ def _numeric_array(values) -> np.ndarray:
     return pd.to_numeric(values, errors="coerce").to_numpy(dtype=float)
 
 
-def move_pure_argon_to_low_n2(df: pd.DataFrame) -> pd.DataFrame:
-    """Move fN2=0 to 0.001 % for log-x plotting and ArCF4-like IR handling."""
+def select_arn2_ir_fit_window(df: pd.DataFrame) -> pd.DataFrame:
+    """Apply the configurable, inclusive Ar--N2 concentration window."""
 
     out = df.copy()
     if "fN2" not in out.columns:
         return out
+
     x = _numeric_array(out["fN2"])
-    mask = np.isclose(x, 0.0, rtol=0.0, atol=1e-12)
-    out.loc[mask, "fN2"] = IR_PURE_ARGON_DISPLAY_PERCENT
-    return out.sort_values("fN2").reset_index(drop=True)
+    mask = np.isfinite(x)
+    mask &= x >= IR_MIN_CONCENTRATION_PERCENT - 1e-12
+    mask &= x <= IR_MAX_CONCENTRATION_PERCENT + 1e-12
+    if IR_EXCLUDE_ZERO:
+        mask &= ~np.isclose(x, 0.0, rtol=0.0, atol=1e-12)
+
+    return out.loc[mask].sort_values("fN2").reset_index(drop=True)
 
 
 def _discarded_concentration_mask(x_percent: np.ndarray) -> np.ndarray:
@@ -252,7 +314,6 @@ EQUATIONS = {
 
 
 def build_datasets(selection_mode: str = IR_SELECTION_MODE) -> list[DatasetSpec]:
-    legacy = selection_mode == "legacy_floor"
     return [
         DatasetSpec(
             key=line,
@@ -261,18 +322,26 @@ def build_datasets(selection_mode: str = IR_SELECTION_MODE) -> list[DatasetSpec]
             pressures=IR_FIT_PRESSURES,
             output_concentration_name="fN2",
             w_function=W_ArN2,
-            max_concentration_percent=None if legacy else IR_DEFAULT_MAX_CONCENTRATION_PERCENT,
-            preprocess_before_w=move_pure_argon_to_low_n2 if legacy else None,
-            preprocess=make_legacy_ir_selector(selection_mode) if legacy else None,
+            max_concentration_percent=None,
+            preprocess_before_w=select_arn2_ir_fit_window,
+            preprocess=(
+                make_legacy_ir_selector(selection_mode)
+                if selection_mode == "legacy_floor"
+                else None
+            ),
         )
         for line in IR_LINES
     ]
 
 
 def build_plots(selection_mode: str = IR_SELECTION_MODE, *, output_subdir: str = "ArN2_IR") -> list[PlotSpec]:
-    legacy = selection_mode == "legacy_floor"
-    grid = np.logspace(-5, 0, 1000) if legacy else np.logspace(-6, np.log10(IR_DEFAULT_MAX_CONCENTRATION_PERCENT / 100.0), 1000)
-    xlim = (IR_PURE_ARGON_DISPLAY_PERCENT, IR_PLOT_MAX_CONCENTRATION_PERCENT * 1.1) if legacy else (1e-3, IR_DEFAULT_MAX_CONCENTRATION_PERCENT * 1.1)
+    grid_min_fraction = max(IR_PLOT_MIN_CONCENTRATION_PERCENT / 100.0, 1e-8)
+    grid_max_fraction = max(IR_PLOT_MAX_CONCENTRATION_PERCENT / 100.0, grid_min_fraction)
+    grid = np.logspace(np.log10(grid_min_fraction), np.log10(grid_max_fraction), 1000)
+    xlim = (
+        0.09,
+        IR_PLOT_MAX_CONCENTRATION_PERCENT * 1.1,
+    )
     return [
         PlotSpec(
             name=f"ArN2_IR_{line}",
@@ -284,9 +353,9 @@ def build_plots(selection_mode: str = IR_SELECTION_MODE, *, output_subdir: str =
             xlabel=r"N$_2$ concentration [%]",
             ylabel=r"Yield [arb. units]",
             x_col="fN2",
-            min_positive_x=IR_PURE_ARGON_DISPLAY_PERCENT,
+            min_positive_x=IR_PLOT_MIN_CONCENTRATION_PERCENT,
             xlim=xlim,
-            #ylim=(1e-5, 0.09),
+            ylim=(1e-6, 0.01),
             output=PROJECT_ROOT / "primary_fits" / "plots" / "plot_fit" / output_subdir / f"ArN2_global_{line}.pdf",
             legend_kwargs={"ncol": 2, "loc": "upper right"},
         )
@@ -309,6 +378,7 @@ def build_config(
         parameters=ir_parameters(),
         plots=build_plots(selection_mode, output_subdir=output_subdir),
         is_infrared=True,
+        fit_on_experimental_concentrations=True,
         first_point_anchor_weight=IR_FIRST_POINT_ANCHOR_WEIGHT,
         toy_spec=ToySpec(
             n_stat=5,
@@ -326,4 +396,12 @@ CONFIG = build_config(IR_SELECTION_MODE)
 
 
 if __name__ == "__main__":
+    print(
+        "[ArN2_IR_primary] "
+        f"pressures={IR_FIT_PRESSURES}, "
+        f"fN2=[{IR_MIN_CONCENTRATION_PERCENT:g}, "
+        f"{IR_MAX_CONCENTRATION_PERCENT:g}] %, "
+        f"exclude_zero={IR_EXCLUDE_ZERO}, "
+        "exact_experimental_x=True"
+    )
     PrimaryFitRunner(CONFIG, project_root=PROJECT_ROOT).run_all()

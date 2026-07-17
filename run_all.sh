@@ -42,6 +42,8 @@ run_step data run_analysis.py
 run_step primary_fits run_primary_fits.py
 
 run_step primary_predictions run_primary_predictions.py
+run_step primary_predictions run_primary_multiband_predictions.py
+run_step primary_predictions run_primary_ir_low_pressure_predictions.py
 run_step secondary_predictions run_secondary_predictions.py
 run_step spectra run_all_spectra.py
 run_step integral_comparations run_integral_comparisons.py
