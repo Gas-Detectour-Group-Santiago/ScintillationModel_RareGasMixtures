@@ -38,13 +38,31 @@ for folder in ("models", "primary_fits"):
 from ArCF4_infrarred import W_ArCF4
 from ArN2_infrarred import W_ArN2
 from ArJoint_infrarred import IR_LINES, TAUS_NS, interpolate_population, theory_yield_joint
+from auxiliares.fit_exports import (
+    export_dataframe,
+    mask_independent_ir_line_blocks,
+    plot_parameter_correlation,
+    toy_covariance_correlation,
+)
 from auxiliares.fit_io import DatasetSpec, load_dataset_triplet, pressure_label, error_label, stat_error_label, syst_error_label
 
 DATA_DIR = PROJECT_ROOT / "data"
 FIT_NAME = "ArJoint_IR_primary"
 PRESSURES = (1.0, 2.0, 3.0)
 MAX_CONCENTRATION_PERCENT = float(os.environ.get("JOINT_IR_MAX_CONCENTRATION_PERCENT", "20.0"))
-N_TOYS = int(os.environ.get("JOINT_IR_N_TOYS", "300"))
+_DEFAULT_TOYS = os.environ.get("JOINT_IR_N_TOYS", os.environ.get("PRIMARY_FIT_N_TOYS", "300"))
+N_STAT_TOYS = int(
+    os.environ.get(
+        "JOINT_IR_N_STAT_TOYS",
+        os.environ.get("PRIMARY_FIT_N_STAT_TOYS", _DEFAULT_TOYS),
+    )
+)
+N_SYST_TOYS = int(
+    os.environ.get(
+        "JOINT_IR_N_SYST_TOYS",
+        os.environ.get("PRIMARY_FIT_N_SYST_TOYS", _DEFAULT_TOYS),
+    )
+)
 SEED = int(os.environ.get("JOINT_IR_SEED", "55001"))
 
 
@@ -412,6 +430,40 @@ def plot_fit_diagnostics(
             plt.close(fig)
 
 
+
+def export_joint_toy_correlations(
+    fit_dir: Path,
+    stat_toys: np.ndarray,
+    syst_toys: np.ndarray,
+) -> dict[str, dict[str, int | str]]:
+    """Regenerate statistical and systematic toy-correlation products."""
+    metadata: dict[str, dict[str, int | str]] = {}
+    for kind, toys, display_name in (
+        ("stat", stat_toys, "statistical"),
+        ("syst", syst_toys, "systematic"),
+    ):
+        cov, corr, n_valid = toy_covariance_correlation(toys, PARAMETER_NAMES)
+        cov, corr = mask_independent_ir_line_blocks(cov, corr, PARAMETER_NAMES)
+
+        cov_path = fit_dir / f"{FIT_NAME}_toy_covariance_{kind}.csv"
+        corr_path = fit_dir / f"{FIT_NAME}_toy_correlation_{kind}.csv"
+        fig_path = fit_dir / f"{FIT_NAME}_toy_correlation_{kind}.pdf"
+        export_dataframe(cov_path, cov)
+        export_dataframe(corr_path, corr)
+        plot_parameter_correlation(
+            fig_path,
+            corr,
+            labels=PARAMETER_TEX,
+            title=f"{FIT_NAME}: {display_name} toy parameter correlations",
+        )
+        metadata[kind] = {
+            "n_valid_toys": int(n_valid),
+            "covariance_csv": str(cov_path.relative_to(PROJECT_ROOT)),
+            "correlation_csv": str(corr_path.relative_to(PROJECT_ROOT)),
+            "correlation_pdf": str(fig_path.relative_to(PROJECT_ROOT)),
+        }
+    return metadata
+
 def main() -> None:
     blocks, degrad, frames = load_observations()
     x0 = initial_physical_vector()
@@ -422,8 +474,22 @@ def main() -> None:
 
     central_x = free_log10_to_physical(central_result.x)
     covariance, fit_err = covariance_physical(central_result, central_x)
-    stat_toys = run_toys(blocks, degrad, central_result.x, n_toys=N_TOYS, seed=SEED, mode="stat")
-    syst_toys = run_toys(blocks, degrad, central_result.x, n_toys=N_TOYS, seed=SEED + 1, mode="syst")
+    stat_toys = run_toys(
+        blocks,
+        degrad,
+        central_result.x,
+        n_toys=N_STAT_TOYS,
+        seed=SEED,
+        mode="stat",
+    )
+    syst_toys = run_toys(
+        blocks,
+        degrad,
+        central_result.x,
+        n_toys=N_SYST_TOYS,
+        seed=SEED + 1,
+        mode="syst",
+    )
     stat_minus, stat_plus = asymmetric_spread(stat_toys, central_x)
     syst_minus, syst_plus = asymmetric_spread(syst_toys, central_x)
     total_minus = np.sqrt(stat_minus**2 + syst_minus**2)
@@ -461,6 +527,11 @@ def main() -> None:
     pd.DataFrame(correlation, index=PARAMETER_NAMES, columns=PARAMETER_NAMES).to_csv(
         fit_dir / f"{FIT_NAME}_correlation.csv"
     )
+    toy_correlation_metadata = export_joint_toy_correlations(
+        fit_dir,
+        stat_toys,
+        syst_toys,
+    )
 
     n_residuals = central_result.fun.size
     n_free = central_result.x.size
@@ -475,6 +546,7 @@ def main() -> None:
         "n_free_parameters": int(n_free),
         "n_stat_toys_valid": int(len(stat_toys)),
         "n_syst_toys_valid": int(len(syst_toys)),
+        "toy_correlations": toy_correlation_metadata,
         "max_concentration_percent": MAX_CONCENTRATION_PERCENT,
         "pressures_bar": list(PRESSURES),
         "shared_parameters": ["PAr_star", "K_Ar_Q_Ar"],

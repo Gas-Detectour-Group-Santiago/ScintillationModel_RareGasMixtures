@@ -258,33 +258,45 @@ class PrimaryFitRunner:
         return summary
 
     def export_toy_correlations(self, names, tex_names, stat_toys, syst_toys):
-        """Export only the empirical statistical toy correlations."""
+        """Export empirical covariance/correlation products for both toy families."""
         fit_prefix = self.fit_results_dir / self.config.name
         metadata: dict[str, dict[str, int | str]] = {}
 
-        cov, corr, n_valid = toy_covariance_correlation(stat_toys, names)
-        if self.config.is_infrared:
-            cov, corr = mask_independent_ir_line_blocks(cov, corr, names)
+        for kind, toys, display_name in (
+            ("stat", stat_toys, "statistical"),
+            ("syst", syst_toys, "systematic"),
+        ):
+            cov, corr, n_valid = toy_covariance_correlation(toys, names)
+            if self.config.is_infrared:
+                cov, corr = mask_independent_ir_line_blocks(cov, corr, names)
 
-        cov_path = fit_prefix.with_name(f"{self.config.name}_toy_covariance_stat.csv")
-        corr_path = fit_prefix.with_name(f"{self.config.name}_toy_correlation_stat.csv")
-        fig_path = fit_prefix.with_name(f"{self.config.name}_toy_correlation_stat.pdf")
+            cov_path = fit_prefix.with_name(
+                f"{self.config.name}_toy_covariance_{kind}.csv"
+            )
+            corr_path = fit_prefix.with_name(
+                f"{self.config.name}_toy_correlation_{kind}.csv"
+            )
+            fig_path = fit_prefix.with_name(
+                f"{self.config.name}_toy_correlation_{kind}.pdf"
+            )
 
-        export_dataframe(cov_path, cov)
-        export_dataframe(corr_path, corr)
-        plot_parameter_correlation(
-            fig_path,
-            corr,
-            labels=list(tex_names),
-            title=f"{self.config.name}: statistical toy parameter correlations",
-        )
+            export_dataframe(cov_path, cov)
+            export_dataframe(corr_path, corr)
+            plot_parameter_correlation(
+                fig_path,
+                corr,
+                labels=list(tex_names),
+                title=(
+                    f"{self.config.name}: {display_name} toy parameter correlations"
+                ),
+            )
 
-        metadata["stat"] = {
-            "n_valid_toys": int(n_valid),
-            "covariance_csv": str(cov_path.relative_to(self.project_root)),
-            "correlation_csv": str(corr_path.relative_to(self.project_root)),
-            "correlation_pdf": str(fig_path.relative_to(self.project_root)),
-        }
+            metadata[kind] = {
+                "n_valid_toys": int(n_valid),
+                "covariance_csv": str(cov_path.relative_to(self.project_root)),
+                "correlation_csv": str(corr_path.relative_to(self.project_root)),
+                "correlation_pdf": str(fig_path.relative_to(self.project_root)),
+            }
 
         return metadata
 

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from pathlib import Path
 from typing import Mapping
 
@@ -11,6 +12,41 @@ from scipy.interpolate import PchipInterpolator
 # Loschmidt number used in the TFM (ideal gas at the reference state).
 LOSCHMIDT_M3 = 2.6868e25
 SECONDS_PER_NANOSECOND = 1.0e-9
+
+
+ADDITIVE_PARAMETER_NAMES: tuple[str, ...] = (
+    "k_Ar_dbleStar_Q_m3_s",
+    "k_Ar_4s_Q_m3_s",
+    "k_Ar2star_Q_m3_s",
+)
+
+
+def normalise_additive_name(name: str | None) -> str:
+    """Return the canonical additive key used by the parameter CSV."""
+    if name is None:
+        return ""
+    compact = str(name).strip().upper().replace("-", "").replace("_", "").replace(" ", "")
+    aliases = {
+        "ARGON": "AR",
+        "NITROGEN": "N2",
+        "CARBONDIOXIDE": "CO2",
+        "METHANE": "CH4",
+    }
+    return aliases.get(compact, compact)
+
+
+def additive_from_mixture(gas_mixture: str | None) -> str:
+    """Infer the additive from names such as ArCF4, Ar-N2, ArCO2 or ArCH4."""
+    key = normalise_additive_name(gas_mixture)
+    if key in {"", "AR", "PUREAR", "PUREARGON"}:
+        return ""
+    if key.startswith("AR") and len(key) > 2:
+        return normalise_additive_name(key[2:])
+    return key
+
+
+def _additive_storage_key(parameter_name: str, additive: str) -> str:
+    return f"{parameter_name}__{normalise_additive_name(additive)}"
 
 
 AR_UPPER_CANDIDATES: tuple[str, ...] = (
@@ -43,13 +79,14 @@ DEFAULT_PARAMETERS: dict[str, float] = {
     "W_Ar_dbleStar_to_1s": 1.0,
     "tau_Ar_dbleStar_ns": 30.0,
     "k_Ar_dbleStar_Q_Ar_m3_s": 1.63e-17,
-    "k_Ar_dbleStar_Q_CF4_m3_s": 1.80e-16,
-    "k_Ar_dbleStar_Q_N2_m3_s": 1.58e-16,
-    "k_Ar_4s_Q_CF4_m3_s": 3.00e-17,
-    "k_Ar_4s_Q_N2_m3_s": 3.60e-17,
     "k_Ar_4s_Q_2Ar_m6_s": 1.00e-44,
-    "k_Ar2star_Q_CF4_m3_s": 3.00e-17,
-    "k_Ar2star_Q_N2_m3_s": 2.50e-17,
+    # Built-in fallbacks keep old scripts working when no CSV is supplied.
+    "k_Ar_dbleStar_Q_m3_s__CF4": 1.80e-16,
+    "k_Ar_4s_Q_m3_s__CF4": 3.00e-17,
+    "k_Ar2star_Q_m3_s__CF4": 3.00e-17,
+    "k_Ar_dbleStar_Q_m3_s__N2": 1.58e-16,
+    "k_Ar_4s_Q_m3_s__N2": 3.60e-17,
+    "k_Ar2star_Q_m3_s__N2": 2.24e-18,
     "tau_S_ns": 11.3,
     "tau_T_ns": 3140.0,
     "f_1Sigma": 0.1,
@@ -86,34 +123,57 @@ def _three_body_to_ns_inv(k_m6_s: float, loschmidt_m3: float) -> float:
     return float(k_m6_s) * float(loschmidt_m3) ** 2 * SECONDS_PER_NANOSECOND
 
 
-def _finalise_parameters(params: dict[str, float]) -> dict[str, float]:
-    """Derive pressure-normalised rates and Gaussian widths.
-
-    With n = p/(1 bar), a two-body term is n f K and a three-body term is
-    n^2 f_Ar^2 K. The K values below are obtained from the SI coefficients in
-    the parameter CSV using the Loschmidt number stored in that same file.
-    """
+def _finalise_parameters(params: dict[str, object]) -> dict[str, object]:
+    """Derive pressure-normalised rates and expose every CSV additive dynamically."""
     loschmidt = max(float(params.get("loschmidt_m3", LOSCHMIDT_M3)), 0.0)
 
     params["K_Ar_dbleStar_Q_Ar"] = _two_body_to_ns_inv(
         params["k_Ar_dbleStar_Q_Ar_m3_s"], loschmidt
     )
-    params["K_Ar_dbleStar_Q_CF4"] = _two_body_to_ns_inv(
-        params["k_Ar_dbleStar_Q_CF4_m3_s"], loschmidt
+    params["K_Ar_4s_Q_Ar"] = _two_body_to_ns_inv(
+        params.get("k_Ar_4s_Q_Ar_m3_s", params["k_Ar_dbleStar_Q_Ar_m3_s"]),
+        loschmidt,
     )
-    params["K_Ar_dbleStar_Q_N2"] = _two_body_to_ns_inv(
-        params["k_Ar_dbleStar_Q_N2_m3_s"], loschmidt
+    params["K_Ar_4s_Q_2Ar"] = _three_body_to_ns_inv(
+        params["k_Ar_4s_Q_2Ar_m6_s"], loschmidt
     )
-    params["K_Ar_4s_Q_CF4"] = _two_body_to_ns_inv(params["k_Ar_4s_Q_CF4_m3_s"], loschmidt)
-    params["K_Ar_4s_Q_N2"] = _two_body_to_ns_inv(params["k_Ar_4s_Q_N2_m3_s"], loschmidt)
-    params["K_Ar_4s_Q_2Ar"] = _three_body_to_ns_inv(params["k_Ar_4s_Q_2Ar_m6_s"], loschmidt)
-    params["K_Ar2star_Q_CF4"] = _two_body_to_ns_inv(params["k_Ar2star_Q_CF4_m3_s"], loschmidt)
-    params["K_Ar2star_Q_N2"] = _two_body_to_ns_inv(params["k_Ar2star_Q_N2_m3_s"], loschmidt)
 
-    # Table 19 does not quote a separate bimolecular 4s+Ar coefficient. In the
-    # compact TFM hypothesis, use the tabulated Ar**+Ar mean for the 4s cascade
-    # step as well. This only fixes the competition against the additive.
-    params["K_Ar_4s_Q_Ar"] = params["K_Ar_dbleStar_Q_Ar"]
+    additives: set[str] = set()
+    for key in tuple(params):
+        if "__" not in key:
+            continue
+        base, additive = key.rsplit("__", 1)
+        additive = normalise_additive_name(additive)
+        if base in ADDITIVE_PARAMETER_NAMES and additive:
+            additives.add(additive)
+
+    for additive in sorted(additives):
+        for source_name, target_name in (
+            ("k_Ar_dbleStar_Q_m3_s", "K_Ar_dbleStar_Q"),
+            ("k_Ar_4s_Q_m3_s", "K_Ar_4s_Q"),
+            ("k_Ar2star_Q_m3_s", "K_Ar2star_Q"),
+        ):
+            source = _additive_storage_key(source_name, additive)
+            if source not in params:
+                raise ValueError(
+                    f"Falta {source_name!r} para el aditivo {additive!r} en el CSV del segundo continuo"
+                )
+            params[_additive_storage_key(target_name, additive)] = _two_body_to_ns_inv(
+                params[source], loschmidt
+            )
+
+        # Compatibility aliases for the two historical gases.
+        params[f"K_Ar_dbleStar_Q_{additive}"] = params[
+            _additive_storage_key("K_Ar_dbleStar_Q", additive)
+        ]
+        params[f"K_Ar_4s_Q_{additive}"] = params[
+            _additive_storage_key("K_Ar_4s_Q", additive)
+        ]
+        params[f"K_Ar2star_Q_{additive}"] = params[
+            _additive_storage_key("K_Ar2star_Q", additive)
+        ]
+
+    params["available_additives"] = tuple(sorted(additives))
 
     f1 = float(np.clip(float(params.get("f_1Sigma", 0.1)), 0.0, 1.0))
     f3 = float(np.clip(float(params.get("f_3Sigma", 1.0 - f1)), 0.0, 1.0))
@@ -124,7 +184,6 @@ def _finalise_parameters(params: dict[str, float]) -> dict[str, float]:
         f1, f3 = f1 / norm, f3 / norm
     params["f_1Sigma"] = f1
     params["f_3Sigma"] = f3
-    # Backwards-compatible aliases used by old table helpers.
     params["f_S"] = f1
     params["f_S_Ar"] = f1
     params["f_S_CF4"] = f1
@@ -138,43 +197,70 @@ def _finalise_parameters(params: dict[str, float]) -> dict[str, float]:
     return params
 
 
-def read_ar2nd_parameters(path: str | Path) -> dict[str, float]:
-    """Read the name-based second-continuum parameter CSV."""
-    params = dict(DEFAULT_PARAMETERS)
-    path = Path(path)
-    if not path.exists():
-        raise FileNotFoundError(f"No encuentro el CSV de parámetros del segundo continuo: {path}")
-    df = pd.read_csv(path)
+def available_additives(params: Mapping[str, object]) -> tuple[str, ...]:
+    values = params.get("available_additives", ())
+    return tuple(str(value) for value in values)
+
+
+def _load_parameter_frame(df: pd.DataFrame, base: dict[str, object]) -> dict[str, object]:
+    """Load both the new long CSV and the legacy name/value layout."""
     if "name" not in df.columns:
-        raise ValueError(f"{path} debe contener una columna 'name'")
+        raise ValueError("El CSV de parámetros debe contener una columna 'name'")
     value_col = "value" if "value" in df.columns else None
     if value_col is None:
         numeric = df.select_dtypes(include=["number"])
         if numeric.empty:
-            raise ValueError(f"{path} debe contener una columna numérica de valores")
+            raise ValueError("El CSV de parámetros debe contener una columna numérica de valores")
         value_col = str(numeric.columns[0])
+
+    is_long = {"scope", "additive"}.issubset(df.columns)
     for _, row in df.iterrows():
         name = str(row["name"]).strip()
         value = row[value_col]
-        if name and pd.notna(value):
-            params[name] = float(value)
+        if not name or pd.isna(value):
+            continue
+        if is_long and str(row.get("scope", "common")).strip().lower() == "additive":
+            additive = normalise_additive_name(str(row.get("additive", "")))
+            if not additive:
+                raise ValueError(f"Fila aditiva sin gas para el parámetro {name!r}")
+            base[_additive_storage_key(name, additive)] = float(value)
+            continue
+
+        # Legacy additive names are translated into the new generic storage.
+        legacy = re.match(
+            r"^(k_Ar_dbleStar_Q|k_Ar_4s_Q|k_Ar2star_Q)_([A-Za-z0-9]+)_m3_s$",
+            name,
+        )
+        if legacy and legacy.group(2).upper() != "AR":
+            generic = f"{legacy.group(1)}_m3_s"
+            base[_additive_storage_key(generic, legacy.group(2))] = float(value)
+        else:
+            base[name] = float(value)
+    return base
+
+
+def read_ar2nd_parameters(path: str | Path) -> dict[str, object]:
+    """Read the common and additive-specific second-continuum parameter database."""
+    params: dict[str, object] = dict(DEFAULT_PARAMETERS)
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(f"No encuentro el CSV de parámetros del segundo continuo: {path}")
+    params = _load_parameter_frame(pd.read_csv(path), params)
     return _finalise_parameters(params)
 
 
-def _parameter_dict(params: Mapping[str, float] | pd.DataFrame | None) -> dict[str, float]:
-    out = dict(DEFAULT_PARAMETERS)
+def _parameter_dict(params: Mapping[str, object] | pd.DataFrame | None) -> dict[str, object]:
+    out: dict[str, object] = dict(DEFAULT_PARAMETERS)
     if params is None:
         return _finalise_parameters(out)
     if isinstance(params, pd.DataFrame):
-        if "name" not in params.columns:
-            raise ValueError("El DataFrame de parámetros debe contener una columna 'name'")
-        numeric_cols = list(params.select_dtypes(include=["number"]).columns)
-        value_col = "value" if "value" in params.columns else numeric_cols[0]
-        for _, row in params.iterrows():
-            if pd.notna(row[value_col]):
-                out[str(row["name"]).strip()] = float(row[value_col])
+        out = _load_parameter_frame(params, out)
     else:
-        out.update({str(k): float(v) for k, v in params.items()})
+        for key, value in params.items():
+            if key == "available_additives":
+                continue
+            if isinstance(value, (int, float, np.integer, np.floating)):
+                out[str(key)] = float(value)
     return _finalise_parameters(out)
 
 
@@ -294,22 +380,26 @@ def _singlet_fraction_for_additive(
     return np.full_like(np.asarray(f_additive, dtype=float), _singlet_fraction(params, gas_mixture))
 
 
-def _additive_rates(params: Mapping[str, float], gas_mixture: str) -> tuple[float, float, float]:
-    """Return Ar**, Ar(4s), and Ar2* additive rates [ns-1 at n=1]."""
-    gas_key = gas_mixture.upper().replace("-", "")
-    if "CF4" in gas_key:
-        return (
-            _positive_rate(params["K_Ar_dbleStar_Q_CF4"]),
-            _positive_rate(params["K_Ar_4s_Q_CF4"]),
-            _positive_rate(params["K_Ar2star_Q_CF4"]),
+def _additive_rates(
+    params: Mapping[str, object],
+    gas_mixture: str | None,
+    additive: str | None = None,
+) -> tuple[float, float, float]:
+    """Return Ar**, Ar(4s), and Ar2* rates selected from the CSV database."""
+    additive_key = normalise_additive_name(additive) or additive_from_mixture(gas_mixture)
+    if not additive_key:
+        return 0.0, 0.0, 0.0
+
+    names = ("K_Ar_dbleStar_Q", "K_Ar_4s_Q", "K_Ar2star_Q")
+    keys = tuple(_additive_storage_key(name, additive_key) for name in names)
+    missing = [key for key in keys if key not in params]
+    if missing:
+        known = ", ".join(available_additives(params)) or "ninguno"
+        raise ValueError(
+            f"No hay cinética completa del segundo continuo para {additive_key!r}. "
+            f"Aditivos disponibles en el CSV: {known}. Faltan: {', '.join(missing)}"
         )
-    if "N2" in gas_key:
-        return (
-            _positive_rate(params["K_Ar_dbleStar_Q_N2"]),
-            _positive_rate(params["K_Ar_4s_Q_N2"]),
-            _positive_rate(params["K_Ar2star_Q_N2"]),
-        )
-    return 0.0, 0.0, 0.0
+    return tuple(_positive_rate(float(params[key])) for key in keys)
 
 
 def _upper_cascade_probability(
@@ -360,11 +450,12 @@ def _base_yield_per_keV(
     f_additive: np.ndarray,
     n: float,
     *,
-    gas_mixture: str,
+    gas_mixture: str | None,
+    additive: str | None = None,
     energy_xray_kev: float,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Fast and slow second-continuum yields per keV from the TFM equation."""
-    k_upper_add, k_4s_add, k_excimer_add = _additive_rates(params, gas_mixture)
+    k_upper_add, k_4s_add, k_excimer_add = _additive_rates(params, gas_mixture, additive)
     # Use the actual additive fraction continuously.  Pure argon is obtained
     # only at f_additive = 0; no numerical switch is applied near zero, which
     # avoids an artificial discontinuity in the 99.9--99.999% Ar extrapolation.
@@ -390,7 +481,8 @@ def theory_yield_ar2nd_continium(
     f_additive,
     n: float,
     *,
-    gas_mixture: str,
+    gas_mixture: str | None = None,
+    additive: str | None = None,
     n_norm: float = 1.0,
     energy_xray_ev: float = 1.0,
     activate_components: bool = False,
@@ -411,6 +503,7 @@ def theory_yield_ar2nd_continium(
         f,
         n,
         gas_mixture=gas_mixture,
+        additive=additive,
         energy_xray_kev=float(energy_xray_ev),
     )
     scale = float(p.get("scale_Ar2nd", 1.0))
@@ -428,6 +521,7 @@ def theory_yield_ar2nd_continium(
             ref_f,
             float(p.get("reference_pressure_bar", 1.0)),
             gas_mixture=gas_mixture,
+            additive=additive,
             energy_xray_kev=float(energy_xray_ev),
         )
         ref = float((ref_s + triplet_weight * ref_t)[0] * scale)

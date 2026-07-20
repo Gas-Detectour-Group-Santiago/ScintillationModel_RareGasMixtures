@@ -221,6 +221,147 @@ PURE_N2_ENERGY_CASES: tuple[PureN2EnergyCaseConfig, ...] = (
 PURE_N2_ENERGY_OUTPUT_CSV = PRIMARY_DIR / "ArN2_pure_energy_cases.csv"
 
 
+ELECTRONS_XRAY_OUTPUT_CSV = PRIMARY_DIR / "electrons_xRay_energy_cases.csv"
+ENERGY_SCAN_DIRS: tuple[Path, ...] = (
+    PRIMARY_DIR / "photons" / "OUTPUTS",
+    PRIMARY_DIR / "Electrons" / "OUTPUTS",
+)
+
+
+def degrad_config_electrons_xray() -> pd.DataFrame:
+    """All populations needed by the primary electron/X-ray comparison plots."""
+    return pd.DataFrame(
+        {
+            "CF4": [["ION CF3 +"], "CF4", 15.0, 100.0, "CF4"],
+            "CF3": [["NEUTRAL DISS"], "CF4", E_TH_CF3, 100.0, "CF3"],
+            "N2*": [["C 3PI"], "NITROGEN", 11.0, 15.5, "N2_star"],
+            "Ar3rd": [["CHARGE STATE ="], "ARGON", 40.0, 100.0, "Ar_3rd"],
+            "Ar**": [["EXC"], "ARGON", E_TH_AR2ND_UPPER, 100.0, "Ar_dbleStar"],
+            "Ar(1s4,1s5)": [["EXC"], "ARGON", 11.50, 11.70, "Ar_1s4_1s5"],
+            "Ar(1s2,1s3)": [["EXC"], "ARGON", 11.70, 12.00, "Ar_1s2_1s3"],
+        },
+        index=["name principal", "gas", "energy low", "energy up", "name output"],
+    )
+
+
+def parse_energy_scan_filename(path: Path) -> dict[str, object]:
+    pattern = re.compile(
+        r"^output_(?P<mixture>.+?)_E_(?P<field>[0-9.]+)Vcmbar_"
+        r"P_(?P<pressure>[0-9.]+)bar_(?P<particle>Electron|Photon)_"
+        r"(?P<energy>[0-9.]+)keV$",
+        flags=re.IGNORECASE,
+    )
+    match = pattern.match(path.stem)
+    if match is None:
+        raise ValueError(f"Nombre de entrada electron/X-ray no reconocido: {path.name}")
+
+    mixture_token = match.group("mixture")
+    mixed = re.fullmatch(
+        r"(?P<ar>[0-9.]+)Argon(?P<add>[0-9.]+)(?P<additive>[A-Za-z][A-Za-z0-9]*)",
+        mixture_token,
+        flags=re.IGNORECASE,
+    )
+    if mixed:
+        additive = mixed.group("additive").upper()
+        additive = "N2" if additive == "NITROGEN" else additive
+        additive_fraction = float(mixed.group("add")) / 100.0
+        gas_mixture = f"Ar{additive}"
+        gas_label = f"{mixed.group('ar')}Ar/{mixed.group('add')}{additive}"
+    else:
+        pure_alias = {
+            "ARGON": "Ar",
+            "AR": "Ar",
+            "CF4": "CF4",
+            "N2": "N2",
+            "NITROGEN": "N2",
+            "XENON": "Xe",
+            "XE": "Xe",
+        }
+        gas_mixture = pure_alias.get(mixture_token.upper(), mixture_token)
+        gas_label = gas_mixture
+        additive = ""
+        additive_fraction = 0.0
+
+    particle_raw = match.group("particle").lower()
+    particle = "xray" if particle_raw == "photon" else "electron"
+    return {
+        "id": f"{gas_mixture}_{particle}_{match.group('energy')}keV",
+        "particle": particle,
+        "degrad_particle": particle_raw,
+        "energy_kev": float(match.group("energy")),
+        "electric_field_v_cm_bar": float(match.group("field")),
+        "pressure_bar": float(match.group("pressure")),
+        "gas_label": gas_label,
+        "gas_mixture": gas_mixture,
+        "additive": additive,
+        "additive_fraction": additive_fraction,
+        "source_txt": str(path.relative_to(ROOT_DIR)),
+    }
+
+
+def analyse_electrons_xray_energy_cases() -> pd.DataFrame:
+    """Convert the dedicated photon/electron Degrad runs into one tidy CSV."""
+    files = sorted(
+        path
+        for folder in ENERGY_SCAN_DIRS
+        if folder.is_dir()
+        for path in folder.glob("*.txt")
+    )
+    if not files:
+        raise FileNotFoundError(
+            "No hay entradas en data/Primary_DegradData/{photons,Electrons}/OUTPUTS"
+        )
+
+    selection = degrad_config_electrons_xray()
+    rows: list[dict[str, object]] = []
+    for txt_path in files:
+        metadata = parse_energy_scan_filename(txt_path)
+        df = read_degrad_txt(txt_path)
+        row = dict(metadata)
+        row.update(read_degrad_excitation_summary(txt_path))
+
+        wexc_from_count = float(row["energy_kev"]) * 1000.0 / max(
+            float(row["total_excitations"]), 1.0e-30
+        )
+        if not np.isclose(wexc_from_count, float(row["Wexc_eV"]), rtol=5.0e-4, atol=5.0e-3):
+            raise ValueError(
+                f"Wexc inconsistente en {txt_path.name}: summary={row['Wexc_eV']}, "
+                f"E/Nexc={wexc_from_count}"
+            )
+
+        for col in selection.columns:
+            out_name = selection.loc["name output", col]
+            value, err = select_population(
+                df,
+                selection.loc["name principal", col],
+                selection.loc["gas", col],
+                selection.loc["energy low", col],
+                selection.loc["energy up", col],
+            )
+            row[out_name] = value
+            row[f"Err{out_name}"] = err
+        row["Ar_2nd_precursor"] = sum(
+            float(row[name]) for name in ("Ar_1s4_1s5", "Ar_1s2_1s3", "Ar_dbleStar")
+        )
+        row["ErrAr_2nd_precursor"] = float(
+            np.sqrt(
+                sum(
+                    float(row[f"Err{name}"]) ** 2
+                    for name in ("Ar_1s4_1s5", "Ar_1s2_1s3", "Ar_dbleStar")
+                )
+            )
+        )
+        rows.append(row)
+
+    out = pd.DataFrame(rows).sort_values(
+        ["gas_mixture", "particle", "energy_kev"]
+    ).reset_index(drop=True)
+    ELECTRONS_XRAY_OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    out.to_csv(ELECTRONS_XRAY_OUTPUT_CSV, index=False)
+    print(f"✅ electrons_xRay_energy_cases: {ELECTRONS_XRAY_OUTPUT_CSV.relative_to(ROOT_DIR)}")
+    return out
+
+
 def is_auxiliary_pure_n2_energy_file(path: Path) -> bool:
     """Files used only in the dedicated energy table, not in concentration scans.
 
@@ -368,6 +509,40 @@ def read_degrad_txt(path: Path) -> pd.DataFrame:
         raise ValueError(f"No pude separar gases en {path}")
 
     return pd.concat(frames, ignore_index=True)
+
+
+def read_degrad_excitation_summary(path: Path) -> dict[str, float]:
+    """Read Degrad's own total-excitation count and Wexc summary.
+
+    These quantities are taken from the Fano-summary block instead of being
+    reconstructed from channel names, which is especially important for
+    molecular gases such as CF4 and N2.
+    """
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    number = r"[-+]?\d*\.?\d+(?:[DEde][-+]?\d+)?"
+
+    def extract(pattern: str, label: str) -> tuple[float, float]:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match is None:
+            raise ValueError(f"No encontré {label} en {path}")
+        value = float(match.group("value").replace("D", "E").replace("d", "e"))
+        error = float(match.group("error").replace("D", "E").replace("d", "e"))
+        return value, error
+
+    n_exc, n_exc_err = extract(
+        rf"NUMBER OF EXCITATIONS PER EVENT\s*=\s*(?P<value>{number})\s*\+-\s*(?P<error>{number})",
+        "NUMBER OF EXCITATIONS PER EVENT",
+    )
+    w_exc, w_exc_err = extract(
+        rf"ENERGY PER EXCITATION\s*=\s*(?P<value>{number})\s*\+-\s*(?P<error>{number})\s*EV",
+        "ENERGY PER EXCITATION",
+    )
+    return {
+        "total_excitations": n_exc,
+        "Errtotal_excitations": n_exc_err,
+        "Wexc_eV": w_exc,
+        "ErrWexc_eV": w_exc_err,
+    }
 
 
 def save_split_raw_csvs(df: pd.DataFrame, raw_csv_dir: Path, txt_path: Path, gas1: str, gas2: str) -> None:
@@ -537,6 +712,7 @@ def main() -> None:
     for config in RUNS:
         analyse_degrad_run(config)
     analyse_n2_pure_energy_cases()
+    analyse_electrons_xray_energy_cases()
 
 
 if __name__ == "__main__":

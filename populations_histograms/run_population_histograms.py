@@ -79,7 +79,7 @@ except Exception:  # pragma: no cover - fallback for standalone use
 
 
 DEFAULT_INPUT_DIR = ROOT / "data" / "Secondary_GarfieldData" / "levels"
-DEFAULT_OUTPUT_DIR = ROOT / "populations_histograms" / "pdf"
+DEFAULT_OUTPUT_DIR = ROOT / "outputs" / "populations" / "plots"
 DEFAULT_BIN_WIDTH_EV = 0.5
 # Main TFM figures are restricted to the physically useful/visible region.
 DEFAULT_MAX_ENERGY_EV = 50.0

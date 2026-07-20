@@ -142,3 +142,35 @@ Main extra products:
 - `data/Predictions/ArJoint_IR_primary_low_pressure_pure_ar.csv`
 - `data/Tables/ArJoint_IR_primary_low_pressure_pure_ar.tex`
 - `primary_predictions/plots/primary_bands/joint_ir/*.pdf`
+
+
+Electron versus X-ray Degrad predictions
+-----------------------------------------
+
+The dedicated energy-comparison runner reads every TXT in
+`data/Primary_DegradData/photons/OUTPUTS` and
+`data/Primary_DegradData/Electrons/OUTPUTS`, evaluates the N2 UV, CF4 VIS,
+Ar2 second-continuum in 99/1 Ar--CF4, and Ar2 second-continuum in pure Ar.
+The fitted channels use the Ar--CF4 normalization by default; the Ar2 model
+is already absolute and therefore is not divided by a fitted optical Nnorm.
+The simulated population per keV is interpolated in log-energy without
+extrapolating beyond the available points.
+
+```bash
+python data/Analysis_primary_degrad.py
+python primary_predictions/run_electrons_xray_predictions.py
+```
+
+The normal primary runner calls this comparison by default. Outputs are:
+
+- `data/Primary_DegradData/electrons_xRay_energy_cases.csv`
+- `data/Predictions/electrons_xRay_primary_yields.csv`
+- `data/Predictions/electrons_xRay_primary_yields_interpolated.csv`
+- `primary_predictions/plots/electrons_xRay/*.pdf`
+
+The figures use the shared root-level `plot_style.py`. The channel color
+identifies the emitted band. X rays use circles and solid lines; electrons use
+squares and dashed lines. The absolute panel is log-log, and the relative
+panel divides each channel by its 12 keV X-ray prediction. The pure-Ar
+electron series currently contains only the simulated 12 keV point, so no
+interpolating electron line is drawn for that channel.

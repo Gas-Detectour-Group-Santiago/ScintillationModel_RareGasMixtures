@@ -5,9 +5,11 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$ROOT_DIR"
 
 export PYTHONUNBUFFERED=1
-# Paper default: keep pseudo-experiments high enough for stable bands.
-# Override with, e.g.: PRIMARY_FIT_N_TOYS=100 bash run_all.sh
+
+# Toy statistics used by every primary fit. Override from the command line:
+#   PRIMARY_FIT_N_TOYS=100 JOINT_IR_N_TOYS=100 bash run_all.sh
 export PRIMARY_FIT_N_TOYS="${PRIMARY_FIT_N_TOYS:-300}"
+export JOINT_IR_N_TOYS="${JOINT_IR_N_TOYS:-$PRIMARY_FIT_N_TOYS}"
 
 run_step() {
   local directory="$1"
@@ -23,33 +25,71 @@ run_step() {
     return 0
   fi
 
-  printf '\n[run] %s/%s %s\n' "$directory" "$script" "$*"
+  printf '\n[run] %s/%s' "$directory" "$script"
+  if (( $# > 0 )); then
+    printf ' %s' "$*"
+  fi
+  printf '\n'
+
   (
     cd "$directory"
     python3 "$script" "$@"
   )
 }
 
-# Rebuild curated CSV inputs from raw pickles/TXT/ROOT files unless explicitly skipped.
-# Use RUN_DATA_ANALYSIS=0 bash run_all.sh to reuse already exported CSVs.
+run_stage() {
+  local title="$1"
+  printf '\n\n============================================================\n'
+  printf '[stage] %s\n' "$title"
+  printf '============================================================\n'
+}
+
+# -----------------------------------------------------------------------------
+# 1. ANALYSIS
+# Rebuild all curated experimental, spectral, Degrad and Garfield++ CSV inputs.
+# Set RUN_DATA_ANALYSIS=0 only when the existing curated CSVs must be reused.
+# -----------------------------------------------------------------------------
+run_stage "1/5 ANALYSIS"
 if [[ "${RUN_DATA_ANALYSIS:-1}" != "0" ]]; then
   run_step data run_analysis.py
+else
+  printf '\n[skip] data analysis disabled with RUN_DATA_ANALYSIS=0\n'
 fi
 
-# Fits must run before predictions when a fully fresh analysis is requested.
-# These are the slowest/noisiest outputs; PRIMARY_FIT_N_TOYS defaults to 300 above.
-run_step data run_analysis.py
+# -----------------------------------------------------------------------------
+# 2. PRIMARY PREDICTIONS
+# The main runner regenerates tables, bands, multibands and electron/X-ray plots.
+# The two extra runners cover low-pressure IR and the separate joint-IR products.
+# Existing PDFs/CSVs are overwritten; nothing is deleted before starting.
+# -----------------------------------------------------------------------------
+run_stage "2/5 PRIMARY PREDICTIONS"
+run_step primary_predictions run_primary_predictions.py
+run_step primary_predictions run_primary_ir_low_pressure_predictions.py
+run_step primary_predictions run_joint_ir_predictions.py
+
+# -----------------------------------------------------------------------------
+# 3. SECONDARY PREDICTIONS
+# Regenerates paper plots, comparison plots, metadata plots and secondary tables.
+# UV and VUV are already included in this complete runner.
+# -----------------------------------------------------------------------------
+run_stage "3/5 SECONDARY PREDICTIONS"
+run_step secondary_predictions run_secondary_predictions.py
+
+# -----------------------------------------------------------------------------
+# 4. SPECTRA
+# Regenerates raw, generated, comparison and annotated spectra and VUV tables.
+# -----------------------------------------------------------------------------
+run_stage "4/5 SPECTRA"
+run_step spectra run_all_spectra.py
+
+# -----------------------------------------------------------------------------
+# 5. FITS
+# Deliberately last: regenerates all independent fits plus the joint IR fit,
+# including parameter tables, fit plots, toys, covariance and correlations.
+# -----------------------------------------------------------------------------
+run_stage "5/5 PRIMARY FITS"
 run_step primary_fits run_primary_fits.py
 
-run_step primary_predictions run_primary_predictions.py
-run_step primary_predictions run_primary_multiband_predictions.py
-run_step primary_predictions run_primary_ir_low_pressure_predictions.py
-run_step secondary_predictions run_secondary_predictions.py
-run_step spectra run_all_spectra.py
-run_step integral_comparations run_integral_comparisons.py
-run_step cross_sections plot_cross_section.py
-run_step populations_histograms run_population_histograms.py
-
-printf '
-[done] full analysis pipeline finished. PRIMARY_FIT_N_TOYS=%s RUN_DATA_ANALYSIS=%s
-' "$PRIMARY_FIT_N_TOYS" "${RUN_DATA_ANALYSIS:-1}"
+printf '\n[done] full pipeline finished in the requested order.\n'
+printf '[done] PRIMARY_FIT_N_TOYS=%s JOINT_IR_N_TOYS=%s RUN_DATA_ANALYSIS=%s\n' \
+  "$PRIMARY_FIT_N_TOYS" "$JOINT_IR_N_TOYS" "${RUN_DATA_ANALYSIS:-1}"

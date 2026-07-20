@@ -23,6 +23,9 @@ from primary_predictions.configs import (  # noqa: E402
 from primary_predictions.auxiliares.n2_pure_energy_tables import (  # noqa: E402
     export_n2_pure_energy_prediction_table,
 )
+from primary_predictions.auxiliares.electrons_xray_predictions import (  # noqa: E402
+    export_electrons_xray_predictions,
+)
 
 
 def main(
@@ -31,6 +34,7 @@ def main(
     make_bands: bool = True,
     make_plots: bool = True,
     make_multibands: bool = True,
+    make_electrons_xray: bool = True,
     overwrite_bands: bool = True,
 ):
     runner = PredictionRunner(PROJECT_ROOT, PRIMARY_ADAPTERS)
@@ -136,6 +140,9 @@ def main(
             arcf4_ir_multiband_plots() + arn2_ir_multiband_plots_arcf4_norm(),
             overwrite=overwrite_bands,
         )
+
+    if make_electrons_xray:
+        export_electrons_xray_predictions(PROJECT_ROOT, make_plots=make_plots)
 
 
 if __name__ == "__main__":

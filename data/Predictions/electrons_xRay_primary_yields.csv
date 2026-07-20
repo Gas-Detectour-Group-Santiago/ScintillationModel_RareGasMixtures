@@ -1,0 +1,20 @@
+channel,channel_label,particle,energy_kev,yield_ph_MeV,gas_mixture,pressure_bar,electric_field_v_cm_bar,source_txt,normalization
+Ar2nd_99_1,Ar 2nd (99/1),electron,12.0,916.3447212074194,ArCF4,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_99Argon1CF4_E_50.0Vcmbar_P_1bar_Electron_12keV.txt,ArCF4
+Ar2nd_99_1,Ar 2nd (99/1),electron,1500.0,896.3069171013834,ArCF4,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_99Argon1CF4_E_50.0Vcmbar_P_1bar_Electron_1500keV.txt,ArCF4
+Ar2nd_99_1,Ar 2nd (99/1),xray,8.0,901.7658409411946,ArCF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_99Argon1CF4_E_50.0Vcmbar_P_1bar_Photon_8keV.txt,ArCF4
+Ar2nd_99_1,Ar 2nd (99/1),xray,12.0,911.3964444935806,ArCF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_99Argon1CF4_E_50.0Vcmbar_P_1bar_Photon_12keV.txt,ArCF4
+Ar2nd_99_1,Ar 2nd (99/1),xray,30.0,894.6213732557345,ArCF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_99Argon1CF4_E_50.0Vcmbar_P_1bar_Photon_30keV.txt,ArCF4
+Ar2nd_pure,Ar 2nd (pure Ar),electron,12.0,17041.483333333337,Ar,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_Argon_E_50.0Vcmbar_P_1bar_Electron_12keV.txt,ArCF4
+Ar2nd_pure,Ar 2nd (pure Ar),xray,8.0,16685.337499999994,Ar,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_Argon_E_50.0Vcmbar_P_1bar_Photon_8keV.txt,ArCF4
+Ar2nd_pure,Ar 2nd (pure Ar),xray,12.0,16928.316666666666,Ar,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_Argon_E_50.0Vcmbar_P_1bar_Photon_12keV.txt,ArCF4
+Ar2nd_pure,Ar 2nd (pure Ar),xray,30.0,16483.296666666665,Ar,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_Argon_E_50.0Vcmbar_P_1bar_Photon_30keV.txt,ArCF4
+CF4_VIS,CF$_4$ VIS,electron,12.0,993.7653582161469,CF4,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_CF4_E_50.0Vcmbar_P_1bar_Electron_12keV.txt,ArCF4
+CF4_VIS,CF$_4$ VIS,electron,1500.0,997.669783104491,CF4,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_CF4_E_50.0Vcmbar_P_1bar_Electron_1500keV.txt,ArCF4
+CF4_VIS,CF$_4$ VIS,xray,8.0,988.4200353778867,CF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_CF4_E_50.0Vcmbar_P_1bar_Photon_8keV.txt,ArCF4
+CF4_VIS,CF$_4$ VIS,xray,12.0,989.1898805897133,CF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_CF4_E_50.0Vcmbar_P_1bar_Photon_12keV.txt,ArCF4
+CF4_VIS,CF$_4$ VIS,xray,30.0,994.0701427180817,CF4,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_CF4_E_50.0Vcmbar_P_1bar_Photon_30keV.txt,ArCF4
+N2_UV,N$_2$ UV,electron,12.0,252.27365067903182,N2,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_N2_E_50.0Vcmbar_P_1bar_Electron_12keV.txt,ArCF4
+N2_UV,N$_2$ UV,electron,1500.0,250.27019010442007,N2,1.0,50.0,Primary_DegradData/Electrons/OUTPUTS/output_N2_E_50.0Vcmbar_P_1bar_Electron_1500keV.txt,ArCF4
+N2_UV,N$_2$ UV,xray,8.0,250.7270011682608,N2,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_N2_E_50.0Vcmbar_P_1bar_Photon_8keV.txt,ArCF4
+N2_UV,N$_2$ UV,xray,12.0,250.96125517012385,N2,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_N2_E_50.0Vcmbar_P_1bar_Photon_12keV.txt,ArCF4
+N2_UV,N$_2$ UV,xray,30.0,253.35594715002432,N2,1.0,50.0,Primary_DegradData/photons/OUTPUTS/output_N2_E_50.0Vcmbar_P_1bar_Photon_30keV.txt,ArCF4

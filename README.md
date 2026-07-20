@@ -115,6 +115,12 @@ python populations_histograms/run_population_histograms.py
 
 Most modules can also be run independently while editing a specific figure or table.
 
+The primary prediction runner also creates the Degrad electron/X-ray energy
+comparison in `primary_predictions/plots/electrons_xRay/`. It contains N2 UV,
+CF4 VIS, the Ar second continuum in 99/1 Ar--CF4, and the pure-Ar second
+continuum. Fitted channels use the Ar--CF4 normalization by default, and all
+figures use the shared `plot_style.py`.
+
 ## Main configuration points
 
 The project is deliberately config-driven. In normal use you should edit the configuration files, not the plotting or runner internals.
