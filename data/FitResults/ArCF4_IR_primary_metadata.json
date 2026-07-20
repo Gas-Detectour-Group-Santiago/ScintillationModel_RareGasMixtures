@@ -22,6 +22,12 @@
       "covariance_csv": "data/FitResults/ArCF4_IR_primary_toy_covariance_stat.csv",
       "correlation_csv": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.csv",
       "correlation_pdf": "data/FitResults/ArCF4_IR_primary_toy_correlation_stat.pdf"
+    },
+    "syst": {
+      "n_valid_toys": 300,
+      "covariance_csv": "data/FitResults/ArCF4_IR_primary_toy_covariance_syst.csv",
+      "correlation_csv": "data/FitResults/ArCF4_IR_primary_toy_correlation_syst.csv",
+      "correlation_pdf": "data/FitResults/ArCF4_IR_primary_toy_correlation_syst.pdf"
     }
   }
 }
