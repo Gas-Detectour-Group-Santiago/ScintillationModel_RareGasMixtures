@@ -14,7 +14,11 @@ from scintillation.plotting.style import FIGSIZE_WIDE,LINEWIDTH_MAIN,MARKERSIZE,
 
 
 def _label(value: object,column: str|None)->str:
-    return f"{float(value):g}%" if column=="concentration_percent" else str(value)
+    if column=="concentration_percent":
+        return f"{float(value):g}%"
+    if column=="pressure":
+        return f"{float(value):g} bar"
+    return str(value)
 
 def _render_scans(catalog: pd.DataFrame)->None:
     setup_style(grid=False,use_latex=False,context="single")
@@ -38,7 +42,8 @@ def _render_scans(catalog: pd.DataFrame)->None:
                         color=colors[idx],linewidth=LINEWIDTH_MAIN,markersize=MARKERSIZE,
                         label=None if value is None else _label(value,spec.series))
             ax.set(xlabel=spec.xlabel,ylabel=spec.ylabel,xscale=spec.xscale,yscale=spec.yscale)
-            ax.set_title(spec.scan_id.replace("_"," ")+(f" — {facet}" if spec.facet else ""))
+            base_title = spec.title if spec.title else spec.scan_id.replace("_"," ")
+            ax.set_title(base_title + (f" — {facet}" if spec.facet else ""))
             if spec.series:
                 ax.legend(
                     title=spec.series.replace("_", " "),
@@ -52,10 +57,11 @@ def _render_scans(catalog: pd.DataFrame)->None:
             relative = Path(spec.output)
             out = paths.figures / relative
             out.mkdir(parents=True, exist_ok=True)
-            fig.savefig(out/f"{facet}.pdf"); plt.close(fig)
+            stem = spec.scan_id if spec.facet is None else str(facet)
+            fig.savefig(out/f"{stem}.pdf"); plt.close(fig)
             if export_data:
-                cache=paths.secondary_cache/"scans"/spec.scan_id; cache.mkdir(parents=True,exist_ok=True)
-                subset.to_csv(cache/f"{facet}.csv.gz",index=False,compression="gzip")
+                cache=paths.secondary_cache/"alpha_studies"/spec.scan_id; cache.mkdir(parents=True,exist_ok=True)
+                subset.to_csv(cache/f"{stem}.csv.gz",index=False,compression="gzip")
 
 def main()->None:
     runtime=LegacyRuntime.from_root(ROOT); runtime.prepare()

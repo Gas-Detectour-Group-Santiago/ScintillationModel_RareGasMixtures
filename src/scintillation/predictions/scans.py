@@ -25,6 +25,7 @@ class ScanSpec:
     filters: Mapping[str, object]
     output: str
     status: str
+    title: str | None = None
 
     @property
     def active(self) -> bool:
@@ -64,6 +65,7 @@ def load_secondary_scans(project_root: str | Path) -> tuple[ScanSpec, ...]:
                 filters=filters,
                 output=str(row.get("output", f"secondary/scans/{row['plot_id']}")),
                 status="active" if as_bool(row.get("enabled"), True) else "disabled",
+                title=_optional(row.get("title")),
             )
         )
     return tuple(scans)
