@@ -1,3 +1,0 @@
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/printGas/build/CMakeFiles/export_all_levels.dir
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/printGas/build/CMakeFiles/edit_cache.dir
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/printGas/build/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,10 @@
+mixture_id,label,base_gas,additive,primary_fit,ir_fit,default_xray_energy_keV,default_normalization,second_continuum,status,notes
+ArCF4,Ar--CF4,Ar,CF4,ArCF4_primary,ArCF4_IR_primary,15.0,ArCF4,True,active,Primary UV/VIS/IR and Ar second-continuum model.
+ArN2,Ar--N2,Ar,N2,ArN2_primary,ArN2_IR_primary,12.0,ArCF4,True,active,Primary UV/IR; comparison convention defaults to ArCF4 normalization.
+ArCO2,Ar--CO2,Ar,CO2,,,15.0,ArCF4,True,planned,Enable after adding Degrad/Garfield inputs and three second-continuum quenching coefficients.
+ArCH4,Ar--CH4,Ar,CH4,,,15.0,ArCF4,True,planned,Enable after adding Degrad/Garfield inputs and three second-continuum quenching coefficients.
+AriC4H10,Ar--iC4H10,Ar,iC4H10,,,15.0,ArCF4,True,planned,Reserved for future isobutane population and quenching data.
+CF4,CF4,CF4,,,,15.0,ArCF4,False,active,Pure CF4 primary visible/VUV input cases.
+N2,N2,N2,,,,12.0,ArCF4,False,active,Pure N2 primary UV input cases.
+Ar,Ar,Ar,,,,15.0,absolute,True,active,Pure argon reference.
+Xe,Xe,Xe,,,,15.0,absolute,False,active,Pure xenon Wexc reference cases.

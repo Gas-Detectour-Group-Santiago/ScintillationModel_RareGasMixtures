@@ -1,0 +1,12 @@
+model_id,scope,name,unit,required,description
+argon_second_continuum,common,loschmidt_m3,m^-3,True,Reference number density.
+argon_second_continuum,common,W_Ar_dbleStar_to_1s,dimensionless,True,Feed-down weight from upper Ar states.
+argon_second_continuum,common,tau_Ar_dbleStar_ns,ns,True,Upper-state lifetime.
+argon_second_continuum,common,k_Ar_dbleStar_Q_Ar_m3_s,m^3/s,True,Upper-state self-quenching.
+argon_second_continuum,common,k_Ar_4s_Q_Ar_m3_s,m^3/s,True,Ar(4s) self-quenching.
+argon_second_continuum,common,k_Ar_4s_Q_2Ar_m6_s,m^6/s,True,Ternary excimer formation.
+argon_second_continuum,common,tau_S_ns,ns,True,Singlet lifetime.
+argon_second_continuum,common,tau_T_ns,ns,True,Triplet lifetime.
+argon_second_continuum,additive,k_Ar_dbleStar_Q_m3_s,m^3/s,True,Upper-state quenching by additive.
+argon_second_continuum,additive,k_Ar_4s_Q_m3_s,m^3/s,True,Ar(4s) quenching by additive.
+argon_second_continuum,additive,k_Ar2star_Q_m3_s,m^3/s,True,Excimer quenching by additive.

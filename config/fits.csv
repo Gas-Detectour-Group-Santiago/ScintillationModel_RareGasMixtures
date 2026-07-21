@@ -1,0 +1,6 @@
+fit_name,mixture_id,model_id,channel_group,parameter_file,enabled,notes
+ArCF4_primary,ArCF4,ArCF4,uv_vis,data/cache/fits/parameters/ArCF4_primary.csv,True,Primary Ar-CF4 UV/VIS fit.
+ArN2_primary,ArN2,ArN2,uv,data/cache/fits/parameters/ArN2_primary.csv,True,Primary Ar-N2 UV fit.
+ArCF4_IR_primary,ArCF4,ArCF4_IR,ir,data/cache/fits/parameters/ArCF4_IR_primary.csv,True,Independent Ar-CF4 IR fit.
+ArN2_IR_primary,ArN2,ArN2_IR,ir,data/cache/fits/parameters/ArN2_IR_primary.csv,True,Independent Ar-N2 IR fit.
+ArJoint_IR_primary,Ar,ArJoint_IR,ir_joint,data/cache/fits/parameters/ArJoint_IR_primary.csv,True,Joint IR fit with common Ar parameters and additive-specific quenching.

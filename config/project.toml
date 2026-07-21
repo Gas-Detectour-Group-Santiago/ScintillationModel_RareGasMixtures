@@ -1,0 +1,27 @@
+[project]
+name = "ScintillationModel"
+schema_version = 2
+
+[runtime]
+default_toys = 100
+refresh_legacy_workspace = false
+
+[outputs]
+figures = "outputs/figures"
+tables = "outputs/tables"
+archive = "outputs/archive"
+export_csv = false
+run_diagnostics = false
+write_manifests = false
+
+[cache]
+root = "data/cache"
+compress_toys = true
+remove_toy_csv_after_compression = true
+
+[plotting]
+colormap = "viridis"
+grid = false
+use_latex = false
+legend_frame = true
+legend_fancybox = true

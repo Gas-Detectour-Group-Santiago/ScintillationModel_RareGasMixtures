@@ -1,615 +1,1189 @@
-# ScintillationModel Rare Gas Mixtures
+# ScintillationModel — rare-gas mixtures
 
-Phenomenological scintillation-modeling framework for rare-gas mixtures, with emphasis on primary and secondary light production in Ar--CF$_4$, Ar--N$_2$ and related detector gases. The project combines microscopic population inputs from Degrad/Garfield++ with kinetic emission models, fit machinery, uncertainty propagation, spectral synthesis and paper-ready plots/tables for a TFM-style analysis.
+Compact and reproducible framework for primary and secondary scintillation in rare-gas mixtures. The repository combines:
+
+- microscopic populations from **Degrad** and **Garfield++**;
+- kinetic models for Ar–CF₄, Ar–N₂, argon IR and the Ar second continuum;
+- independent and joint fits with statistical and systematic toys;
+- primary yields in ph/MeV and secondary yields in ph/e⁻;
+- generated and experimental spectra;
+- gain, reduced-field, effective-Townsend and charge-balance studies;
+- publication-ready PDF figures and LaTeX tables.
 
 <p align="center">
-  <img src="docs/assets/readme/spectra_arcf4_extended.png" width="78%" alt="Extended generated Ar-CF4 spectra from 100 to 800 nm">
+  <img src=".image/spectra_arcf4_extended.png" width="78%" alt="Generated Ar-CF4 spectrum">
 </p>
 
-## What this repository does
+## User-facing entry points
 
-The code is organized as a reproducible analysis pipeline:
-
-1. **Read microscopic inputs** from Degrad and Garfield++ summaries.
-2. **Fit primary kinetic models** to experimental X-ray scintillation yields.
-3. **Export fitted parameters**, toy distributions, covariance and correlation matrices.
-4. **Predict primary yields** in ph/MeV, including bands from statistical/systematic toys.
-5. **Predict secondary scintillation** in ph/e$^-$ from Garfield++ avalanche populations.
-6. **Generate spectra** from experimental raw spectra and kinetic-model predictions.
-7. **Export publication-ready plots, CSVs and LaTeX tables** used in the thesis.
-
-```mermaid
-flowchart LR
-    A[Degrad primary populations] --> B[Primary kinetic models]
-    C[Experimental X-ray yields] --> D[Primary fits]
-    B --> D
-    D --> E[Parameters + toys + covariance]
-    E --> F[Primary predictions ph/MeV]
-    G[Garfield++ avalanche populations] --> H[Secondary predictions ph/e-]
-    E --> H
-    F --> I[Generated spectra]
-    H --> I
-    J[Raw experimental spectra] --> I
-    I --> K[Figures, CSVs and LaTeX tables]
-```
-
-## Representative outputs
-
-| Step | Example output |
-|---|---|
-| Cross sections | <img src="docs/assets/readme/cross_sections_ar.png" width="280" alt="Ar cross sections"> |
-| Primary fit | <img src="docs/assets/readme/primary_fit_arcf4_uv.png" width="280" alt="Ar-CF4 UV primary fit"> |
-| Primary prediction band | <img src="docs/assets/readme/primary_prediction_arn2_uv.png" width="280" alt="Ar-N2 primary UV prediction"> |
-| Secondary comparison | <img src="docs/assets/readme/secondary_arcf4_visible.png" width="280" alt="Secondary Ar-CF4 comparison"> |
-| Gaussian extraction study | <img src="docs/assets/readme/gaussian_ratio_grid.png" width="280" alt="Ar-N2 gaussian ratio study"> |
-| Garfield++ channel catalogue | <img src="docs/assets/readme/ar_population_catalogue.png" width="280" alt="Ar Garfield++ level catalogue"> |
-
-The corresponding PDFs remain in their native folders, for example `primary_predictions/plots/`, `secondary_predictions/plots/`, `spectra/plots/`, `integral_comparations/plots/` and `populations_histograms/pdf/`.
-
-## Repository layout
+The normal user-facing root of the repository remains intentionally small:
 
 ```text
-.
-├── cross_sections/              # Magboltz/cross-section inspection and plots
-├── data/                        # Experimental data, Degrad/Garfield inputs, parameters, tables
-│   ├── run_analysis.py           # Raw-input preparation runner: pickle/TXT/ROOT -> curated CSV
-│   ├── Experimental/            # Experimental yields and spectra
-│   ├── Primary_DegradData/      # Primary population tables from Degrad
-│   ├── Secondary_GarfieldData/  # Secondary/avalanche population tables from Garfield++
-│   ├── FitResults/              # Fitted parameters, toys, covariance/correlation outputs
-│   ├── Parameters/              # Central parameter vectors consumed by predictions/spectra
-│   ├── Predictions/             # CSV prediction outputs
-│   └── Tables/                  # LaTeX tables exported by the pipeline
-├── integral_comparations/       # Ar--N2 / Ar--CF4 integral-ratio and Gaussian extraction studies
-├── models/                      # Kinetic models: ArCF4, ArN2, IR and Ar second continuum
-├── populations_histograms/      # Garfield++ channel/level catalogue diagnostics
-├── primary_fits/                # Primary fits, toy studies and parameter exports
-├── primary_predictions/         # Primary yield predictions, bands, overlays and tables
-├── secondary_predictions/       # Secondary scintillation predictions and experimental comparisons
-├── spectra/                     # Raw/generated/comparison/annotated spectra pipeline
-├── plot_style.py                # Shared matplotlib style helpers
-└── run_all.sh                   # Project-level runner
+README.md
+run_all.sh
+run_products.sh
 ```
 
-## Installation
+There are no additional shell runners. The optional graphical control panel lives in `app/` and launches directly through Streamlit.
 
-Use a Python virtual environment from the repository root:
+- `run_all.sh` controls analysis, fits and products.
+- `run_products.sh` controls primary predictions, secondary predictions, spectra, tables and optional diagnostics.
+- `python -m streamlit run app/main.py` opens the graphical interface.
+- `README.md` explains the complete workflow and how to extend the physics.
+
+The GUI is a thin layer over the same workflows: it edits the four canonical CSV figure registries and calls one of the two shell runners. It contains no independent copy of the physical models.
+
+The `.vscode/` directory contains portable editor settings, optional C++ IntelliSense configuration and three tasks: run all, run products and open the graphical interface. It contains no personal absolute paths, historical notebooks, copied Magboltz sources or obsolete analysis scripts. The `.image/` directory contains the images used by this README. A local `.git/` directory is created by Git when the project is cloned or initialised and is never distributed inside the ZIP.
+
+---
+
+# Quick start
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install numpy scipy pandas matplotlib scienceplots dill uproot awkward
+python -m pip install -r requirements.txt
 ```
 
-Optional system tools:
-
-- `pdftoppm` for generating README thumbnails from PDFs.
-- CMake and a C++ compiler for `cross_sections/` if rebuilding the cross-section executable.
-
-## Quick start
-
-Run the complete default workflow:
+Run the complete pipeline:
 
 ```bash
 bash run_all.sh
 ```
 
-`run_all.sh` rebuilds the curated input CSVs first by calling `data/run_analysis.py`. If the raw pickles/TXT/ROOT files have already been converted and you want to reuse the existing CSVs, run:
+The default is **100 statistical toys and 100 systematic toys** per fit:
 
 ```bash
-RUN_DATA_ANALYSIS=0 bash run_all.sh
+PRIMARY_FIT_N_TOYS=300 bash run_all.sh
 ```
 
-Or run each stage explicitly:
+Regenerate figures and tables from existing processed data and fit caches:
 
 ```bash
-python data/run_analysis.py
-python primary_fits/run_primary_fits.py
-python primary_predictions/run_primary_predictions.py
-python secondary_predictions/run_secondary_predictions.py
-python spectra/run_all_spectra.py
-python integral_comparations/run_integral_comparisons.py
-python populations_histograms/run_population_histograms.py
+bash run_products.sh
 ```
 
-Most modules can also be run independently while editing a specific figure or table.
-
-The primary prediction runner also creates the Degrad electron/X-ray energy
-comparison in `primary_predictions/plots/electrons_xRay/`. It contains N2 UV,
-CF4 VIS, the Ar second continuum in 99/1 Ar--CF4, and the pure-Ar second
-continuum. Fitted channels use the Ar--CF4 normalization by default, and all
-figures use the shared `plot_style.py`.
-
-## Main configuration points
-
-The project is deliberately config-driven. In normal use you should edit the configuration files, not the plotting or runner internals.
-
-| Task | Main file |
-|---|---|
-| Change primary fit parameters, bounds, datasets or toy settings | `primary_fits/ArCF4_fit.py`, `primary_fits/ArN2_fit.py`, `primary_fits/ArCF4_IR_fit.py`, `primary_fits/ArN2_IR_fit.py` |
-| Change primary prediction bands, normalizations or selected yields | `primary_predictions/configs.py` |
-| Change secondary prediction masks, gain selections, OCW bands or comparisons | `secondary_predictions/configs.py`, `secondary_predictions/config_comparation.py`, `secondary_predictions/config_paper.py` |
-| Change raw/generated spectra settings | `spectra/config.py` |
-| Change Gaussian/hardcut integral comparisons | `integral_comparations/run_integral_comparisons.py` |
-| Change Ar second-continuum parameters | `data/Parameters/Ar2nd_continium.csv` and `models/Ar2nd_continium.py` |
-| Change raw-input conversion from pickles/TXT/ROOT | `data/run_analysis.py`, `data/Analysis_experimental.py`, `data/Analysis_spectra.py`, `data/Analysis_primary_degrad.py`, `data/Analysis_secondary_garfield.py` |
-
-## Data preparation and allowed input formats
-
-The analysis code does not require the original raw inputs at plotting time. The first stage converts all raw inputs into flat CSV files under `data/`, and all later modules read those curated CSVs. This stage is controlled by:
+Open the graphical control panel:
 
 ```bash
-python data/run_analysis.py
+python -m streamlit run app/main.py
 ```
 
-Available sub-steps are:
+The browser interface is local by default. It edits files inside the checked-out project and should therefore be launched from the repository root.
+
+## Graphical interface
+
+Launch the local control panel with:
 
 ```bash
-python data/run_analysis.py --list
-python data/run_analysis.py --only experimental spectra
-python data/run_analysis.py --skip secondary-garfield
+python -m streamlit run app/main.py
 ```
 
-The runner currently prepares four input families:
+The application deliberately edits the same configuration used by the terminal workflows. It has four stable areas:
 
-| Step | Raw input | Curated output |
-|---|---|---|
-| `experimental` | experimental yield pickles | `data/Experimental/<Mixture>/csv/*.csv` |
-| `spectra` | raw-spectrum pickles | `data/Spectra/<Mixture>_raw_spectra.csv` |
-| `primary-degrad` | Degrad TXT summaries | `data/Primary_DegradData/<Mixture>.csv` |
-| `secondary-garfield` | Garfield++ ROOT files | `data/Secondary_GarfieldData/<Mixture>/populations/*.csv` |
+1. **Run pipeline** — select analysis, fits, primary, secondary, spectra, tables and diagnostics; set toys; preview the exact command and stream the log.
+2. **Figure recipes** — interactively edit the four canonical production registries: `fits.csv`, `primary.csv`, `secondary.csv` and `spectra.csv`.
+3. **Outputs** — browse and download official PDFs and LaTeX tables by scientific family.
+4. **Plot style** — edit typography, lines, axes, major/minor tick widths and lengths, uncertainty-band opacity, error bars, grid and legends.
 
-### Experimental-yield pickles
+The GUI does not contain a second implementation of the physics. Saving a figure recipe changes only the corresponding CSV; `run_all.sh` and `run_products.sh` read the same files.
 
-Experimental yield pickles must load to a `pandas.DataFrame`. Each row should correspond to one mixture condition, normally one concentration and one pressure. The reader accepts several historical column names.
+## Selecting what to run
 
-Required metadata columns:
-
-| Quantity | Accepted column names | Convention |
-|---|---|---|
-| concentration | `concentracion`, `concentraciones`, `N2 concentration (%)`, `CF4 concentration (%)`, `concentration_N2`, `concentration_CF4`, `concentration`, `fN2`, `fCF4` | percent for names containing `%`/`concentracion`; fraction for explicit `fN2`/`fCF4` |
-| pressure | `presion`, `presiones`, `P (bar)`, `pressure`, `Pressure` | bar |
-
-Accepted yield schemas:
-
-| Schema | Required columns | Meaning |
-|---|---|---|
-| old zone schema | `yields_zonas`, `u_yields_zonas`, `u_yields_zonas_stat`, `u_yields_zonas_sis` | dictionaries containing entries such as `UV`, `vis` and nested `ir` line yields |
-| peak schema | `yields_picos`, `u_yields_picos`, `u_yields_estadistico`, `u_yields_sistematico` | dictionaries keyed by peak/band name, e.g. `696`, `727`, `UV`, `vis` |
-| N$_2$ total schema | `yield_N2`, `u_yield_n2_combined`, `u_yield_n2_estadistico`, `u_yield_n2_sistematico` | scalar N$_2$ UV yield and uncertainties |
-
-The exported CSVs use one concentration column, one column per pressure, and uncertainty columns following the pattern:
-
-```text
-fCF4, 1bar, Err 1bar, ErrStat 1bar, ErrSyst 1bar, 2bar, ...
-```
-
-or equivalently `fN2` for Ar--N$_2$.
-
-### Raw-spectrum pickles
-
-Raw-spectrum pickles must also load to a `pandas.DataFrame`. They use the same concentration/pressure metadata conventions as the experimental-yield pickles. Spectrum information can be stored in any of the following columns:
-
-```text
-mean_spectrum, C1_spectrum, C2_spectrum, C1, C2, spectrum_new_cal, spectrum_old_cal, data(norm)
-```
-
-Each spectrum cell may be either:
-
-```python
-{"wavelength": wavelength_nm_array, "intensity": raw_intensity_array}
-```
-
-with aliases `lambda`/`wavelength_nm` for wavelength and `raw`/`counts` for intensity, or a two-array tuple/list:
-
-```python
-(wavelength_nm_array, raw_intensity_array)
-```
-
-The exported long CSV has the mandatory columns:
-
-```text
-gas_mixture, source_pickle, source_row, spectrum_name, spectrum_column,
-concentration_percent, concentration_fraction, pressure_bar, point_index,
-wavelength_nm, intensity_raw
-```
-
-This long format is also allowed as a direct input if you do not want to use pickles: place it as `data/Spectra/<Mixture>_raw_spectra.csv` and make sure the spectra configuration points to it.
-
-### Primary Degrad inputs
-
-The default primary input is the original Degrad TXT output. Files are read from:
-
-```text
-data/Primary_DegradData/ArCF4/txt/*.txt
-data/Primary_DegradData/ArN2/txt/*.txt
-```
-
-The concentration is parsed from the filename. Accepted examples include:
-
-```text
-output_95Ar_5CF4.txt      -> CF4 concentration = 0.05
-output_PureCF4.txt        -> CF4 concentration = 1.00
-output_100.0N2_*.txt      -> N2 concentration = 1.00
-```
-
-The TXT file must contain the Degrad block `NUMBER OF COLLISIONS PER EVENT FOR EACH GAS`, with gas sub-blocks and rows containing process name, optional energy loss/level, event count and percentage error. The converter selects the populations requested in `data/Analysis_primary_degrad.py` and exports flat population tables.
-
-You may bypass the TXT parser by providing the curated CSV directly:
-
-```text
-data/Primary_DegradData/<Mixture>.csv
-```
-
-Required columns are:
-
-```text
-concentration, <population_1>, Err<population_1>, <population_2>, Err<population_2>, ...
-```
-
-where `concentration` is the additive fraction in the range 0--1. Population column names must match the names consumed by the kinetic model and prediction adapters, for example `CF4`, `CF3`, `Ar_dbleStar`, `Ar_meta`, `Ar_res`, `N2_star`, `Ar_2nd_precursor` or the IR line columns `Ar_696`, `Ar_727`, etc.
-
-### Secondary Garfield++ inputs
-
-The default secondary input is a set of Garfield++ ROOT files. File names are parsed for mixture composition and operating conditions. A typical name can contain tokens such as:
-
-```text
-Ar_0.95_CF4_0.05_50kvcm_1bar_0.05mm_100npe.root
-```
-
-Accepted metadata tokens are:
-
-| Token | Meaning |
-|---|---|
-| `<gas>_<fraction>` | gas fraction, e.g. `Ar_0.95_CF4_0.05` |
-| `<value>kvcm` | electric field in kV/cm |
-| `<value>bar` | pressure in bar |
-| `<value>mm` | amplification gap/thickness in mm |
-| `<value>npe` | primary electrons used in the simulation |
-
-Each ROOT file should contain:
-
-| Object | Required? | Use |
-|---|---|---|
-| `hLevels` histogram | yes | level/channel population counts |
-| `dataPerPrimaryElectron` tree with `nElectrons`, `nIons` | optional but recommended | electron/ion gain summary |
-
-The level catalogue is mapped with:
-
-```text
-data/Secondary_GarfieldData/levels/<Mixture>_level_data.csv
-```
-
-with at least these columns:
-
-```text
-level, gas, state_name
-```
-
-Additional useful columns are `type` and `energy_eV`. You may bypass the ROOT parser by providing:
-
-```text
-data/Secondary_GarfieldData/<Mixture>/populations/<Mixture>_secondary.csv
-```
-
-with metadata columns such as `concentration`, `pressure`, `electric_field`, `gap_mm`, `npe`, `ne`, `ni`, and population columns matching the secondary prediction configuration.
-
-## Primary model workflow
-
-Primary fits are defined by `FitConfig` objects. A typical fit contains:
-
-- a model name,
-- a Degrad population CSV,
-- one or more experimental datasets,
-- kinetic equations,
-- fitted parameters with bounds/fixed flags,
-- plot definitions,
-- toy settings for statistical and systematic variations.
-
-Example entry point:
+`run_all.sh` is the only full-pipeline runner:
 
 ```bash
-python primary_fits/ArCF4_fit.py
+# Analysis only
+RUN_FITS=0 RUN_PRODUCTS=0 bash run_all.sh
+
+# Fits only
+RUN_ANALYSIS=0 RUN_PRODUCTS=0 bash run_all.sh
+
+# Analysis + fits, without figures
+RUN_PRODUCTS=0 bash run_all.sh
+
+# Products only through the full runner
+RUN_ANALYSIS=0 RUN_FITS=0 bash run_all.sh
 ```
 
-The fit exports:
-
-```text
-data/FitResults/<fit_name>_central.csv
-data/FitResults/<fit_name>_toys_stat.csv
-data/FitResults/<fit_name>_toys_syst.csv
-data/FitResults/<fit_name>_covariance.csv
-data/FitResults/<fit_name>_correlation.csv
-data/Parameters/<fit_name>.csv
-data/Tables/<fit_name>_param_stat_syst.tex
-primary_fits/plots/plot_fit/*.pdf
-```
-
-The fitted model output is converted to ph/MeV in the prediction layer through `NormalizationConfig`. The most common normalization modes are:
-
-| Mode | Meaning |
-|---|---|
-| `own_norm` | Divide by the fitted normalization of the same model. |
-| `reference_norm` | Divide by another fit's normalization, for example the Ar--CF$_4$ primary normalization. |
-| `as_fit` | Keep the fitted normalization in the model output. |
-| `fixed_norm` | Use an explicit numeric normalization. |
-
-## Secondary model workflow
-
-Secondary predictions use Garfield++ avalanche populations, then evaluate the same kinetic models with a secondary scaling. The selection is controlled by `SecondarySelection` objects, for example:
-
-```python
-SecondarySelection(
-    id="gem_1bar_gain100",
-    gas="ArCF4",
-    pressure=1.0,
-    gap_mm=0.05,
-    gain_min=80,
-    gain_max=120,
-    normalize_by="pre_ne",
-)
-```
-
-Selections can be made on pressure, gap, electric field, concentration, `npe`, `ne`, `ni`, gain or arbitrary CSV columns via `masks` / `extra_masks`. This keeps detector-specific logic out of the plotting code.
-
-Secondary outputs are written to:
-
-```text
-data/Predictions/Secondary/
-data/Tables/secondary_*.tex
-secondary_predictions/plots/secondary_bands/
-secondary_predictions/plots/secondary_comparation/
-```
-
-## Spectra workflow
-
-The spectra module produces four families of plots:
-
-1. raw experimental mosaics,
-2. generated kinetic spectra,
-3. raw-vs-generated comparisons,
-4. annotated single spectra.
-
-Run everything with:
+`run_products.sh` is the only product runner:
 
 ```bash
-python spectra/run_all_spectra.py
+# Primary predictions only
+RUN_SECONDARY=0 RUN_SPECTRA=0 RUN_TABLES=0 bash run_products.sh
+
+# Secondary predictions only
+RUN_PRIMARY=0 RUN_SPECTRA=0 RUN_TABLES=0 bash run_products.sh
+
+# Spectra only
+RUN_PRIMARY=0 RUN_SECONDARY=0 RUN_TABLES=0 bash run_products.sh
+
+# Tables only
+RUN_PRIMARY=0 RUN_SECONDARY=0 RUN_SPECTRA=0 bash run_products.sh
+
+# Optional cross-section, population and integral diagnostics
+RUN_PRIMARY=0 RUN_SECONDARY=0 RUN_SPECTRA=0 RUN_TABLES=0 \
+RUN_DIAGNOSTICS=1 bash run_products.sh
 ```
 
 Useful switches:
 
 ```bash
-python spectra/run_all_spectra.py --no-raw
-python spectra/run_all_spectra.py --no-generated
-python spectra/run_all_spectra.py --no-comparison
-python spectra/run_all_spectra.py --no-annotated
+RECOMPUTE_BANDS=1 bash run_products.sh
+RECOMPUTE_TABLES=1 bash run_products.sh
+EXPORT_SCAN_DATA=1 bash run_products.sh
+ARCHIVE_OUTPUTS=1 bash run_all.sh
+RUN_LOW_PRESSURE_PRIMARY=0 bash run_products.sh
+RUN_JOINT_IR_PRIMARY=0 bash run_products.sh
 ```
 
-The most important controls live in `spectra/config.py`:
+After a fit, `run_all.sh` invalidates and recomputes both primary band caches and prediction-table caches automatically. Ordinary `run_products.sh` calls reuse those compact products. Set `RECOMPUTE_BANDS=1` or `RECOMPUTE_TABLES=1` only after changing model equations, normalisation logic or the underlying fitted products. Style-only and plot-row changes normally need neither.
 
-```python
-RAW_PLOT_SPECTRUM_COLUMN = "mean_spectrum"
-GENERATED_PRESSURES_BAR = (1, 2, 3, 4, 5, 10)
-GENERATED_CONCENTRATIONS_PERCENT = (0.0, 0.1, 0.5, 1.0, 5.0, 10.0, 20.0, 50.0, 100.0)
-GENERATED_AMPLIED_INSET_ENABLED = True
+---
+
+# Pipeline
+
+```mermaid
+flowchart LR
+    A[Raw experimental data] --> D[Analysis]
+    B[Degrad TXT] --> D
+    C[Garfield ROOT with hLevels] --> D
+    D --> E[Processed population tables]
+    E --> F[Primary fits]
+    F --> G[Compressed toy and parameter cache]
+    G --> H[Primary predictions]
+    E --> I[Secondary predictions]
+    G --> I
+    H --> J[Spectra]
+    I --> J
+    H --> K[PDF figures and LaTeX tables]
+    I --> K
+    J --> K
 ```
 
-## How to add a new gas mixture
-
-A new mixture can be added without rewriting the whole project. The required work depends on whether it is primary-only, secondary-only or both.
-
-### 1. Add microscopic input data
-
-Primary Degrad input:
+`run_all.sh` performs:
 
 ```text
-data/Primary_DegradData/<Mixture>.csv
+analysis → fits → run_products.sh
 ```
 
-The table must contain a concentration column and one column per microscopic channel used by the model, for example neutral excitations, ionic excitations, molecular fragments or continuum precursors.
+`run_products.sh` never rereads Degrad or Garfield inputs and never refits parameters.
 
-Secondary Garfield++ input:
+---
+
+# Repository layout
 
 ```text
-data/Secondary_GarfieldData/<Mixture>/populations/<Mixture>_secondary.csv
+.image/                         images used only by this README
+.vscode/                        portable settings, C++ IntelliSense and execution tasks
+app/                            Streamlit control panel
+config/                         small editable registries
+├── mixtures.csv
+├── channels.csv
+├── fits.csv
+├── normalizations.csv
+├── ocw.csv
+├── primary_population_groups.csv
+├── secondary_inputs.csv
+├── population_groups.csv
+├── secondary_parameter_sets.csv
+├── secondary_selections.csv
+├── experimental_datasets.csv
+├── spectral_components.csv
+├── plots/
+│   ├── fits.csv
+│   ├── primary.csv
+│   ├── secondary.csv
+│   └── spectra.csv
+└── styles/                    reusable global plot presets
+
+data/
+├── raw/                        immutable original inputs
+│   ├── experimental/
+│   ├── degrad/
+│   ├── garfield/
+│   └── spectra/
+├── processed/                  compact tables read by models
+│   ├── experimental/
+│   ├── primary/
+│   ├── secondary/
+│   └── spectra/
+├── reference/                  literature and shared reference data
+│   ├── levels/
+│   ├── parameters/
+│   ├── cross_sections/
+│   ├── thresholds/
+│   └── annotated_input/
+└── cache/                      reusable generated numerical products
+    ├── fits/
+    ├── predictions/
+    ├── secondary/
+    ├── spectra/
+    ├── tables/
+    └── parameters/
+
+src/scintillation/
+├── core/                       paths, runtime and output handling
+├── io/                         hLevels and population mapping
+├── physics/                    shared model and parameter infrastructure
+├── fitting/                    compressed toy cache
+├── predictions/                normalisation, scans and result contracts
+├── plotting/                   shared visual style and semantics
+├── reporting/                  compact table exporters
+└── legacy/project/             validated explicit physics modules
+
+workflows/                      Python stages called by the two runners
+outputs/
+├── figures/
+│   ├── fits/
+│   ├── primary/
+│   ├── secondary/
+│   ├── spectra/
+│   └── diagnostics/
+└── tables/
+
+docs/                           architecture and validation notes
 ```
 
-The secondary table should contain metadata columns such as pressure, concentration, electric field, gap, `npe`, `ne`, `ni`, plus population columns.
+The generated `.runtime/` directory is a compatibility workspace. Do not edit it. It lets the validated historical modules operate against the compact canonical data layout.
 
-### 2. Implement a kinetic model
+---
 
-Create a new file in `models/`, for example:
+# What is already available
+
+| Area | Current products |
+|---|---|
+| Degrad primary analysis | populations, excitation/ionisation studies, Wexc, electron/X-ray comparisons |
+| Primary fits | Ar–CF₄ UV/VIS, Ar–N₂ UV, independent Ar–CF₄ IR, independent Ar–N₂ IR, joint IR |
+| Primary predictions | yields vs concentration and pressure, low-pressure extrapolations, individual/total components, stat/syst bands |
+| Garfield secondary analysis | gain, gain resolution, electrons, ions, E, E/p, effective Townsend quantities, hLevels populations |
+| Secondary predictions | integrated UV/VIS/IR/VUV yields, OCW transformations, GEM/THGEM/uniform-field comparisons |
+| Spectra | raw, generated, comparison and annotated primary spectra; extended VUV spectra |
+| Optional diagnostics | cross sections, population histograms, integral comparisons |
+| Final outputs | PDF figures and LaTeX tables |
+
+<p align="center">
+  <img src=".image/primary_fit_arcf4_uv.png" width="31%" alt="Primary Ar-CF4 fit">
+  <img src=".image/primary_prediction_arn2_uv.png" width="31%" alt="Primary Ar-N2 prediction">
+  <img src=".image/secondary_arcf4_visible.png" width="31%" alt="Secondary Ar-CF4 comparison">
+</p>
+
+---
+
+# Input data
+
+## Experimental yields and spectra
+
+Put untouched experimental pickles in:
 
 ```text
-models/ArXe.py
+data/raw/experimental/<Mixture>/
 ```
 
-A minimal model function should accept:
-
-```python
-def theory_yield_uv(params, degrad_data, concentration, pressure):
-    # interpolate microscopic populations
-    # evaluate transfer/quenching/emission probabilities
-    # return yield in the same convention used by the fit layer
-    return yield_array
-```
-
-For consistency with the existing models, keep these conventions:
-
-- use concentration as a fraction internally, unless clearly documented otherwise;
-- interpolate population columns with monotonic concentration grids;
-- keep the first parameter as `Nnorm` if the model is fitted to arbitrary-unit data;
-- divide by the X-ray energy inside the model only if the companion models do the same;
-- keep component functions small and testable.
-
-### 3. Add a primary fit config
-
-Create a file such as:
+The analysis writes compact reusable tables to:
 
 ```text
-primary_fits/ArXe_fit.py
+data/processed/experimental/<Mixture>/
+data/processed/spectra/
 ```
 
-Define:
+These tables are inputs to fits and spectrum generation. They are not copied to `outputs/`.
 
-```python
-PARAMETERS = [
-    Parameter("Nnorm", r"$N_{\\mathrm{norm}}$", 1e-3, 0.0, 1.0),
-    Parameter("P_channel", r"$\\mathcal{W}_{channel}$", 0.1, 0.0, 1.0),
-]
+## Primary Degrad inputs
 
-DATASETS = [
-    DatasetSpec(
-        key="uv",
-        csv_path=DATA_DIR / "Experimental" / "ArXe" / "csv" / "uv.csv",
-        x_col="fXe",
-        pressures=[1, 2, 3, 4, 5],
-        output_concentration_name="fXe",
-        w_function=W_ArXe,
-    ),
-]
-
-CONFIG = FitConfig(
-    name="ArXe_primary",
-    model_name="ArXe",
-    degrad_csv=DATA_DIR / "Primary_DegradData" / "ArXe.csv",
-    datasets=DATASETS,
-    equations={"uv": theory_yield_uv},
-    parameters=PARAMETERS,
-    plots=PLOTS,
-    toy_spec=ToySpec(...),
-)
-```
-
-Then register it in `primary_fits/run_primary_fits.py`.
-
-### 4. Register the prediction adapter
-
-Add the new fit and components to `primary_predictions/configs.py`:
-
-```python
-from primary_fits.ArXe_fit import CONFIG as ARXE_CONFIG
-
-PRIMARY_ADAPTERS["ArXe_primary"] = PrimaryModelAdapter(
-    fit_name="ArXe_primary",
-    degrad_csv=ARXE_CONFIG.degrad_csv,
-    components={
-        "uv": ARXE_CONFIG.equations["uv"],
-        "total": ARXE_CONFIG.equations["uv"],
-    },
-)
-```
-
-Then add `BandPlotConfig`, `PredictionPoint` or `MultiBandPlotConfig` entries depending on the plots/tables you want.
-
-### 5. Register spectra, if needed
-
-For generated spectra, add the wavelength-shape logic in `spectra/auxiliares/generated.py` and expose the mixture in `spectra/config.py`. Raw spectra require either a pickle/CSV reader candidate in `spectra/auxiliares/io.py` or a compatible long CSV in `data/Spectra/`.
-
-### 6. Add secondary predictions, if needed
-
-Add a `SecondaryPlotConfig` / `MultiBandPlotConfig` in `secondary_predictions/configs.py` or `secondary_predictions/config_comparation.py`, pointing to the correct Garfield++ table with `SecondarySelection(population_filename=...)`. If the microscopic population names differ, add or adapt the component mapping in the relevant secondary adapter/config.
-
-## How to use your own parameters
-
-There are three supported levels.
-
-### Option A: edit a central parameter CSV
-
-For quick tests, edit:
+Put Degrad text files in:
 
 ```text
-data/Parameters/<fit_name>.csv
+data/raw/degrad/<Mixture>/txt/
 ```
 
-Then rerun only predictions:
+Population extraction is configured in:
+
+```text
+config/primary_population_groups.csv
+```
+
+Every row selects a population using:
+
+```text
+run_id
+mixture_id
+input_subdir
+gas names and concentration variable
+state-name tokens
+gas
+energy interval
+output_name
+```
+
+Rows sharing a `run_id` are written to one compact table such as:
+
+```text
+data/processed/primary/ArCF4.csv
+data/processed/primary/ArCF4_IR.csv
+data/processed/primary/ArCF4_Ar2nd.csv
+data/processed/primary/ArN2.csv
+```
+
+Use different `run_id` values when two models need different definitions of the populations. Do not merge them merely because they describe similar states.
+
+## Electron/X-ray scans and Wexc
+
+Degrad energy scans belong in:
+
+```text
+data/raw/degrad/photons/OUTPUTS/
+data/raw/degrad/Electrons/OUTPUTS/
+```
+
+The analysis creates:
+
+```text
+data/processed/primary/electrons_xRay_energy_cases.csv
+```
+
+The primary workflow can then produce:
+
+- channel yield versus incident energy;
+- electron versus X-ray comparisons;
+- pure-Ar and 99/1 Ar–CF₄ second-continuum comparisons;
+- Wexc for Ar, Xe, CF₄ and N₂ when the corresponding cases exist.
+
+The energy definition is:
+
+```text
+Wexc [eV] = 1000 × E[keV] / Nexc
+```
+
+## Garfield ROOT inputs
+
+Put ROOT files in:
+
+```text
+data/raw/garfield/<Mixture>/root/
+```
+
+Declare each campaign in:
+
+```text
+config/secondary_inputs.csv
+```
+
+The analysis reads the ROOT metadata and `hLevels`, maps the required populations and writes compact aggregate secondary tables. It does not produce one CSV per ROOT.
+
+---
+
+# hLevels, cross sections and population histograms
+
+## hLevels
+
+A ROOT needs only the physical simulation objects, including `hLevels`. No redundant `LevelCatalogue` tree is required inside every ROOT.
+
+The bin interpretation is stored once per compatible Magboltz level ordering in:
+
+```text
+data/reference/levels/<Mixture>_level_data.csv
+```
+
+Canonical population rules are stored in:
+
+```text
+config/population_groups.csv
+```
+
+A rule maps gas, state-name tokens and an energy interval to a population used by a model, for example:
+
+```text
+Ar_dbleStar
+Ar_1s4_1s5
+Ar_1s2_1s3
+Ar_2nd_precursor
+CF4
+CF3
+N2_star
+Ar_696
+```
+
+The normal analysis keeps only the aggregate populations required later. Full hLevels inspection plots remain optional.
+
+## Adding a new hLevels mapping
+
+1. Generate one representative ROOT with the intended gas table and Garfield/Magboltz setup.
+2. Export the ordered level definitions once to `data/reference/levels/<Mixture>_level_data.csv`.
+3. Add the physical group rules to `config/population_groups.csv`.
+4. Add the campaign to `config/secondary_inputs.csv`.
+5. Run analysis:
 
 ```bash
-python primary_predictions/run_primary_predictions.py
-python spectra/run_all_spectra.py --no-raw --no-comparison
+RUN_FITS=0 RUN_PRODUCTS=0 bash run_all.sh
 ```
 
-### Option B: change the fit configuration
+Do not copy the same level descriptions into every ROOT or create one mapping CSV per simulation.
 
-For a reproducible change, edit the `PARAMETERS` list in the relevant `primary_fits/*_fit.py` file. You can change initial values, bounds, fixed flags or labels:
+## Cross sections
 
-```python
-Parameter("K_transfer", r"$K_{transfer}$", value=0.1, min_value=0.0, max_value=10.0)
+Included reference files live in:
+
+```text
+data/reference/cross_sections/
 ```
 
-Then rerun fits and predictions:
+The retained Garfield++/Magboltz C++ source can regenerate a gas cross-section table when the development libraries are available. Existing reference tables can be plotted without recompiling C++.
+
+Generate all optional diagnostics with:
 
 ```bash
-python primary_fits/run_primary_fits.py
-python primary_predictions/run_primary_predictions.py
+RUN_PRIMARY=0 RUN_SECONDARY=0 RUN_SPECTRA=0 RUN_TABLES=0 \
+RUN_DIAGNOSTICS=1 bash run_products.sh
 ```
 
-### Option C: define a new prediction-only component
+Cross-section PDFs go to:
 
-For a phenomenological extension that should not be fitted, add a component in `primary_predictions/configs.py`, as done for the Ar second continuum and the CF$_4^{+,*}(D\rightarrow X)$ VUV branch. This is useful for testing spectral components with fixed branching ratios or external absolute references.
+```text
+outputs/figures/diagnostics/cross_sections/
+```
 
-## Output conventions
+<p align="center">
+  <img src=".image/cross_sections_ar.png" width="48%" alt="Argon cross sections">
+  <img src=".image/ar_population_catalogue.png" width="48%" alt="hLevels population diagnostic">
+</p>
 
-| Quantity | Typical unit | Location |
-|---|---|---|
-| Primary yields | ph/MeV | `data/Predictions/`, `primary_predictions/plots/` |
-| Secondary yields | ph/e$^-$ | `data/Predictions/Secondary/`, `secondary_predictions/plots/` |
-| Raw spectra | arbitrary units | `spectra/csv/`, `spectra/plots/` |
-| Generated spectra | ph MeV$^{-1}$ nm$^{-1}$ | `spectra/csv/`, `spectra/plots/` |
-| Fit parameters | dimensionless / ns$^{-1}$ / model-specific | `data/FitResults/`, `data/Parameters/` |
-| LaTeX tables | `.tex` | `data/Tables/`, module-specific `tables/` folders |
+## Population histograms
 
-## Recommended development workflow
+The historical population-histogram diagnostic is retained and reads the shared processed populations. Its PDFs go to:
 
-Use the runners in this order when changing model physics:
+```text
+outputs/figures/diagnostics/populations/
+```
+
+It is not run normally because it is an inspection product and is not consumed by predictions.
+
+---
+
+# Fits, toys and uncertainties
+
+The active fit identities are separate:
+
+```text
+ArCF4_primary
+ArN2_primary
+ArCF4_IR_primary
+ArN2_IR_primary
+ArJoint_IR_primary
+```
+
+Analogous parameters from different fits may be compared but are not silently merged or substituted.
+
+Fit caches used by predictions live in:
+
+```text
+data/cache/fits/products/
+├── <fit>_central.csv
+├── <fit>_covariance.csv
+├── <fit>_correlation.csv
+└── <fit>_toys.npz
+```
+
+The compressed NPZ contains the parameter names and the stat/syst toy matrices. Predictions load it once per process and reuse it. Large intermediate toy CSVs are removed after the fit products have been collected.
+
+Supported uncertainty products include:
+
+- statistical bands;
+- systematic bands;
+- stat ⊕ syst bands;
+- asymmetric percentile bands;
+- channel-specific OCW envelopes;
+- combined secondary uncertainty sources.
+
+Cached bands live under:
+
+```text
+data/cache/predictions/
+```
+
+---
+
+# Normalisations and OCW
+
+Normalisation recipes are declared in:
+
+```text
+config/normalizations.csv
+```
+
+Typical modes are:
+
+| ID | Meaning |
+|---|---|
+| `ArCF4` | common reference from the Ar–CF₄ primary fit |
+| `ArN2` | reference from the Ar–N₂ primary fit |
+| `own` | use the same model's fitted normalisation |
+| `absolute` | model already returns an absolute yield |
+| `as_fit` | preserve the fitted optical convention |
+
+All active OCW modifications are stored in:
+
+```text
+config/ocw.csv
+```
+
+Changing an OCW does not require a new fit:
 
 ```bash
-python primary_fits/run_primary_fits.py
-python primary_predictions/run_primary_predictions.py
-python secondary_predictions/run_secondary_predictions.py
-python spectra/run_all_spectra.py
+RUN_PRIMARY=0 RUN_SPECTRA=0 bash run_products.sh
 ```
 
-Use the smaller module runners when changing only style or plotting:
+---
+
+# Secondary catalogue and generic scans
+
+The compact Garfield catalogue is stored at:
+
+```text
+data/cache/secondary/simulation_catalog.csv.gz
+```
+
+It contains the available mixture/campaign, geometry, pressure, gap, E, E/p, concentration, electron/ion populations, gain, resolution, effective Townsend quantities and canonical hLevels populations.
+
+All secondary figures—including generic transport scans—are now registered in:
+
+```text
+config/plots/secondary.csv
+```
+
+A `plot_type=scan` row can use any catalogue column as X, Y, curve or facet. Existing rows reproduce gain versus E, gain versus E/p, alpha_eff/p versus E/p, resolution versus gain, charge imbalance versus E/p and ion/electron ratio versus gain. Numerical rows behind these figures are exported only with:
 
 ```bash
-python spectra/run_raw_spectra.py
-python spectra/run_generated_spectra.py
-python primary_predictions/run_primary_multiband_predictions.py
-python secondary_predictions/run_secondary_predictions.py
+EXPORT_SCAN_DATA=1 RUN_PRIMARY=0 RUN_SPECTRA=0 bash run_products.sh
 ```
 
-Before committing, remove generated caches that are not meant to be versioned:
+# How to extend the physics
+
+This is the most important distinction in the repository. “Adding a model” can mean four different things, and each requires a different amount of work.
+
+| What you want | What normally changes |
+|---|---|
+| Another plot or table from an existing quantity | recipe/config only |
+| Another peak handled by an existing kinetic family | population + equation + active component registration |
+| A new emission channel or continuum | population + physical model + parameters/fit + prediction adapter + spectrum |
+| A completely new mixture | mixture registration + raw data + populations + models + parameters + outputs |
+
+Do not create a new fit or duplicate a model when the desired result is only a different plot.
+
+## Anatomy of a complete physical model
+
+A model is complete only when the required layers below exist. Not every channel needs every layer.
+
+### 1. Population input
+
+The model must receive the microscopic population that feeds it:
+
+```text
+Degrad population → config/primary_population_groups.csv
+Garfield hLevels population → config/population_groups.csv
+```
+
+### 2. Physical equation
+
+The function must convert populations and parameters into a yield. Current validated explicit equations live in:
+
+```text
+src/scintillation/legacy/project/models/
+```
+
+Shared newer infrastructure, such as additive-aware second-continuum parameters, lives in:
+
+```text
+src/scintillation/physics/
+```
+
+A new equation should have a stable component name and return the same unit convention as its adapter expects.
+
+### 3. Parameter source
+
+Parameters must come from exactly one declared source:
+
+- a fitted parameter vector;
+- a literature/reference CSV;
+- a deterministic transformation such as an OCW rule.
+
+Never fetch an unrelated fit simply because its parameter names look similar.
+
+### 4. Fit, when needed
+
+A fitted model needs:
+
+- experimental input;
+- parameter names, initial values and bounds;
+- dataset definitions and masks;
+- equations associated with each dataset;
+- stat/syst toy policy;
+- fit plots and parameter table;
+- registration in `config/fits.csv`;
+- inclusion in `src/scintillation/legacy/project/primary_fits/run_primary_fits.py`.
+
+A literature-only channel does not need a fit.
+
+### 5. Primary prediction adapter
+
+To expose a fitted or absolute component to generic primary predictions, register it in:
+
+```text
+src/scintillation/legacy/project/primary_predictions/configs.py
+```
+
+The `PRIMARY_ADAPTERS` entry declares:
+
+```text
+fit name
+processed Degrad table
+component name → equation
+normalisation recipe
+```
+
+### 6. Secondary parameter recipe
+
+For secondary light, register the exact physical recipe in:
+
+```text
+config/secondary_parameter_sets.csv
+```
+
+It declares:
+
+```text
+mixture
+channel
+model
+base fit or literature family
+normalisation
+OCW
+parameter transformation
+uncertainty sources
+```
+
+### 7. Channel registration
+
+Register the wavelength region and availability in:
+
+```text
+config/channels.csv
+```
+
+This is where a component becomes a named primary/secondary channel rather than an internal function.
+
+### 8. Spectral shape
+
+Register the component in:
+
+```text
+config/spectral_components.csv
+```
+
+Then connect its wavelength shape in:
+
+```text
+src/scintillation/legacy/project/spectra/auxiliares/generated.py
+```
+
+A channel can have a valid integrated yield before a spectral shape is implemented. In that case it can appear in yield plots and tables but not in a generated full spectrum.
+
+### 9. Register its figures
+
+Once the physical quantity exists, no dedicated plotting function should be added. Register rows in one of:
+
+```text
+config/plots/fits.csv
+config/plots/primary.csv
+config/plots/secondary.csv
+config/plots/spectra.csv
+```
+
+The output layer selects components, experimental datasets, masks, normalisation, uncertainty bands and layout; it never contains a second copy of the physical equation. Detailed schemas and examples are in [`docs/PLOT_RECIPES.md`](docs/PLOT_RECIPES.md).
+
+# Example A — add another argon IR peak
+
+Suppose you want to include a new argon line at wavelength `XXX` nm in the existing IR family.
+
+## A1. Extract its population
+
+Add one row for every relevant mixture to:
+
+```text
+config/primary_population_groups.csv
+```
+
+with an output such as:
+
+```text
+Ar_XXX
+```
+
+Run analysis and verify that `Ar_XXX` appears in the corresponding processed IR table.
+
+## A2. Add the line equation
+
+Add a function such as:
+
+```text
+theory_yield_ArCF4_Ir_XXX
+theory_yield_ArN2_Ir_XXX
+```
+
+in the appropriate IR model module:
+
+```text
+src/scintillation/legacy/project/models/ArCF4_infrarred.py
+src/scintillation/legacy/project/models/ArN2_infrarred.py
+```
+
+Reuse the existing family structure only when the same precursor, lifetime and quenching equation are physically justified.
+
+## A3. Activate it in the fit
+
+In the corresponding fit module:
+
+```text
+src/scintillation/legacy/project/primary_fits/ArCF4_IR_fit.py
+src/scintillation/legacy/project/primary_fits/ArN2_IR_fit.py
+```
+
+update all of the following:
+
+```text
+IR_LINES
+EQUATIONS
+parameter construction
+experimental dataset path
+plot generation
+systematic-source list
+```
+
+Most of these are already derived from `IR_LINES`, so adding the line there and to `EQUATIONS` activates the repeated fit machinery.
+
+## A4. Activate primary predictions
+
+Add the component to the relevant `PRIMARY_ADAPTERS` entry in:
+
+```text
+src/scintillation/legacy/project/primary_predictions/configs.py
+```
+
+and include it in the `total` sum when desired.
+
+## A5. Register the named channel
+
+Add a row to:
+
+```text
+config/channels.csv
+```
+
+with its wavelength window and primary/secondary availability.
+
+## A6. Add it to generated spectra
+
+Import the equation and add its central wavelength in:
+
+```text
+src/scintillation/legacy/project/spectra/auxiliares/generated.py
+```
+
+Then add or update its row in:
+
+```text
+config/spectral_components.csv
+```
+
+## Concrete current example: 794 nm
+
+The current repository already extracts `Ar_794` and contains 794-nm theory functions, but **794 nm is not part of the active IR fit lists, primary adapter totals, channel registry or generated spectra**. To activate it completely, follow A3–A6. This is a useful example of the difference between “the equation exists” and “the component is fully integrated”.
+
+After changing the fit model:
 
 ```bash
-find . -type d -name '__pycache__' -prune -exec rm -rf {} +
-find . -type f -name '*.pyc' -delete
+bash run_all.sh
 ```
 
-## Code organization notes
+---
 
-The current code is functional and already mostly modular, but the following cleanups would make it easier to maintain:
+# Example B — add helium IR peaks
 
-- Rename `auxiliares/` to `utils/` or `core/` once the thesis stabilizes.
-- Move all generated files to a single top-level `outputs/` directory, while keeping `data/` for inputs and curated parameter tables.
-- Remove `__pycache__/`, local build directories and notebook scratch files from version control.
-- Standardize naming: `fiting.py` -> `fitting.py`, `ploting.py` -> `plotting.py`, `continium` -> `continuum`, `amplied` -> `amplified`.
-- Split `models/` into small, documented components: interpolation, kinetic probabilities, spectral shapes and unit conversion.
-- Add a small test suite for W-values, Gaussian integrals, normalization modes and selected prediction points.
-- Keep all hard-coded physics constants in CSV/YAML/TOML config files, not inside plotting scripts.
+Helium IR is not simply “another argon line”. It is a new emitting species and should be treated as a separate physical model.
 
-These changes are not required to reproduce the present results, but they would make future mixtures and detector geometries much easier to add.
+## B1. Register the mixture
 
-## Minimal reproducibility checklist
+Add the required He-based mixture to:
 
-When publishing or sharing a result, keep together:
+```text
+config/mixtures.csv
+```
 
-1. the model file in `models/`,
-2. the fit configuration in `primary_fits/`,
-3. the central parameter CSV in `data/Parameters/`,
-4. the Degrad/Garfield++ population CSVs used,
-5. the generated CSV behind the plot,
-6. the plotting configuration that generated the PDF.
+For example, a future He–CF₄ entry should define He as the base gas and CF₄ as the additive. Do not point it to the Ar IR fit.
 
-This ensures that each figure in the thesis can be traced back to a model equation, a parameter set and a microscopic population input.
+## B2. Add Degrad populations
+
+Put the raw inputs in:
+
+```text
+data/raw/degrad/HeCF4/txt/
+```
+
+Add one `run_id` group in:
+
+```text
+config/primary_population_groups.csv
+```
+
+for the He upper states that feed the selected IR transitions.
+
+## B3. Create the helium kinetic model
+
+Create a dedicated model module and equations for the actual He states, radiative lifetimes, transfer channels and quenching rates. Do not copy the Ar equation with renamed variables unless the derivation is genuinely the same.
+
+## B4. Add a dedicated fit or literature parameter source
+
+If experimental line yields exist, add a new fit configuration and register it in:
+
+```text
+config/fits.csv
+src/scintillation/legacy/project/primary_fits/run_primary_fits.py
+```
+
+If all parameters are adopted from literature, store them once in `data/reference/parameters/` and use an absolute/literature parameter family instead.
+
+## B5. Expose predictions and spectra
+
+Add:
+
+```text
+PRIMARY_ADAPTERS entry
+config/channels.csv rows
+config/secondary_parameter_sets.csv rows when secondary light is supported
+config/spectral_components.csv rows
+wavelength shapes in generated.py
+```
+
+Only then should He IR appear in primary tables, secondary comparisons or full spectra.
+
+---
+
+# Example C — add a new N₂ continuum
+
+Suppose you want to model a previously absent N₂ “sixth continuum”. This is a new emission channel, even if it uses the existing Ar–N₂ mixture.
+
+## C1. Define the physical population
+
+Identify the Degrad or Garfield states that feed the continuum. Add a dedicated output population to:
+
+```text
+config/primary_population_groups.csv
+config/population_groups.csv
+```
+
+Use separate names for primary and secondary populations if their definitions differ.
+
+## C2. Define the kinetic yield
+
+Implement a component function with a clear name, for example:
+
+```text
+n2_sixth_continuum
+```
+
+The equation should explicitly contain its production, radiative, transfer and quenching terms.
+
+## C3. Decide how parameters are obtained
+
+Choose one:
+
+```text
+fit to experimental data
+literature parameters
+fixed/derived parameters with uncertainty
+```
+
+Register a fit only when data constrain it. Otherwise use a reference parameter family.
+
+## C4. Register the channel
+
+Add a row to:
+
+```text
+config/channels.csv
+```
+
+with:
+
+```text
+channel_id
+model_id
+parameter_family
+wavelength range
+primary_enabled
+secondary_enabled
+default normalisation
+status
+```
+
+## C5. Connect primary and/or secondary predictions
+
+For primary predictions, add the component to the Ar–N₂ primary adapter.
+
+For secondary predictions, add an exact row to:
+
+```text
+config/secondary_parameter_sets.csv
+```
+
+and ensure the required Garfield population exists.
+
+## C6. Add the spectral shape
+
+Add the continuum shape to the generated-spectrum code and register it in:
+
+```text
+config/spectral_components.csv
+```
+
+A continuum normally needs a wavelength distribution, not a single Gaussian peak, unless that approximation is justified.
+
+## C7. Add requested products
+
+Only now add the desired plots and tables. Typical products are:
+
+```text
+yield vs concentration
+yield vs pressure
+yield vs E or E/p
+yield vs gain
+primary/secondary spectral contribution
+integrated wavelength-window table
+```
+
+---
+
+# Adding a completely new mixture
+
+A new mixture is a composition of existing or new models. Use this sequence.
+
+## 1. Register it
+
+Add a row to:
+
+```text
+config/mixtures.csv
+```
+
+Start with `status=planned`. Change to `active` only when the required inputs and models exist.
+
+## 2. Add raw primary data
+
+```text
+data/raw/degrad/<Mixture>/txt/
+data/raw/experimental/<Mixture>/
+```
+
+Add the necessary Degrad population groups.
+
+## 3. Add or reuse physical channels explicitly
+
+For every channel, decide whether it is:
+
+- genuinely reusable with the same equation and parameters;
+- reusable with different parameters;
+- or a new model.
+
+Declare this explicitly. Never reuse Ar–CF₄, Ar–N₂ or joint-fit parameters implicitly.
+
+## 4. Add Garfield campaigns
+
+```text
+data/raw/garfield/<Mixture>/root/
+config/secondary_inputs.csv
+```
+
+## 5. Add the single shared hLevels mapping
+
+```text
+data/reference/levels/<Mixture>_level_data.csv
+config/population_groups.csv
+```
+
+## 6. Add quenching rates, lifetimes and branching ratios
+
+Reference parameters belong in:
+
+```text
+data/reference/parameters/
+```
+
+Each row should contain value, uncertainty where available, unit, source, description and activation status.
+
+For an additive-enabled Ar second continuum, add the required additive rows to the existing second-continuum parameter table rather than branching on the gas name in Python.
+
+## 7. Register prediction recipes
+
+```text
+config/channels.csv
+config/secondary_parameter_sets.csv
+config/spectral_components.csv
+```
+
+## 8. Add outputs
+
+Add rows to the corresponding `config/plots/*.csv`. Experimental data are named once in `config/experimental_datasets.csv`; secondary simulation masks are named once in `config/secondary_selections.csv`. Tables continue to read canonical fit/prediction/reference products and are classified automatically under `outputs/tables/{fits,primary,secondary,spectra,reference}`.
+
+## 9. Validate before activation
+
+Run:
+
+```bash
+PYTHONPATH=src pytest -q
+bash run_all.sh
+```
+
+Check at least:
+
+```text
+processed populations
+fit convergence and parameter bounds
+stat/syst bands
+normalisation
+primary and secondary limiting cases
+spectral integral versus integrated yield
+interpolation/extrapolation range
+```
+
+---
+
+# Adding outputs without adding a model
+
+The plotting system is configuration-driven. Rows sharing `plot_id` are drawn in one PDF; each row is a model component, combined component, experimental dataset or simulation layer. The distributed registries contain 30 fit diagnostics, 31 primary figure recipes, 22 secondary figure recipes and 22 spectral figure recipes, reproducing the current production families while remaining editable from the GUI.
+
+## New fit diagnostic
+
+Add or duplicate a row in `config/plots/fits.csv`. Fit points always display statistical error bars; select dataset/component, pressure grid, labels, scales and output.
+
+## New primary prediction
+
+Add a row to `config/plots/primary.csv`. Select the model component, pressure, normalisation and bands. The `datasets` field references stable IDs from `config/experimental_datasets.csv`; X-ray data can follow or ignore the chosen normalisation through `scale_xray_with_normalization`.
+
+## New secondary yield or transport plot
+
+Add rows to `config/plots/secondary.csv`. Use `kind=model` for one light component, `kind=combined` with `components=model:component:band_mode:ocw|...` for sums, `kind=experimental` for a registered dataset, or `plot_type=scan` for catalogue quantities such as gain, E/p and alpha_eff/p.
+
+## New spectrum
+
+Add a row to `config/plots/spectra.csv`. Concentrations become panels, pressures become curves, and the row controls mosaic dimensions, wavelength range, shared y scale, optional inset, optional broken-x view and output.
+
+## New literature table
+
+Store literature numbers once in a reference CSV and let the table exporter read it. Do not duplicate parameter values in plotting or reporting source code.
+
+# Spectra
+
+The spectrum workflow is completely selected by `config/plots/spectra.csv`. The populated registry reproduces the current raw Ar–CF4/Ar–N2 mosaics, generated spectra, extended VUV spectra, inset and broken-x variants, raw-versus-generated comparisons and annotated family.
+
+Generated numerical spectra remain in `data/cache/spectra/`; final PDFs are collected under `outputs/figures/spectra/`. To add a new component, first expose its integrated model output and wavelength shape, then list its stable component name in the recipe.
+
+# Plot style
+
+Reusable presets live in `config/styles/` and are applied to both modern and legacy-compatible renderers. The active preset is named in `config/styles/active.txt`. The GUI can edit:
+
+- typography and figure dimensions;
+- primary/secondary line widths and marker size;
+- axis-spine width;
+- major/minor tick width, length and direction;
+- top/right ticks;
+- uncertainty-band opacity;
+- error-bar and cap thickness;
+- grid opacity/width;
+- legend frame, opacity and columns.
+
+A one-off run can override the active preset:
+
+```bash
+SCINTILLATION_STYLE_PRESET=presentation bash run_products.sh
+```
+
+# Output policy
+
+Normal execution creates only:
+
+```text
+outputs/figures/**/*.pdf
+outputs/tables/**/*.tex
+```
+
+Reusable numerical products remain in:
+
+```text
+data/processed/
+data/cache/
+```
+
+Optional numerical exports are disabled unless requested.
+
+---
+
+# GitHub-ready workflow
+
+The ZIP can replace the working repository after a local validation run. Recommended first import:
+
+```bash
+git checkout -b compact-architecture
+# Copy the contents of this project into the repository.
+PYTHONPATH=src pytest -q
+bash run_all.sh
+```
+
+Review the main PDFs and tables before merging into the default branch. Keep the previous repository state in Git history rather than as duplicated folders inside this project.
+
+Do not commit:
+
+```text
+.runtime/
+outputs/archive/
+Python bytecode
+local virtual environments
+large local Garfield campaign payloads
+```
+
+`.gitignore` excludes the conventional local campaign folders but cannot filter by file size. Before a large commit, run:
+
+```bash
+python tools/check_large_files.py --staged
+```
+
+The default 90 MiB guard leaves margin below GitHub's 100 MiB normal-Git limit. Keep full ROOT campaigns outside normal Git or use Git LFS deliberately; small reference ROOT files may remain tracked.
+
+The compact `data/cache/` currently distributed with the project is intentionally useful: it lets `run_products.sh` redraw products without repeating expensive fits. Keep or regenerate these caches according to the repository data policy; remove only stale caches, not the entire mechanism. Raw scientific inputs are likewise tracked according to the project data policy.
+
+---
+
+# Validation and current limitations
+
+Run tests with:
+
+```bash
+PYTHONPATH=src pytest -q
+```
+
+The tests verify the four canonical figure registries, output and dataset references, fit statistical-error contracts, primary normalisation switches, joint-IR and annotated-spectrum coverage, parameter-scope separation, pipeline command generation and global style loading.
+
+Current explicit limitations:
+
+- full secondary spectral synthesis is not connected for every integrated secondary channel;
+- CO₂, CH₄ and isobutane mappings and kinetic parameters remain planned until real simulations and literature inputs are supplied;
+- charge-imbalance observables are diagnostic proxies until the Garfield counting convention is validated for each campaign;
+- the GUI edits only registered figure rows and existing physical selections; it does not create missing simulations, models or hLevels mappings;
+- adding a genuinely new physical model still requires an equation and an explicit adapter/fit registration; configuration files alone cannot invent the physics.
+
+Architecture details and the validation record are available in:
+
+```text
+docs/ARCHITECTURE.md
+docs/VALIDATION.md
+```

@@ -1,0 +1,15 @@
+recipe_id,label,use_corners,parameter,low_factor,high_factor,optimum_factor,low_add,high_add,optimum_add,clip_min,clip_max,enabled,notes
+ArCF4_visible_OCW,OCW,False,P_CF3_vis_dir,0.5,1.0,0.8,0,0,0,0,1,True,Visible CF3 branch.
+ArCF4_visible_OCW,OCW,False,P_Ar_dbleStar,1.0,2.0,1.5,0,0,0,0,1,True,Visible Ar high-state branch.
+ArCF4_visible_OCW,OCW,False,P_CF4_dir,0.15,1.0,0.5,0,0,0,0,1,True,Visible direct CF4 branch.
+ArCF4_visible_OCW,OCW,False,P_CF3_uv_dir,1.0,1.0,1.0,0.25,0.25,0.25,0,1,True,Visible recipe UV branch offset.
+ArCF4_UV_OCW,OCW,False,P_CF3_vis_dir,0.5,1.0,0.8,0,0,0,0,1,True,UV recipe CF3 visible branch.
+ArCF4_UV_OCW,OCW,False,P_Ar_dbleStar,1.0,2.0,1.5,0,0,0,0,1,True,UV recipe Ar high-state branch.
+ArCF4_UV_OCW,OCW,False,P_CF4_dir,0.15,1.0,0.5,0,0,0,0,1,True,UV direct CF4 branch.
+ArCF4_UV_OCW,OCW,False,P_CF3_uv_dir,1.0,1.0,1.0,0.25,0.25,0.25,0,1,True,UV CF3 branch offset.
+ArCF4_CF4_ionic_VUV_OCW,CF4 ionic VUV OCW,False,P_CF4_dir,0.15,1.0,0.5,0,0,0,0,1,True,Ionic VUV direct branch.
+ArCF4_IR_OCW_x2,IR OCW x2,False,PAr_star_696,2,2,2,0,0,0,0,1,True,Deterministic secondary IR scaling.
+ArCF4_IR_OCW_x2,IR OCW x2,False,PAr_star_727,2,2,2,0,0,0,0,1,True,Deterministic secondary IR scaling.
+ArCF4_IR_OCW_x2,IR OCW x2,False,PAr_star_750,2,2,2,0,0,0,0,1,True,Deterministic secondary IR scaling.
+ArCF4_IR_OCW_x2,IR OCW x2,False,PAr_star_764,2,2,2,0,0,0,0,1,True,Deterministic secondary IR scaling.
+ArCF4_IR_OCW_x2,IR OCW x2,False,PAr_star_772,2,2,2,0,0,0,0,1,True,Deterministic secondary IR scaling.

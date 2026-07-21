@@ -1,0 +1,5 @@
+policy_id,applies_to,displayed,total_components,combination,notes
+primary_default,primary,stat;syst;total,stat;syst,quadrature,Stat and syst propagated independently from the exact fit toys.
+secondary_sys_stat,secondary,stat;syst;total,stat;syst,quadrature,No OCW component.
+secondary_with_ocw,secondary,stat;syst;ocw;total,stat;syst;ocw,envelope_then_quadrature,OCW is evaluated in prediction space and is not written back into fit parameters.
+literature_kinetics,second_continuum,literature;total,literature,toy_covariance,Reserved for correlated sampling of literature coefficients.

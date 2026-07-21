@@ -1,0 +1,8 @@
+component_id,mixture_id,channel_id,source_type,model_id,unit,status,notes
+ArCF4_primary_visible,ArCF4,cf4_visible,primary,cf4_visible,ph/MeV/nm,active,Generated from primary model yield and spectral shape.
+ArCF4_primary_ar2nd,ArCF4,argon_second_continuum,primary,argon_second_continuum,ph/MeV/nm,active,Additive-aware Ar second continuum.
+ArCF4_secondary_visible,ArCF4,cf4_visible,secondary,cf4_visible,ph/electron/nm,active,Uses exact ArCF4 secondary parameter recipe.
+ArCF4_secondary_ar2nd,ArCF4,argon_second_continuum,secondary,argon_second_continuum,ph/electron/nm,active,Uses Garfield populations and literature kinetics.
+ArN2_primary_uv,ArN2,n2_uv,primary,n2_uv,ph/MeV/nm,active,Default comparison normalization is ArCF4.
+ArCO2_secondary_ar2nd,ArCO2,argon_second_continuum,secondary,argon_second_continuum,ph/electron/nm,planned,Activate after adding populations and quenching coefficients.
+ArCH4_secondary_ar2nd,ArCH4,argon_second_continuum,secondary,argon_second_continuum,ph/electron/nm,planned,Activate after adding populations and quenching coefficients.

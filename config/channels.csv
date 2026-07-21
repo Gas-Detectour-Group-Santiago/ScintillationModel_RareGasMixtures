@@ -1,0 +1,14 @@
+channel_id,label,model_id,parameter_family,wavelength_min_nm,wavelength_max_nm,primary_enabled,secondary_enabled,default_normalization,status
+cf4_visible,CF4 visible,cf4_visible,ArCF4_primary,400,800,True,True,ArCF4,active
+cf4_uv,CF4 UV,cf4_uv,ArCF4_primary,200,400,True,True,ArCF4,active
+cf4_ionic_vuv,CF4 ionic VUV,cf4_ionic_vuv,argon_second_continuum,145,165,True,True,ArCF4,active
+n2_uv,N2 UV,n2_uv,ArN2_primary,300,450,True,True,ArCF4,active
+argon_second_continuum,Ar 2nd,argon_second_continuum,argon_second_continuum,100,200,True,True,absolute,active
+argon_ir_696,Ar 696 nm,argon_ir,argon_ir,690,702,True,True,ArCF4,active
+argon_ir_727,Ar 727 nm,argon_ir,argon_ir,721,733,True,True,ArCF4,active
+argon_ir_750,Ar 750 nm,argon_ir,argon_ir,744,756,True,True,ArCF4,active
+argon_ir_763,Ar 763 nm,argon_ir,argon_ir,757,769,True,True,ArCF4,active
+argon_ir_772,Ar 772 nm,argon_ir,argon_ir,766,778,True,True,ArCF4,active
+argon_ir_total,Ar IR total,argon_ir,argon_ir,690,800,True,True,ArCF4,active
+co2_emission,CO2 emission,co2_emission,ArCO2_primary,,,False,False,ArCF4,planned
+ch4_emission,CH4 emission,ch4_emission,ArCH4_primary,,,False,False,ArCF4,planned

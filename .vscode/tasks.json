@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Scintillation: run all",
+      "type": "shell",
+      "command": "bash run_all.sh",
+      "options": {"cwd": "${workspaceFolder}"},
+      "group": {"kind": "build", "isDefault": true},
+      "problemMatcher": []
+    },
+    {
+      "label": "Scintillation: run products",
+      "type": "shell",
+      "command": "bash run_products.sh",
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    },
+    {
+      "label": "Scintillation: open graphical interface",
+      "type": "shell",
+      "command": "python -m streamlit run app/main.py",
+      "options": {"cwd": "${workspaceFolder}"},
+      "problemMatcher": []
+    }
+  ]
+}

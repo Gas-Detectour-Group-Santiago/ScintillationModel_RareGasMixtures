@@ -1,0 +1,8 @@
+set_id,mixture_id,channel_id,model_id,base_fit_name,kinetic_parameter_family,normalization_recipe,ocw_recipe,parameter_transform,uncertainty_sources,status,notes
+ArCF4_visible_secondary,ArCF4,cf4_visible,ArCF4,ArCF4_primary,,ARCF4_SECONDARY_NORM_NE,ArCF4_visible_OCW,none,stat;syst;ocw,active,Uses the exact ArCF4 primary fit and a visible-specific secondary OCW recipe.
+ArCF4_uv_secondary,ArCF4,cf4_uv,ArCF4,ArCF4_primary,,ARCF4_SECONDARY_NORM_NE,ArCF4_UV_OCW,none,stat;syst;ocw,active,Uses the same fit vector as visible but an independent UV OCW prescription.
+ArCF4_ir_secondary,ArCF4,argon_ir_total,ArCF4_IR,ArCF4_IR_primary,,ARCF4_SECONDARY_NORM_NE,ArCF4_IR_OCW_x2,secondary_ir_ocw_x2,stat;syst;ocw,active,Uses only ArCF4_IR_primary; the deterministic x2 secondary OCW transform is not written back into the fit.
+ArCF4_ar2nd_secondary,ArCF4,argon_second_continuum,argon_second_continuum,,argon_second_continuum,AR2ND_SECONDARY_NORM_NE,,none,literature,active,Absolute second-continuum kinetics from the additive-aware literature parameter set and Garfield populations.
+ArN2_uv_secondary,ArN2,n2_uv,ArN2,ArN2_primary,,ARN2_SECONDARY_NORM_NE,,none,stat;syst,planned,Reserved for future ArN2 secondary simulations; no ArCF4 or joint parameters are substituted automatically.
+ArN2_ir_secondary,ArN2,argon_ir_total,ArN2_IR,ArN2_IR_primary,,ARN2_SECONDARY_NORM_NE,,none,stat;syst,planned,Uses only ArN2_IR_primary when the required secondary populations become available.
+ArJoint_ir_secondary,Ar,argon_ir_total,ArJoint_IR,ArJoint_IR_primary,,ARJOINT_SECONDARY_NORM_NE,,none,stat;syst,planned,Joint-model prediction recipe; it is separate from both independent IR models and must be requested explicitly.

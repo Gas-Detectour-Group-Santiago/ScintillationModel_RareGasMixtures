@@ -1,7 +1,0 @@
-case,spectrum_column,method,pressure_bar,concentration_percent,ratio,numerator_integral,denominator_integral,numerator_range_nm,denominator_range_nm,numerator_n_points,denominator_n_points
-ArN2_C1_gaussian_over_ArCF4_95_5_VIS,C1_spectrum,gaussian_fit,1.0,100.0,0.1663124466075109,18.52502967027486,111.38691089063832,323-450,500-750,356,763
-ArN2_C1_hardcut_over_ArCF4_95_5_VIS,C1_spectrum,trapz,1.0,100.0,0.24104137599761613,26.848854269203315,111.38691089063832,323-450,500-750,356,763
-ArN2_C2_gaussian_over_ArCF4_95_5_VIS,C2_spectrum,gaussian_fit,1.0,100.0,0.13342565161926684,14.86187116744063,111.38691089063832,323-450,500-750,356,763
-ArN2_C2_hardcut_over_ArCF4_95_5_VIS,C2_spectrum,trapz,1.0,100.0,0.20037129259418532,22.318739313230537,111.38691089063832,323-450,500-750,356,763
-ArN2_mean_gaussian_over_ArCF4_95_5_VIS,mean_spectrum,gaussian_fit,1.0,100.0,0.14986122981143515,16.6925794509678,111.38691089063832,323-450,500-750,356,763
-ArN2_mean_hardcut_over_ArCF4_95_5_VIS,mean_spectrum,trapz,1.0,100.0,0.22070633429590072,24.583796791216926,111.38691089063832,323-450,500-750,356,763

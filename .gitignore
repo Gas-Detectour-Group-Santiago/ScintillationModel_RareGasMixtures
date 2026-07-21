@@ -1,3 +1,48 @@
+# Python environments and caches
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
 
-# Generated archives
+# Runtime workspace, logs and temporary files
+.runtime/
+logs/
+*.log
+*.tmp
+*.bak
+*.swp
+*~
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+.streamlit/secrets.toml
+
+# Editors / operating systems
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+
+# Generated archives and package artefacts
+build/
+dist/
 *.zip
+*.tar
+*.tar.gz
+*.7z
+outputs/archive/*
+!outputs/archive/.gitkeep
+
+# Large local Garfield campaigns. Keep campaign manifests/configuration in Git,
+# but store the ROOT payload outside the normal Git history.
+data/raw/garfield/campaigns/
+data/raw/garfield/incoming/
+data/raw/garfield/local/

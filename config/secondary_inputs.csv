@@ -1,0 +1,11 @@
+run_id,mixture_id,raw_subdir,output_subdir,level_table,gas_concentration,population_rules_mixture,enabled
+ArCF4,ArCF4,ArCF4/root,ArCF4,ArCF4_level_data.csv,cf4,ArCF4,True
+ArN2,ArN2,ArN2/root,ArN2,ArN2_level_data.csv,n2,ArN2,True
+HeCF4,HeCF4,HeCF4/root,HeCF4,HeCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_electricField,ArCF4,ArCF4_paper/electricField/root,ArCF4_paper/electricField,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_gem_200mbar,ArCF4,ArCF4_paper/gem_200mbar/root,ArCF4_paper/gem_200mbar,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_gem_1bar,ArCF4,ArCF4_paper/gem_1bar/root,ArCF4_paper/gem_1bar,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_gem_10bar,ArCF4,ArCF4_paper/gem_10bar/root,ArCF4_paper/gem_10bar,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_thgem_50mbar,ArCF4,ArCF4_paper/thgem_50mbar/root,ArCF4_paper/thgem_50mbar,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_thgem_1bar,ArCF4,ArCF4_paper/thgem_1bar/root,ArCF4_paper/thgem_1bar,ArCF4_level_data.csv,cf4,ArCF4,True
+ArCF4_paper_thgem_10bar,ArCF4,ArCF4_paper/thgem_10bar/root,ArCF4_paper/thgem_10bar,ArCF4_level_data.csv,cf4,ArCF4,True

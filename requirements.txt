@@ -1,0 +1,10 @@
+numpy
+scipy
+pandas
+matplotlib
+scienceplots
+dill
+uproot
+awkward
+pytest
+streamlit>=1.59

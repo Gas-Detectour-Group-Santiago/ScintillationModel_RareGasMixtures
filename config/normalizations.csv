@@ -1,0 +1,6 @@
+normalization_id,mode,reference_fit,output_scale,output_unit,propagate_nnorm,description
+ArCF4,reference_norm,ArCF4_primary,1000.0,ph/MeV,False,Common comparison normalization used by default across mixtures.
+ArN2,reference_norm,ArN2_primary,1000.0,ph/MeV,False,ArN2 fit normalization for dedicated comparison studies.
+own,own_norm,,1000.0,ph/MeV,False,Divide by the fitted normalization of the same model.
+absolute,as_fit,,1000.0,ph/MeV,False,Absolute model output; no fitted optical normalization is removed.
+as_fit,as_fit,,1000.0,ph/MeV,True,Keep the fitted normalization and its toy variation.

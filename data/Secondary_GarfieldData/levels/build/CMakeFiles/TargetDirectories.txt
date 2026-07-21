@@ -1,3 +1,0 @@
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/levels/build/CMakeFiles/obtain_levels.dir
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/levels/build/CMakeFiles/edit_cache.dir
-/home/daniel/GitHub/ScintillationModel_RareGasMixtures/data/Secondary_GarfieldData/levels/build/CMakeFiles/rebuild_cache.dir

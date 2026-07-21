@@ -1,0 +1,42 @@
+{
+  "label": "TFM",
+  "font_family": "serif",
+  "mathtext_fontset": "dejavuserif",
+  "cmap": "viridis",
+  "grid": false,
+  "use_latex": false,
+  "figure_single": [
+    7.2,
+    4.9
+  ],
+  "figure_wide": [
+    7.8,
+    5.2
+  ],
+  "font_size_title": 15.0,
+  "font_size_label": 15.0,
+  "font_size_tick": 12.0,
+  "font_size_legend": 11.0,
+  "font_size_legend_title": 11.0,
+  "line_width_main": 2.2,
+  "line_width_secondary": 1.8,
+  "marker_size": 5.2,
+  "cap_size": 2.5,
+  "legend_frame": true,
+  "legend_fancybox": true,
+  "legend_alpha": 0.92,
+  "legend_columns": 1,
+  "axes_line_width": 1.0,
+  "tick_major_width": 1.2,
+  "tick_minor_width": 0.8,
+  "tick_major_length": 5.0,
+  "tick_minor_length": 3.0,
+  "tick_direction": "in",
+  "ticks_top": true,
+  "ticks_right": false,
+  "band_alpha": 0.2,
+  "errorbar_line_width": 1.2,
+  "cap_thickness": 1.2,
+  "grid_alpha": 0.22,
+  "grid_line_width": 0.55
+}

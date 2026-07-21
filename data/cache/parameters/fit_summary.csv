@@ -1,0 +1,6 @@
+fit_name,mixture_id,model_id,channel_group,n_parameters,n_fixed,source_file
+ArCF4_IR_primary,ArCF4,ArCF4_IR,ir,20,5,data/cache/fits/parameters/ArCF4_IR_primary.csv
+ArCF4_primary,ArCF4,ArCF4,uv_vis,11,2,data/cache/fits/parameters/ArCF4_primary.csv
+ArJoint_IR_primary,Ar,ArJoint_IR,ir_joint,25,5,data/cache/fits/parameters/ArJoint_IR_primary.csv
+ArN2_IR_primary,ArN2,ArN2_IR,ir,20,5,data/cache/fits/parameters/ArN2_IR_primary.csv
+ArN2_primary,ArN2,ArN2,uv,13,1,data/cache/fits/parameters/ArN2_primary.csv

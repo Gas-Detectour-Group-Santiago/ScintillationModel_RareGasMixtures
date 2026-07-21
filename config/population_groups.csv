@@ -1,0 +1,26 @@
+mixture_id,display_name,name_tokens,gas,energy_low_eV,energy_high_eV,output_name,enabled,status,description
+ArCF4,CF4 ion,ION CF3 +,CF4,15.0,100.0,CF4,True,active,CF4 ionic population.
+ArCF4,"Ar(1s4,1s5)",EXC,Ar,11.50,11.70,Ar_1s4_1s5,True,active,Low 4s precursor bin; half-open interval.
+ArCF4,"Ar(1s2,1s3)",EXC,Ar,11.70,12.00,Ar_1s2_1s3,True,active,Upper 4s bin; half-open interval.
+ArCF4,Ar**,EXC,Ar,12.00,100.0,Ar_dbleStar,True,active,Upper argon excitations; disjoint from 4s bins.
+ArCF4,CF3,NEUTRAL DISS,CF4,12.90,100.0,CF3,True,active,Neutral dissociation population feeding visible emission.
+ArCF4,Ar3rd,CHARGE STATE =,Ar,40.0,100.0,Ar_3rd,True,active,Argon ionic/third-continuum proxy.
+ArCF4,Ar 696,EXC,Ar,13.32,23.32,Ar_696,True,active,IR line population proxy.
+ArCF4,Ar 727,EXC,Ar,13.32,23.32,Ar_727,True,active,IR line population proxy.
+ArCF4,Ar 750,EXC,Ar,13.47,23.47,Ar_750,True,active,IR line population proxy.
+ArCF4,Ar 763,EXC,Ar,13.17,23.17,Ar_763,True,active,IR line population proxy.
+ArCF4,Ar 772,EXC,Ar,13.32,23.32,Ar_772,True,active,IR line population proxy.
+ArCF4,Ar 794,EXC,Ar,13.28,23.28,Ar_794,True,active,IR line population proxy.
+ArN2,Ar Meta,EXC,Ar,0.0,11.6,Ar_meta,True,active,Historical metastable bin.
+ArN2,Ar Res,EXC,Ar,11.6,11.7,Ar_res,True,active,Historical resonant bin.
+ArN2,Ar**,EXC,Ar,11.7,100.0,Ar_dbleStar,True,active,Upper argon excitation bin used by Ar-N2 model.
+ArN2,N2*,C 3PI,N2,11.0,15.5,N2_star,True,active,N2(C) population.
+ArN2,Ar 696,EXC,Ar,13.32,23.32,Ar_696,True,active,IR line population proxy.
+ArN2,Ar 727,EXC,Ar,13.32,23.32,Ar_727,True,active,IR line population proxy.
+ArN2,Ar 750,EXC,Ar,13.47,23.47,Ar_750,True,active,IR line population proxy.
+ArN2,Ar 763,EXC,Ar,13.17,23.17,Ar_763,True,active,IR line population proxy.
+ArN2,Ar 772,EXC,Ar,13.32,23.32,Ar_772,True,active,IR line population proxy.
+ArN2,Ar 794,EXC,Ar,13.28,23.28,Ar_794,True,active,IR line population proxy.
+ArCO2,CO2 excited,EXC,CO2,0.0,100.0,CO2_excited,False,planned,Refine state/energy mapping after generating the CO2 level catalogue.
+ArCH4,CH4 excited,EXC,CH4,0.0,100.0,CH4_excited,False,planned,Refine state/energy mapping after generating the CH4 level catalogue.
+AriC4H10,iC4H10 excited,EXC,iC4H10,0.0,100.0,iC4H10_excited,False,planned,Refine state/energy mapping after generating the isobutane level catalogue.
