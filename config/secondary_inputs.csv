@@ -9,3 +9,6 @@ ArCF4_paper_gem_10bar,ArCF4,ArCF4_paper/gem_10bar/root,ArCF4_paper/gem_10bar,ArC
 ArCF4_paper_thgem_50mbar,ArCF4,ArCF4_paper/thgem_50mbar/root,ArCF4_paper/thgem_50mbar,ArCF4_level_data.csv,cf4,ArCF4,True
 ArCF4_paper_thgem_1bar,ArCF4,ArCF4_paper/thgem_1bar/root,ArCF4_paper/thgem_1bar,ArCF4_level_data.csv,cf4,ArCF4,True
 ArCF4_paper_thgem_10bar,ArCF4,ArCF4_paper/thgem_10bar/root,ArCF4_paper/thgem_10bar,ArCF4_level_data.csv,cf4,ArCF4,True
+newSim_ArCF4_gap0p150,ArCF4,newSimulations/roots/ArCF4/gap_0.150mm,newSimulations/ArCF4/gap_0.150mm,ArCF4_level_data.csv,cf4,ArCF4,True
+newSim_ArIso_gap0p150,AriC4H10,newSimulations/roots/ArIso/gap_0.150mm,newSimulations/ArIso/gap_0.150mm,ArCF4_level_data.csv,iso,ArCF4,True
+newSim_ArIsoCF4_gap0p150,ArIsoCF4,newSimulations/roots/ArIsoCF4/gap_0.150mm,newSimulations/ArIsoCF4/gap_0.150mm,ArCF4_level_data.csv,cf4,ArCF4,True

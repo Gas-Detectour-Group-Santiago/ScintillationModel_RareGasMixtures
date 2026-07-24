@@ -9,16 +9,13 @@ from scintillation.core.outputs import OutputManager
 from scintillation.core.paths import ProjectPaths
 from scintillation.core.runtime import LegacyRuntime
 from scintillation.predictions.secondary_catalog import build_secondary_catalog
+from scintillation.predictions.alpha_campaign import render_alpha_campaign_plots
 from scintillation.predictions.scans import load_secondary_scans,select_scan
 from scintillation.plotting.style import FIGSIZE_WIDE,LINEWIDTH_MAIN,MARKERSIZE,boxed_legend_kwargs,marker_for_geometry,palette,setup_style
 
 
 def _label(value: object,column: str|None)->str:
-    if column=="concentration_percent":
-        return f"{float(value):g}%"
-    if column=="pressure":
-        return f"{float(value):g} bar"
-    return str(value)
+    return f"{float(value):g}%" if column=="concentration_percent" else str(value)
 
 def _render_scans(catalog: pd.DataFrame)->None:
     setup_style(grid=False,use_latex=False,context="single")
@@ -42,8 +39,7 @@ def _render_scans(catalog: pd.DataFrame)->None:
                         color=colors[idx],linewidth=LINEWIDTH_MAIN,markersize=MARKERSIZE,
                         label=None if value is None else _label(value,spec.series))
             ax.set(xlabel=spec.xlabel,ylabel=spec.ylabel,xscale=spec.xscale,yscale=spec.yscale)
-            base_title = spec.title if spec.title else spec.scan_id.replace("_"," ")
-            ax.set_title(base_title + (f" — {facet}" if spec.facet else ""))
+            ax.set_title(spec.scan_id.replace("_"," ")+(f" — {facet}" if spec.facet else ""))
             if spec.series:
                 ax.legend(
                     title=spec.series.replace("_", " "),
@@ -57,11 +53,10 @@ def _render_scans(catalog: pd.DataFrame)->None:
             relative = Path(spec.output)
             out = paths.figures / relative
             out.mkdir(parents=True, exist_ok=True)
-            stem = spec.scan_id if spec.facet is None else str(facet)
-            fig.savefig(out/f"{stem}.pdf"); plt.close(fig)
+            fig.savefig(out/f"{facet}.pdf"); plt.close(fig)
             if export_data:
-                cache=paths.secondary_cache/"alpha_studies"/spec.scan_id; cache.mkdir(parents=True,exist_ok=True)
-                subset.to_csv(cache/f"{stem}.csv.gz",index=False,compression="gzip")
+                cache=paths.secondary_cache/"scans"/spec.scan_id; cache.mkdir(parents=True,exist_ok=True)
+                subset.to_csv(cache/f"{facet}.csv.gz",index=False,compression="gzip")
 
 def main()->None:
     runtime=LegacyRuntime.from_root(ROOT); runtime.prepare()
@@ -69,6 +64,7 @@ def main()->None:
     runtime.collect("secondary")
     catalog=build_secondary_catalog(ROOT)
     _render_scans(catalog)
-    print("[workflow] secondary predictions and configured scans complete")
+    render_alpha_campaign_plots(ROOT, catalog)
+    print("[workflow] secondary predictions, configured scans and alpha studies complete")
 
 if __name__=="__main__": main()

@@ -1,0 +1,721 @@
+{
+  "mixture": "ArCF4",
+  "gap_mm": 0.15,
+  "model": "alpha_eff/p = A*(E/p)^m*exp(-(B/(E/p))^n)",
+  "units": {
+    "E_over_p": "kV cm^-1 bar^-1",
+    "alpha_over_p": "cm^-1 bar^-1",
+    "field": "V cm^-1",
+    "alpha_effective": "cm^-1"
+  },
+  "compositions": {
+    "ar_80__cf4_20": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 80.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 20.0
+        }
+      ],
+      "parameters": {
+        "A": 0.18676994912656603,
+        "B": 4.708500671153446e-06,
+        "m": 2.092726366758588,
+        "n": 1.2342016424603102,
+        "covariance": [
+          [
+            0.06743447418126733,
+            -14.538391085945904,
+            -0.09356519532892799,
+            -241323.14172857706
+          ],
+          [
+            -14.538391085945962,
+            5931.213842301848,
+            20.175421712510012,
+            104129286.34061965
+          ],
+          [
+            -0.09356519532892796,
+            20.175421712509927,
+            0.12984218278432588,
+            333242.20256651234
+          ],
+          [
+            -241323.14172858003,
+            104129286.34062004,
+            333242.20256651635,
+            2105478345913.3281
+          ]
+        ],
+        "valid_reduced_field": [
+          41.8442503229,
+          49.666879109499995
+        ],
+        "n_points": 6,
+        "relative_rmse": 0.015719818212405146
+      },
+      "points": [
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 1238.1,
+          "gain_error": 202.1122785926049,
+          "alpha_effective": 474.75554836177645,
+          "alpha_error": 10.882926989882609,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 43885.6543812,
+          "gain": 1857.7,
+          "gain_error": 271.53454854333285,
+          "alpha_effective": 501.80629615982394,
+          "alpha_error": 9.744470709060769,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_43.9kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 46686.866363,
+          "gain": 5280.7,
+          "gain_error": 830.7341144718738,
+          "alpha_effective": 571.4542629113663,
+          "alpha_error": 10.48767669023518,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_46.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48538.6703121,
+          "gain": 14161.75,
+          "gain_error": 2462.730895266472,
+          "alpha_effective": 637.2199964788012,
+          "alpha_error": 11.59334543290423,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_48.5kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49319.7938049,
+          "gain": 17160.2,
+          "gain_error": 2179.685474171856,
+          "alpha_effective": 650.0232018657126,
+          "alpha_error": 8.467987840747217,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_49.3kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49666.8791095,
+          "gain": 22102.55,
+          "gain_error": 3340.189437958177,
+          "alpha_effective": 666.8965510309957,
+          "alpha_error": 10.074823758520102,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_80.0_cf4_20.0_49.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_80__cf4_20",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 80.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 20.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_85__cf4_15": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 85.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 15.0
+        }
+      ],
+      "parameters": {
+        "A": 8.005812743807514,
+        "B": 32.14595293495007,
+        "m": 1.1565620150312237,
+        "n": 5.999999999999916,
+        "covariance": [
+          [
+            15926.641568018931,
+            -1353.7068749639827,
+            -471.75978157789507,
+            -5160.5636625946545
+          ],
+          [
+            -1353.7068749675473,
+            125.04324460020649,
+            40.05972568694036,
+            447.9216584269106
+          ],
+          [
+            -471.75978157788046,
+            40.05972568683353,
+            13.974068920417059,
+            152.82196978030888
+          ],
+          [
+            -5160.563662598086,
+            447.9216584260477,
+            152.82196978041523,
+            1681.0750818793995
+          ]
+        ],
+        "valid_reduced_field": [
+          41.8442503229,
+          54.635675824799996
+        ],
+        "n_points": 10,
+        "relative_rmse": 0.012363636818338889
+      },
+      "points": [
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 1521.45,
+          "gain_error": 225.6871667526581,
+          "alpha_effective": 488.49460709934095,
+          "alpha_error": 9.889126239340019,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 47919.5243789,
+          "gain": 17413.0,
+          "gain_error": 3001.5544578031386,
+          "alpha_effective": 650.9981555119589,
+          "alpha_error": 11.491622955275325,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_47.9kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48224.220141,
+          "gain": 17422.05,
+          "gain_error": 2750.4913393361485,
+          "alpha_effective": 651.0327949539522,
+          "alpha_error": 10.524943349897205,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_48.2kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48529.6913112,
+          "gain": 19468.6,
+          "gain_error": 2773.0216555420666,
+          "alpha_effective": 658.4372126856858,
+          "alpha_error": 9.495706438545715,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_48.5kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 50151.5264853,
+          "gain": 30105.85,
+          "gain_error": 3926.3688268685682,
+          "alpha_effective": 687.4983189341667,
+          "alpha_error": 8.694586659776684,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_50.2kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 50563.0495806,
+          "gain": 31203.75,
+          "gain_error": 4381.966479294188,
+          "alpha_effective": 689.88623725885,
+          "alpha_error": 9.362050991294717,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_50.6kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 51543.0904007,
+          "gain": 43835.3,
+          "gain_error": 6387.193368518141,
+          "alpha_effective": 712.5463138563672,
+          "alpha_error": 9.713926703696398,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_51.5kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 53032.308722,
+          "gain": 68944.05,
+          "gain_error": 10123.857304322768,
+          "alpha_effective": 742.7367056721085,
+          "alpha_error": 9.7894426029249,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_53.0kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 53352.6877503,
+          "gain": 119414.0,
+          "gain_error": 15568.368405875184,
+          "alpha_effective": 779.3567817332249,
+          "alpha_error": 8.691537232303963,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_53.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 15.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 54635.6758248,
+          "gain": 139045.5,
+          "gain_error": 21684.016228246142,
+          "alpha_effective": 789.5037664452592,
+          "alpha_error": 10.39660457823573,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_85.0_cf4_15.0_54.6kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_85__cf4_15",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 85.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 15.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_90__cf4_10": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 90.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 10.0
+        }
+      ],
+      "parameters": {
+        "A": 0.7360088134930304,
+        "B": 9.92187136749127e-06,
+        "m": 1.7584426802631175,
+        "n": 0.9310311014062712,
+        "covariance": [
+          [
+            97.72552206672391,
+            183.9659889591063,
+            -27.155822348837788,
+            -1893230.4979394684
+          ],
+          [
+            183.96598898091852,
+            919.7120088390658,
+            -51.67202522543899,
+            171010.0884199342
+          ],
+          [
+            -27.155822348859523,
+            -51.672025219418266,
+            7.547166455966229,
+            522249.3709235464
+          ],
+          [
+            -1893230.4977970922,
+            171010.08911033446,
+            522249.3708835591,
+            61103175514.0782
+          ]
+        ],
+        "valid_reduced_field": [
+          41.8442503229,
+          48.167979250500004
+        ],
+        "n_points": 7,
+        "relative_rmse": 0.009225754512668985
+      },
+      "points": [
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 2640.05,
+          "gain_error": 381.58469070995307,
+          "alpha_effective": 525.2368756903302,
+          "alpha_error": 9.635794542021376,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 43812.3640352,
+          "gain": 4676.05,
+          "gain_error": 1021.1895964871968,
+          "alpha_effective": 563.347267695647,
+          "alpha_error": 14.559148519044875,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_43.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 45009.3492541,
+          "gain": 7373.2,
+          "gain_error": 1042.856975610245,
+          "alpha_effective": 593.7071389081347,
+          "alpha_error": 9.42925708973259,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_45.0kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 46441.1058773,
+          "gain": 13606.55,
+          "gain_error": 2686.720516555257,
+          "alpha_effective": 634.5537715620432,
+          "alpha_error": 13.16385866392905,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_46.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 46441.105877312,
+          "gain": 10269.1,
+          "gain_error": 1789.634121530814,
+          "alpha_effective": 615.7929776798286,
+          "alpha_error": 11.618247113708852,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_46.4kVcm_1.000bar_0.1500mm_20npe_run2.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 47882.2864405,
+          "gain": 21953.55,
+          "gain_error": 3345.931033576061,
+          "alpha_effective": 666.4456091089016,
+          "alpha_error": 10.160637751300849,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_47.9kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48167.9792505,
+          "gain": 23279.9,
+          "gain_error": 3098.472736603258,
+          "alpha_effective": 670.3563737535669,
+          "alpha_error": 8.873098643331108,
+          "npe": 20,
+          "root": "outputs/roots/ArCF4/gap_0.150mm/ar_90.0_cf4_10.0_48.2kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_90__cf4_10",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 90.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 10.0
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

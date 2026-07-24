@@ -1,0 +1,994 @@
+{
+  "mixture": "ArIsoCF4",
+  "gap_mm": 0.15,
+  "model": "alpha_eff/p = A*(E/p)^m*exp(-(B/(E/p))^n)",
+  "units": {
+    "E_over_p": "kV cm^-1 bar^-1",
+    "alpha_over_p": "cm^-1 bar^-1",
+    "field": "V cm^-1",
+    "alpha_effective": "cm^-1"
+  },
+  "compositions": {
+    "ar_77__ic4h10_20__cf4_3": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 77.0
+        },
+        {
+          "gas": "ic4h10",
+          "fraction_pct": 20.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 3.0
+        }
+      ],
+      "parameters": null,
+      "points": [
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 270.3,
+          "gain_error": 48.203903532696124,
+          "alpha_effective": 373.30216355216015,
+          "alpha_error": 11.88898841600595,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_77.0_iso_20.0_cf4_3.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_77__ic4h10_20__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 77.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 52863.1831817,
+          "gain": 17758.2,
+          "gain_error": 3344.419597667607,
+          "alpha_effective": 652.3068440038943,
+          "alpha_error": 12.55540012564189,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_77.0_iso_20.0_cf4_3.0_52.9kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_77__ic4h10_20__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 77.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 54084.4190159,
+          "gain": 32225.0,
+          "gain_error": 5285.534357789042,
+          "alpha_effective": 692.0331885204927,
+          "alpha_error": 10.934645684590725,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_77.0_iso_20.0_cf4_3.0_54.1kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_77__ic4h10_20__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 77.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 56034.9741726,
+          "gain": 69947.75,
+          "gain_error": 14277.366488491863,
+          "alpha_effective": 743.7002542495705,
+          "alpha_error": 13.607649031829105,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_77.0_iso_20.0_cf4_3.0_56.0kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_77__ic4h10_20__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 77.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_78__ic4h10_20__cf4_2": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 78.0
+        },
+        {
+          "gas": "ic4h10",
+          "fraction_pct": 20.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 2.0
+        }
+      ],
+      "parameters": null,
+      "points": [
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 406.45,
+          "gain_error": 85.41694873723216,
+          "alpha_effective": 400.4973946795055,
+          "alpha_error": 14.010242955219118,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_78.0_iso_20.0_cf4_2.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_78__ic4h10_20__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 78.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49574.3268345,
+          "gain": 6080.9,
+          "gain_error": 1123.6443197775802,
+          "alpha_effective": 580.8605326880793,
+          "alpha_error": 12.31883788888246,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_78.0_iso_20.0_cf4_2.0_49.6kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_78__ic4h10_20__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 78.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 52399.7885031,
+          "gain": 17372.4,
+          "gain_error": 2533.8120255955514,
+          "alpha_effective": 650.8425345965333,
+          "alpha_error": 9.723515559529488,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_78.0_iso_20.0_cf4_2.0_52.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_78__ic4h10_20__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 78.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 20.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 52738.6455686,
+          "gain": 21180.05,
+          "gain_error": 3642.0976073476345,
+          "alpha_effective": 664.0543319913513,
+          "alpha_error": 11.46392511615926,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_78.0_iso_20.0_cf4_2.0_52.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_78__ic4h10_20__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 78.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 20.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_87__ic4h10_10__cf4_3": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 87.0
+        },
+        {
+          "gas": "ic4h10",
+          "fraction_pct": 10.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 3.0
+        }
+      ],
+      "parameters": {
+        "A": 107.37758272155726,
+        "B": 36.951364697085964,
+        "m": 0.5164112865032329,
+        "n": 5.999999999999997,
+        "covariance": [
+          [
+            8361090.4620146025,
+            52294.28321521833,
+            -18682.330208444,
+            -68989.8647800895
+          ],
+          [
+            52294.28321522012,
+            327.9664015994628,
+            -116.87586225119111,
+            -428.85022175827214
+          ],
+          [
+            -18682.33020844411,
+            -116.87586225118773,
+            41.74572468106103,
+            154.04421575805733
+          ],
+          [
+            -68989.8647800808,
+            -428.8502217582028,
+            154.04421575803704,
+            579.1052932309744
+          ]
+        ],
+        "valid_reduced_field": [
+          41.8442503229,
+          51.132914600700005
+        ],
+        "n_points": 6,
+        "relative_rmse": 0.009642609990457568
+      },
+      "points": [
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 937.25,
+          "gain_error": 165.91384693648433,
+          "alpha_effective": 456.19667037440144,
+          "alpha_error": 11.801465061722011,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 44354.9053423,
+          "gain": 3938.4,
+          "gain_error": 533.7079252490861,
+          "alpha_effective": 551.9019885629327,
+          "alpha_error": 9.034259686659322,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_44.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48838.6769837,
+          "gain": 19379.0,
+          "gain_error": 3402.354478886643,
+          "alpha_effective": 658.1296856350833,
+          "alpha_error": 11.704609728354209,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_48.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49117.6847542,
+          "gain": 22597.0,
+          "gain_error": 4220.633697743304,
+          "alpha_effective": 668.371495539091,
+          "alpha_error": 12.451899803051447,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_49.1kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49417.5200235,
+          "gain": 22689.4,
+          "gain_error": 4050.3696318653238,
+          "alpha_effective": 668.6435422704756,
+          "alpha_error": 11.900915939793688,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_49.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 51132.9146007,
+          "gain": 48744.25,
+          "gain_error": 6578.380013696781,
+          "alpha_effective": 719.6228347167698,
+          "alpha_error": 8.997136433113349,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_87.0_iso_10.0_cf4_3.0_51.1kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_87__ic4h10_10__cf4_3",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 87.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 3.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_88__ic4h10_10__cf4_2": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 88.0
+        },
+        {
+          "gas": "ic4h10",
+          "fraction_pct": 10.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 2.0
+        }
+      ],
+      "parameters": null,
+      "points": [
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 1535.05,
+          "gain_error": 337.7495216015934,
+          "alpha_effective": 489.0878821853801,
+          "alpha_error": 14.6683396459005,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_88.0_iso_10.0_cf4_2.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_88__ic4h10_10__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 88.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 45681.2940962,
+          "gain": 6857.35,
+          "gain_error": 1079.105663513224,
+          "alpha_effective": 588.8717565807857,
+          "alpha_error": 10.49098814666719,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_88.0_iso_10.0_cf4_2.0_45.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_88__ic4h10_10__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 88.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 47893.3582691,
+          "gain": 14582.8,
+          "gain_error": 2227.5887750045595,
+          "alpha_effective": 639.1732020680219,
+          "alpha_error": 10.1836354015441,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_88.0_iso_10.0_cf4_2.0_47.9kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_88__ic4h10_10__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 88.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 10.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 48597.1213789,
+          "gain": 22063.05,
+          "gain_error": 3117.4766208341266,
+          "alpha_effective": 666.7773028362263,
+          "alpha_error": 9.419902267468691,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_88.0_iso_10.0_cf4_2.0_48.6kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_88__ic4h10_10__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 88.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 10.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        }
+      ]
+    },
+    "ar_95__ic4h10_3__cf4_2": {
+      "components": [
+        {
+          "gas": "ar",
+          "fraction_pct": 95.0
+        },
+        {
+          "gas": "ic4h10",
+          "fraction_pct": 3.0
+        },
+        {
+          "gas": "cf4",
+          "fraction_pct": 2.0
+        }
+      ],
+      "parameters": {
+        "A": 0.8356815542393422,
+        "B": 4.480472159818123e-06,
+        "m": 1.7332363175658552,
+        "n": 1.4467489884332005,
+        "covariance": [
+          [
+            NaN,
+            NaN,
+            NaN,
+            NaN
+          ],
+          [
+            NaN,
+            NaN,
+            NaN,
+            NaN
+          ],
+          [
+            NaN,
+            NaN,
+            NaN,
+            NaN
+          ],
+          [
+            NaN,
+            NaN,
+            NaN,
+            NaN
+          ]
+        ],
+        "valid_reduced_field": [
+          38.030983263,
+          52.3436168087
+        ],
+        "n_points": 11,
+        "relative_rmse": 0.020072221765452217
+      },
+      "points": [
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 38030.983263,
+          "gain": 1029.55,
+          "gain_error": 206.7941701687682,
+          "alpha_effective": 462.4584728369437,
+          "alpha_error": 13.390586189355751,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_38.0kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 41844.2503229,
+          "gain": 5125.15,
+          "gain_error": 693.0341347824681,
+          "alpha_effective": 569.4610047913989,
+          "alpha_error": 9.014814327807878,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_41.8kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 44723.9961493,
+          "gain": 8470.65,
+          "gain_error": 1488.2543576372673,
+          "alpha_effective": 602.9575017428003,
+          "alpha_error": 11.713027592430075,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_44.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 45220.0003035,
+          "gain": 9071.05,
+          "gain_error": 992.4036463238342,
+          "alpha_effective": 607.5228868447459,
+          "alpha_error": 7.293559520480607,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_45.2kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 45460.2038924,
+          "gain": 9924.5,
+          "gain_error": 1437.711892849922,
+          "alpha_effective": 613.5174484301755,
+          "alpha_error": 9.6576612951109,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_45.5kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 46588.1205519,
+          "gain": 15806.15,
+          "gain_error": 2669.778381572247,
+          "alpha_effective": 644.5436255857969,
+          "alpha_error": 11.260504641430696,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_46.6kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 47095.0489991,
+          "gain": 20350.9,
+          "gain_error": 3121.3313799858242,
+          "alpha_effective": 661.392027729135,
+          "alpha_error": 10.225039613271235,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_47.1kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49380.7705743,
+          "gain": 43797.75,
+          "gain_error": 7521.116194063568,
+          "alpha_effective": 712.4891816788032,
+          "alpha_error": 11.448253535190839,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_49.4kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 49674.1362415,
+          "gain": 74310.85,
+          "gain_error": 9966.14559588056,
+          "alpha_effective": 747.7341499769504,
+          "alpha_error": 8.940951508319946,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_49.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 51656.9455167,
+          "gain": 122384.35,
+          "gain_error": 20280.05425512765,
+          "alpha_effective": 780.9947854272347,
+          "alpha_error": 11.047193673116782,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_51.7kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        },
+        {
+          "mixture": "ArIsoCF4",
+          "fraction": 3.0,
+          "pressure_bar": 1.0,
+          "gap_mm": 0.15,
+          "field_v_cm": 52343.6168087,
+          "gain": 178597.45,
+          "gain_error": 19128.92981619793,
+          "alpha_effective": 806.1926446404696,
+          "alpha_error": 7.140426628412268,
+          "npe": 20,
+          "root": "outputs/roots/ArIsoCF4/gap_0.150mm/ar_95.0_iso_3.0_cf4_2.0_52.3kVcm_1.000bar_0.1500mm_20npe.root",
+          "composition": "ar_95__ic4h10_3__cf4_2",
+          "components": [
+            {
+              "gas": "ar",
+              "fraction_pct": 95.0
+            },
+            {
+              "gas": "ic4h10",
+              "fraction_pct": 3.0
+            },
+            {
+              "gas": "cf4",
+              "fraction_pct": 2.0
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
